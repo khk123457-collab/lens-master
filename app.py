@@ -1,5 +1,5 @@
 import streamlit as st
-import streamlit.components.v1 as components # [NEW] 스크롤 제어용
+import streamlit.components.v1 as components
 import pandas as pd
 import time
 import plotly.graph_objects as go
@@ -18,7 +18,6 @@ st.markdown("""
     html, body, [class*="css"] { font-family: 'Pretendard', sans-serif; background-color: #F2F4F6; }
     
     .header-title { font-size: 28px; font-weight: 800; color: #191F28; margin-bottom: 5px; }
-    .header-sub { font-size: 16px; color: #6B7684; margin-bottom: 30px; }
     
     /* 설명 박스 */
     .desc-box { background-color: #fff; padding: 20px; border-radius: 15px; border: 1px solid #E5E8EB; margin-bottom: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
@@ -27,26 +26,14 @@ st.markdown("""
     .desc-highlight { color: #3182F6; font-weight: 600; background-color: #E8F3FF; padding: 2px 6px; border-radius: 4px;}
 
     .q-text { font-size: 16px; font-weight: 700; color: #333; margin-top: 30px; margin-bottom: 8px; }
-    
-    /* 점수 라벨 */
-    .scale-labels { 
-        display: flex; justify-content: space-between; 
-        font-size: 12px; color: #8B95A1; font-weight: 500;
-        padding: 0 8px; margin-bottom: 5px;
-    }
+    .scale-labels { display: flex; justify-content: space-between; font-size: 12px; color: #8B95A1; font-weight: 500; padding: 0 8px; margin-bottom: 5px; }
     
     /* 라디오 버튼 */
     div[role="radiogroup"] { gap: 0; justify-content: space-between; margin-bottom: 20px; }
-    div[role="radiogroup"] label {
-        background-color: white !important; border: 1px solid #E5E8EB !important; border-radius: 50% !important;
-        width: 45px; height: 45px; display: flex; justify-content: center; align-items: center;
-        cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    }
+    div[role="radiogroup"] label { background-color: white !important; border: 1px solid #E5E8EB !important; border-radius: 50% !important; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
     div[role="radiogroup"] label p { font-size: 16px !important; margin: 0 !important; color: #6B7684 !important; }
     div[role="radiogroup"] label:hover { background-color: #F2F4F6 !important; transform: scale(1.1); }
-    div[role="radiogroup"] label:has(input:checked) {
-        background-color: #3182F6 !important; border-color: #3182F6 !important; box-shadow: 0 4px 10px rgba(49, 130, 246, 0.4);
-    }
+    div[role="radiogroup"] label:has(input:checked) { background-color: #3182F6 !important; border-color: #3182F6 !important; box-shadow: 0 4px 10px rgba(49, 130, 246, 0.4); }
     div[role="radiogroup"] label:has(input:checked) p { color: white !important; font-weight: bold !important; }
     div[role="radiogroup"] label > div:first-child { display: none; }
 
@@ -54,7 +41,6 @@ st.markdown("""
     .result-header { background: linear-gradient(135deg, #3182F6 0%, #1B64DA 100%); color: white; padding: 40px 20px; border-radius: 0 0 25px 25px; margin: -20px -20px 20px -20px; text-align: center; }
     .mbti-hero { font-size: 52px; font-weight: 900; margin: 10px 0; text-shadow: 0 4px 10px rgba(0,0,0,0.2); }
     .persona-desc { background: rgba(255,255,255,0.15); padding: 15px; border-radius: 15px; font-size: 14px; line-height: 1.6; margin-top: 15px; text-align: left; }
-    
     .prod-card { border: 1px solid #E5E8EB; border-radius: 20px; padding: 25px; margin-bottom: 20px; background: white; box-shadow: 0 4px 20px rgba(0,0,0,0.03); position: relative; }
     .prod-rank { position: absolute; top: 0; left: 0; background: #3182F6; color: white; padding: 8px 15px; border-radius: 20px 0 20px 0; font-weight: 800; font-size: 14px; }
     .why-box { background: #FAFAFA; padding: 15px; border-radius: 12px; margin-top: 15px; border: 1px solid #F2F4F6; }
@@ -93,7 +79,6 @@ def load_data(mode, sph=0, cyl=0):
         df = pd.DataFrame(data)
         df['final_price'] = df['base_price'] + idx_price
         df['index_info'] = idx_name
-        # [수정] 두께 점수 10점 초과 방지 (min(10, ...))
         df['thin_score'] = [min(10, thin_score + (1 if sph < -4.0 else 0)) for _ in range(len(df))]
         return df
     else:
@@ -110,21 +95,20 @@ def load_data(mode, sph=0, cyl=0):
         }
         return pd.DataFrame(data)
 
-def make_bar_chart(scores, categories):
-    fig = go.Figure(go.Bar(
-        x=scores, y=categories, orientation='h',
-        marker=dict(color='#3182F6',  line=dict(color='#1B64DA', width=1)),
-        text=[f'{s:.1f}' for s in scores], 
-        textposition='auto',
-        hovertemplate='%{y}: %{x:.1f}점<extra></extra>'
+# [수정] 다시 오각형 차트(Radar Chart)로 복귀
+def make_radar_chart(product_name, scores, categories):
+    scores_closed = scores + [scores[0]]
+    categories_closed = categories + [categories[0]]
+    fig = go.Figure()
+    fig.add_trace(go.Scatterpolar(
+        r=scores_closed, theta=categories_closed, fill='toself', name=product_name,
+        line=dict(color='#3182F6', width=2), fillcolor='rgba(49, 130, 246, 0.15)'
     ))
     fig.update_layout(
-        xaxis=dict(range=[0, 10.5], showticklabels=False, visible=False),
-        yaxis=dict(showgrid=False, tickfont=dict(size=12, color='#333', family="Pretendard")),
-        margin=dict(l=0, r=0, t=0, b=0),
-        height=180,
+        polar=dict(radialaxis=dict(visible=True, range=[0, 10], showticklabels=False, gridcolor='#E5E8EB')),
+        showlegend=False, margin=dict(t=20, b=20, l=30, r=30), height=220,
         paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
-        dragmode=False
+        font=dict(size=11, color='#6B7684', family="Pretendard")
     )
     return fig
 
@@ -185,7 +169,6 @@ elif st.session_state['page'] == 'mbti_test':
         
         for q_text, key in q_list:
             st.markdown(f"<div class='q-text'>{q_text}</div>", unsafe_allow_html=True)
-            # [수정] 3점 라벨 '보통이다'로 변경
             st.markdown("""<div class="scale-labels"><span>전혀 아니다(1)</span><span>보통이다(3)</span><span>매우 그렇다(5)</span></div>""", unsafe_allow_html=True)
             answers[key] = st.radio(key, [1,2,3,4,5], horizontal=True, key=key, label_visibility="collapsed")
         st.markdown("---")
@@ -197,7 +180,6 @@ elif st.session_state['page'] == 'mbti_test':
 # 5. 통합 결과 리포트
 # ==============================================================================
 elif st.session_state['page'] == 'result':
-    # [NEW] 로딩 후 자동 스크롤 업 코드 추가 (JS)
     components.html("""<script>window.scrollTo(0,0);</script>""", height=0)
     
     with st.spinner('🧬 AI가 고객님의 시각 성향을 분석하여 최적의 제품을 매칭 중입니다...'): time.sleep(1.5)
@@ -228,35 +210,33 @@ elif st.session_state['page'] == 'result':
         cand_g = df_g.copy()
         
         for i, r in cand_g.iterrows():
-            if type_t == "T": price_score = min(10, r['final_price'] / 30000)
-            else: price_score = max(2, 10 - (r['final_price'] / 40000))
-            
+            price_score = max(1, 10 - (r['final_price'] / 40000))
             fit_score = 7
             if 'drive' in r['cat'] and ans['env_5'] >= 4: fit_score += 3
             if 'digital' in r['cat'] and type_i == 'I': fit_score += 3
             if 'distortions' in r['cat'] and abs(vision['cyl']) >= 1.0: fit_score += 3
             if r['tier'] == 2 and type_t == "T": fit_score += 4 
             
-            cand_g.at[i, 'price_score'] = min(10, price_score)
+            cand_g.at[i, 'price_score'] = price_score
             cand_g.at[i, 'fit_score'] = min(10, fit_score)
-            if type_t == "T": cand_g.at[i, 'rank_score'] = (r['tier'] * 25) + (fit_score * 3) + r['view_score']
-            else: cand_g.at[i, 'rank_score'] = (price_score * 4) + (fit_score * 2)
+            if type_t == "T": cand_g.at[i, 'rank_score'] = (r['tier'] * 30) + (fit_score * 3) + r['view_score']
+            else: cand_g.at[i, 'rank_score'] = (price_score * 5) + (fit_score * 2)
 
         ranks = cand_g.sort_values('rank_score', ascending=False).head(3)
         for rk, (idx, row) in enumerate(ranks.iterrows(), 1):
             reasons = []
-            if type_t == "T" and row['tier'] == 2: reasons.append("고객님의 <b>'최고 사양 선호(T)'</b> 성향에 맞춰, 광학 성능이 가장 우수한 <b>하이엔드 렌즈</b>를 1순위로 추천합니다.")
-            elif type_t == "F" and row['tier'] == 0: reasons.append("고객님의 <b>'가성비 중시(F)'</b> 성향에 맞춰, 거품을 뺀 <b>실속형 렌즈</b>입니다.")
+            if type_t == "T" and row['tier'] == 2: reasons.append("고객님의 <b>'최고 사양 선호(T)'</b> 성향에 맞춰, 현존하는 렌즈 중 가장 광학적 성능이 우수한 <b>하이엔드 제품</b>을 선정했습니다.")
+            elif type_t == "F" and row['tier'] == 0: reasons.append("고객님의 <b>'가성비 중시(F)'</b> 성향에 맞춰, 불필요한 기능은 빼고 가격 거품을 제거한 <b>실속형 제품</b>입니다.")
             if 'drive' in row['cat'] and ans['env_5'] >= 3: reasons.append("야간 운전 시 <b>빛 번짐 차단 코팅</b>이 눈의 피로를 획기적으로 줄여줍니다.")
-            if abs(vision['cyl']) >= 1.0 and row['cat'] == 'distortions': reasons.append(f"난시(-{abs(vision['cyl'])}D)로 인한 <b>주변부 울렁임을 잡는 설계</b>가 필수입니다.")
+            if abs(vision['cyl']) >= 1.0 and row['cat'] == 'distortions': reasons.append(f"난시(-{abs(vision['cyl'])}D)로 인한 <b>주변부 울렁임을 잡는 양면비구면 설계</b>가 필수적입니다.")
             if not reasons: reasons.append("고객님의 라이프스타일 데이터와 도수 정보를 종합했을 때 가장 밸런스가 좋은 제품입니다.")
             
             c1, c2 = st.columns([1.5, 1])
             with c1:
-                # [수정] 권장소비자가 문구 추가
                 st.markdown(f"""<div class="prod-card"><div class="prod-rank">{rk}위</div><div style="font-size:18px; font-weight:800; margin-top:10px;">{row['name']}</div><div style="font-size:13px; color:#666; margin-bottom:8px;">{row['brand']} | 굴절률 {row['index_info']}</div><div style="font-size:16px; font-weight:bold; color:#3182F6;">{format(int(row['final_price']),',')}원 (권장소비자가)</div><div class="why-box"><div class="why-title">🧐 추천 사유 (Why?)</div><ul style="margin:0; padding-left:15px; font-size:13px; color:#555;">{"".join([f"<li>{r}</li>" for r in reasons])}</ul></div></div>""", unsafe_allow_html=True)
             with c2: 
-                st.plotly_chart(make_bar_chart([row['thin_score'], row['view_score'], row['coat_score'], row['price_score'], row['fit_score']], ['두께', '시야', '코팅', '가격경쟁력', '적합도']), use_container_width=True)
+                # [수정] 오각형 차트(Radar Chart) 적용
+                st.plotly_chart(make_radar_chart(row['name'], [row['thin_score'], row['view_score'], row['coat_score'], row['price_score'], row['fit_score']], ['두께(얇음)', '시야(넓음)', '코팅(강함)', '가격경쟁력', '적합도']), use_container_width=True)
             st.divider()
 
     with tab2:
@@ -266,7 +246,7 @@ elif st.session_state['page'] == 'result':
         cand_c = df_c[df_c['category'].str.contains('toric' if is_toric else 'sphere')].copy()
         
         for i, r in cand_c.iterrows():
-            price_score = max(2, 10 - (r['price'] / 10000))
+            price_score = max(1, 10 - (r['price'] / 10000))
             cand_c.at[i, 'price_score'] = price_score
             if type_t == "T": cand_c.at[i, 'rank_score'] = (r['tier'] * 20) + (r['dkt'] / 10) + r['dry']
             else: cand_c.at[i, 'rank_score'] = (price_score * 5) + r['dry']
@@ -280,10 +260,10 @@ elif st.session_state['page'] == 'result':
             
             c1, c2 = st.columns([1.5, 1])
             with c1:
-                # [수정] 권장소비자가 문구 추가
                 st.markdown(f"""<div class="prod-card"><div class="prod-rank">{rk}위</div><div style="font-size:18px; font-weight:800; margin-top:10px;">{row['name']}</div><div style="font-size:13px; color:#666; margin-bottom:8px;">{row['brand']}</div><div style="font-size:16px; font-weight:bold; color:#3182F6;">{format(row['price'],',')}원 (권장소비자가)</div><div class="why-box"><div class="why-title">🧐 추천 사유 (Why?)</div><ul style="margin:0; padding-left:15px; font-size:13px; color:#555;">{"".join([f"<li>{r}</li>" for r in reasons])}</ul></div></div>""", unsafe_allow_html=True)
             with c2: 
-                st.plotly_chart(make_bar_chart([row['dry'], row['handling'], min(row['dkt']/16, 10), row['price_score'], 9.5], ['건조감', '핸들링', '산소', '가격경쟁력', '적합도']), use_container_width=True)
+                # [수정] 오각형 차트(Radar Chart) 적용
+                st.plotly_chart(make_radar_chart(row['name'], [row['dry'], row['handling'], min(row['dkt']/16, 10), row['price_score'], 9.5], ['건조감', '핸들링', '산소', '가격경쟁력', '적합도']), use_container_width=True)
             st.divider()
 
     st.markdown("### 📲 안경사 전용 처방전 (QR)")
