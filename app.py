@@ -299,3 +299,4 @@ elif st.session_state['page'] == 'result':
     img = qr.make_image(fill_color="black", back_color="white"); buffered = BytesIO(); img.save(buffered, format="PNG"); img_str = base64.b64encode(buffered.getvalue()).decode()
     st.markdown(f"""<div class="qr-container"><div style="font-weight:bold; margin-bottom:10px;">안경사님께 이 화면을 보여주세요</div><img src="data:image/png;base64,{img_str}" width="150"><div style="font-size:12px; color:#999; margin-top:10px;">스캔 시 고객님의 도수 및 추천 렌즈 정보가 표시됩니다.</div></div>""", unsafe_allow_html=True)
     if st.button("처음으로 돌아가기", use_container_width=True): go_to('home'); st.rerun()
+
