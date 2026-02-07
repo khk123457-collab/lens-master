@@ -14,37 +14,20 @@ st.set_page_config(page_title="Lens Master Pro", page_icon="👁️", layout="ce
 BASE_URL = "https://lens-master-fhsfp5b458nqhycwenbvga.streamlit.app/"
 
 # ==============================================================================
-# 1. 디자인 (CSS) - 홈 화면 디자인 강화
+# 1. 디자인 (CSS)
 # ==============================================================================
 st.markdown("""
 <style>
     @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-    html, body, [class*="css"] { font-family: 'Pretendard', sans-serif; background-color: #F8F9FA; }
+    html, body, [class*="css"] { font-family: 'Pretendard', sans-serif; background-color: #F0F2F6; }
     
-    /* [홈 화면] 히어로 섹션 스타일 */
-    .hero-container { text-align: center; padding: 40px 20px; margin-bottom: 30px; }
-    .hero-title { 
-        font-size: 42px; font-weight: 900; 
-        background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        margin-bottom: 10px; letter-spacing: -1px;
-    }
-    .hero-sub { font-size: 18px; color: #64748B; font-weight: 500; margin-bottom: 20px; }
+    /* 헤더 & 텍스트 */
+    h1, .header-title { color: #1E3A8A !important; font-weight: 800 !important; letter-spacing: -1px; word-break: keep-all; }
     
-    /* 공통 헤더 */
-    .header-title { color: #1E3A8A !important; font-weight: 800 !important; letter-spacing: -1px; word-break: keep-all; }
-    
-    /* 버튼 스타일 커스텀 */
-    div.stButton > button {
-        width: 100%; border-radius: 12px; height: 55px; font-size: 16px; font-weight: 700;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: all 0.2s;
-    }
-    /* Primary 버튼 (파란색) */
-    div.stButton > button:first-child { background-color: #2563EB !important; color: white !important; border: none !important; }
-    div.stButton > button:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(37, 99, 235, 0.2); }
-    
-    /* Secondary 버튼 (흰색) */
-    div.stButton > button:not(:first-child) { background-color: white !important; color: #334155 !important; border: 1px solid #E2E8F0 !important; }
+    /* 버튼 커스텀 (파란색) */
+    div.stButton > button:first-child { background-color: #2563EB !important; color: white !important; border-color: #2563EB !important; font-weight: bold; border-radius: 10px; }
+    div.stButton > button:hover { background-color: #1D4ED8 !important; border-color: #1D4ED8 !important; }
+    div.stButton > button:focus { box-shadow: none !important; outline: none !important; }
 
     /* 로딩바 중앙 정렬 */
     .stSpinner > div { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; }
@@ -94,6 +77,11 @@ st.markdown("""
     .stTabs [data-baseweb="tab-list"] { gap: 8px; background-color: transparent; }
     .stTabs [data-baseweb="tab"] { height: 55px; background-color: #fff; border-radius: 12px; color: #64748B; font-weight: 600; border: 1px solid #E2E8F0; flex: 1; transition: all 0.2s; }
     .stTabs [aria-selected="true"] { background-color: #EFF6FF; color: #2563EB; border-color: #2563EB; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15); }
+    
+    /* [홈 화면] 히어로 섹션 */
+    .hero-container { text-align: center; padding: 40px 20px 20px; }
+    .hero-title { font-size: 32px; font-weight: 900; color: #1E3A8A; margin-bottom: 10px; }
+    .hero-sub { font-size: 16px; color: #64748B; font-weight: 500; margin-bottom: 30px; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -156,7 +144,6 @@ def make_radar_chart(product_name, scores, categories):
     )
     return fig
 
-# 20문항 키
 all_q_keys = [
     'env_1', 'env_2', 'env_3', 'env_4', 'env_5',
     'sen_1', 'sen_2', 'sen_3', 'sen_4', 'sen_5',
@@ -312,7 +299,6 @@ if st.session_state['page'] == 'optician_view':
 # 5. 일반 사용자 흐름
 # ==============================================================================
 elif st.session_state['page'] == 'home':
-    # [디자인 개편] 감각적인 히어로 섹션
     st.markdown("""
         <div class="hero-container">
             <div class="hero-title">LENS MASTER</div>
@@ -320,22 +306,26 @@ elif st.session_state['page'] == 'home':
         </div>
     """, unsafe_allow_html=True)
     
-    # 2열 그리드 배치
-    c1, c2 = st.columns(2)
-    with c1:
-        if st.button("🧬 Eye-MBTI 검사", type="primary", use_container_width=True):
-            go_to('mbti_test'); st.rerun()
-    with c2:
-        # [기능 추가] 주변 안경원 찾기 (네이버 지도 연동)
-        st.link_button("📍 주변 안경원 찾기", "https://map.naver.com/p/search/안경원", use_container_width=True)
-        
-    st.markdown("<div style='height:10px;'></div>", unsafe_allow_html=True)
+    # [수정] 탭 구조로 홈 화면 개편 (깔끔한 UI)
+    tab_home1, tab_home2 = st.tabs(["🔥 추천/검사", "📍 안경원/도감"])
     
-    c3, c4 = st.columns(2)
-    with c3:
-        st.button("⭐ 렌즈 리뷰 (준비중)", disabled=True, use_container_width=True)
-    with c4:
-        st.button("👓 렌즈 도감 (준비중)", disabled=True, use_container_width=True)
+    with tab_home1:
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("🧬 나에게 맞는 렌즈 찾기 (Eye-MBTI)", type="primary", use_container_width=True):
+            go_to('mbti_test'); st.rerun()
+        st.info("💡 20가지 질문을 통해 당신의 시각 성향을 정밀 분석합니다.")
+
+    with tab_home2:
+        st.markdown("<br>", unsafe_allow_html=True)
+        # [신규 기능] 인-앱 지도 (Streamlit Built-in Map)
+        st.markdown("##### 📍 내 주변 안경원 위치 확인")
+        # 서울 시청 중심 좌표 (예시)
+        df_map = pd.DataFrame({'lat': [37.5665], 'lon': [126.9780]})
+        st.map(df_map, zoom=14)
+        
+        st.link_button("👉 네이버 지도로 상세 보기", "https://map.naver.com/p/search/안경원", use_container_width=True)
+        st.divider()
+        st.button("👓 모든 렌즈 도감 (준비중)", disabled=True, use_container_width=True)
 
 elif st.session_state['page'] == 'mbti_test':
     st.markdown("<div class='header-title'>정밀 시력 성향 검사</div>", unsafe_allow_html=True)
@@ -411,6 +401,12 @@ elif st.session_state['page'] == 'result':
         progress_bar.empty()
         status_text.empty()
     
+    components.html("""
+        <script>
+            window.parent.document.querySelector('section.main').scrollTo(0, 0);
+        </script>
+    """, height=0)
+    
     ans = st.session_state['answers']
     vision = st.session_state['vision']
     
@@ -458,13 +454,14 @@ elif st.session_state['page'] == 'result':
             norm_spec = (r['tier'] * 2.5)
             if 'digital' in r['cat'] and ans['env_1'] >= 4: norm_spec += 1.5
             if 'drive' in r['cat'] and ans['env_5'] >= 4: norm_spec += 1.5
+            if abs(vision['cyl']) >= 1.0 and r['cat'] == 'distortions': final_spec += 30
             
             price_score = max(1, 10 - (r['final_price'] / 45000))
             
             if type_t == "T": 
                 total_score = (norm_spec * 0.8) + (price_score * 0.2)
             else: 
-                # [수정] F타입: 가격 가중치 대폭 강화 (비싼 렌즈 순위 하락 유도)
+                # [핵심] 가성비(F) 선택 시, 가격 점수의 비중을 80%로 높여서 비싼 렌즈 순위 하락 유도
                 total_score = (norm_spec * 0.2) + (price_score * 0.8)
                 
             cand_g.at[i, 'total_score'] = total_score
