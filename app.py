@@ -15,7 +15,7 @@ st.set_page_config(page_title="Lens Master Pro", page_icon="👁️", layout="ce
 BASE_URL = "https://lens-master-fhsfp5b458nqhycwenbvga.streamlit.app/"
 
 # ==============================================================================
-# 1. 디자인 (CSS)
+# 1. 디자인 (CSS) - v8.8 스타일 유지
 # ==============================================================================
 st.markdown("""
 <style>
@@ -24,66 +24,30 @@ st.markdown("""
     
     h1, .header-title { color: #1E3A8A !important; font-weight: 800 !important; letter-spacing: -1px; word-break: keep-all; }
     
-    /* 버튼 스타일 */
     div.stButton > button { border-radius: 12px; height: 50px; font-size: 15px; font-weight: 700; transition: all 0.2s; width: 100%; }
     div.stButton > button:first-child { background-color: #2563EB !important; color: white !important; border: none !important; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
     div.stButton > button:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
     
     .stSpinner > div { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; }
     
-    /* 결과 페이지 헤더 (대형 MBTI) */
-    .result-header { 
-        background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%); 
-        color: white; 
-        padding: 40px 20px; 
-        border-radius: 0 0 30px 30px; 
-        margin: -60px -20px 30px -20px; 
-        text-align: center; 
-        box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
-    }
-    .mbti-hero { 
-        font-size: 65px; 
-        font-weight: 900; 
-        margin: 10px 0; 
-        text-shadow: 0 4px 10px rgba(0,0,0,0.3); 
-        letter-spacing: 3px; 
-        color: #FFFFFF;
-    }
-    .persona-desc { 
-        background: rgba(255,255,255,0.15); 
-        padding: 20px; 
-        border-radius: 15px; 
-        font-size: 15px; 
-        line-height: 1.6; 
-        margin-top: 20px; 
-        text-align: left; 
-        backdrop-filter: blur(10px); 
-        border: 1px solid rgba(255,255,255,0.2); 
-    }
-    
-    /* 제품 카드 */
-    .prod-card { background: white; border-radius: 16px; padding: 25px; border: 1px solid #E2E8F0; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); position: relative; overflow: hidden; }
-    .prod-rank { position: absolute; top: 0; left: 0; background: #2563EB; color: white; padding: 6px 16px; border-radius: 0 0 16px 0; font-weight: 800; font-size: 14px; z-index: 10; }
-    .match-point { 
-        position: absolute; top: 15px; right: 15px; 
-        background: #EFF6FF; color: #2563EB; 
-        font-weight: 800; font-size: 13px; 
-        padding: 6px 12px; border-radius: 20px; 
-        border: 1px solid #DBEAFE;
-    }
-    
-    .why-box { background: #F8FAFC; padding: 20px; border-radius: 12px; margin-top: 15px; border-left: 4px solid #2563EB; }
-    .why-cat { font-size: 13px; font-weight: 800; color: #1E3A8A; margin-bottom: 4px; display: block; margin-top: 10px; }
-    .why-cat:first-child { margin-top: 0; }
-    .why-desc { font-size: 13px; color: #555; line-height: 1.5; margin-bottom: 8px; }
-    
-    .feature-tag { display: inline-block; background: #F3F4F6; color: #4B5563; font-size: 11px; padding: 4px 8px; border-radius: 6px; margin-right: 5px; margin-bottom: 5px; font-weight: 600; }
-    
-    /* 도감 및 상세 페이지 */
     .spec-table, .price-table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 20px; font-size: 14px; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
     .spec-table th, .price-table th { background: #F1F5F9; color: #475569; padding: 12px; text-align: left; font-weight: 600; width: 40%; border-bottom: 1px solid #E2E8F0; }
     .spec-table td, .price-table td { padding: 12px; color: #1E293B; border-bottom: 1px solid #E2E8F0; font-weight: 500; text-align: right; }
     .spec-table td { text-align: left; }
+    
+    .prod-card { background: white; border-radius: 16px; padding: 25px; border: 1px solid #E2E8F0; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); position: relative; overflow: hidden; }
+    .prod-rank { position: absolute; top: 0; left: 0; background: #2563EB; color: white; padding: 6px 16px; border-radius: 0 0 16px 0; font-weight: 800; font-size: 14px; z-index: 10; }
+    .match-point { position: absolute; top: 15px; right: 15px; background: #EFF6FF; color: #2563EB; font-weight: 800; font-size: 13px; padding: 6px 12px; border-radius: 20px; border: 1px solid #DBEAFE; }
+    
+    .why-box { background: #F8FAFC; padding: 20px; border-radius: 12px; margin-top: 15px; border-left: 4px solid #2563EB; }
+    .why-cat { font-size: 13px; font-weight: 800; color: #1E3A8A; margin-bottom: 4px; display: block; margin-top: 10px; }
+    .why-desc { font-size: 13px; color: #555; line-height: 1.5; margin-bottom: 8px; }
+    
+    .result-header { background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%); color: white; padding: 40px 20px; border-radius: 0 0 30px 30px; margin: -60px -20px 30px -20px; text-align: center; box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3); }
+    .mbti-hero { font-size: 60px !important; font-weight: 900; margin: 10px 0; text-shadow: 0 4px 10px rgba(0,0,0,0.3); letter-spacing: 3px; color: #FFFFFF; }
+    .persona-desc { background: rgba(255,255,255,0.15); padding: 20px; border-radius: 15px; font-size: 15px; line-height: 1.6; margin-top: 20px; text-align: left; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
+    
+    .feature-tag { display: inline-block; background: #F3F4F6; color: #4B5563; font-size: 11px; padding: 4px 8px; border-radius: 6px; margin-right: 5px; margin-bottom: 5px; font-weight: 600; }
     
     .qr-container { text-align: center; margin-top: 40px; padding: 25px; background: white; border-radius: 20px; border: 1px solid #E5E8EB; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
     .metric-box { margin-bottom: 12px; }
@@ -99,10 +63,11 @@ st.markdown("""
     
     .dict-list-item { padding: 15px; background: white; border-radius: 12px; margin-bottom: 10px; border: 1px solid #E2E8F0; cursor: pointer; transition: all 0.2s; }
     .dict-list-item:hover { border-color: #2563EB; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.1); }
+    
     .detail-header { background: white; padding: 25px; border-radius: 20px; text-align: center; margin-bottom: 20px; border: 1px solid #E2E8F0; }
     .detail-brand { font-size: 14px; color: #64748B; font-weight: 600; }
     .detail-name { font-size: 24px; font-weight: 900; color: #1E293B; margin: 5px 0 10px 0; }
-    .detail-price-main { font-size: 22px; font-weight: 800; color: #2563EB; margin-bottom: 10px; }
+    .detail-price-main { font-size: 20px; font-weight: 800; color: #2563EB; margin-bottom: 10px; }
     .detail-desc-box { background: white; padding: 20px; border-radius: 12px; border: 1px solid #E2E8F0; margin-bottom: 20px; line-height: 1.6; color: #334155; font-size: 15px; }
     
     /* 질문지 */
@@ -128,44 +93,42 @@ def get_index_recommendation(sph, cyl):
     elif power < 6.0: return "1.67 (초고굴절)", 50000, 8
     else: return "1.74 (특초고굴절)", 90000, 10
 
-# [도감용 상세 데이터 - 굴절률 설명 & 권장소비자가 추가]
 def get_dictionary_data(category):
     if category == 'glasses':
         return pd.DataFrame([
-            {'id': 1, 'brand': '케미', 'name': '퍼펙트 UV', 'price': 30000, 'price_table': {'1.56 (중굴절)': 30000, '1.60 (고굴절)': 60000, '1.67 (초고굴절)': 90000, '1.74 (특초)': 150000}, 'img': 'https://via.placeholder.com/300x200?text=CHEMI+Perfect+UV', 'spec_design': '비구면 (AS)', 'spec_material': 'NK-55 / MR-8', 'spec_coat': 'Perfect UV', 'spec_uv': 'UV400 + BlueCut 30%', 'desc': '자외선 99.9% 및 유해 블루라이트를 효과적으로 차단하는 국내 점유율 1위 렌즈.', 'tags': ['#가성비', '#청광차단', '#국민렌즈'], 'thin': 6, 'view': 6, 'coat': 5},
-            {'id': 2, 'brand': '니콘', 'name': 'BLUV Plus', 'price': 60000, 'price_table': {'1.56 (중굴절)': 60000, '1.60 (고굴절)': 90000, '1.67 (초고굴절)': 120000}, 'img': 'https://via.placeholder.com/300x200?text=NIKON+BLUV', 'spec_design': '양면 UV 차단', 'spec_material': 'Nikon Optical', 'spec_coat': 'SeeCoat Plus', 'spec_uv': '전후면 UV 차단', 'desc': '후면 반사 자외선까지 차단하여 눈을 완벽하게 보호하며, 디지털 피로 완화 기능을 제공합니다.', 'tags': ['#디지털케어', '#양면차단', '#프리미엄코팅'], 'thin': 7, 'view': 7, 'coat': 7},
-            {'id': 3, 'brand': '호야', 'name': '뉴럭스', 'price': 70000, 'price_table': {'1.60 (고굴절)': 70000, '1.67 (초고굴절)': 110000, '1.74 (특초)': 180000}, 'img': 'https://via.placeholder.com/300x200?text=HOYA+Nulux', 'spec_design': 'Trueform 비구면', 'spec_material': 'Eyas 1.60', 'spec_coat': 'VG(Venus Guard)', 'spec_uv': 'UV Ban', 'desc': '호야의 독자적인 고강도 코팅 기술로 스크래치에 매우 강하며, 선명도가 뛰어납니다.', 'tags': ['#흠집방지', '#고강도', '#선명함'], 'thin': 7, 'view': 8, 'coat': 9},
-            {'id': 4, 'brand': '케미', 'name': '양면비구면 D-Free', 'price': 80000, 'price_table': {'1.60 (고굴절)': 80000, '1.67 (초고굴절)': 110000, '1.74 (특초)': 160000}, 'img': 'https://via.placeholder.com/300x200?text=CHEMI+D-Free', 'spec_design': '양면 비구면 (DAS)', 'spec_material': 'MR-8 / MR-174', 'spec_coat': 'Aegis Coating', 'spec_uv': 'Perfect UV', 'desc': '렌즈 주변부의 울렁임과 왜곡을 최소화하여 눈이 작아 보이는 현상을 완화합니다.', 'tags': ['#미용효과', '#난시교정', '#넓은시야'], 'thin': 8, 'view': 8, 'coat': 7},
-            {'id': 5, 'brand': '자이스', 'name': '클리어뷰', 'price': 100000, 'price_table': {'1.60 (고굴절)': 100000, '1.67 (초고굴절)': 140000, '1.74 (특초)': 200000}, 'img': 'https://via.placeholder.com/300x200?text=ZEISS+ClearView', 'spec_design': 'Freeform 3.0', 'spec_material': 'Zeiss Polymer', 'spec_coat': 'DuraVision Platinum', 'spec_uv': 'UVProtect', 'desc': '자이스의 최신 프리폼 기술로 기존 비구면 대비 3배 더 넓은 선명한 시야를 제공합니다.', 'tags': ['#초선명', '#자이스기술', '#얇은두께'], 'thin': 8, 'view': 9, 'coat': 8},
-            {'id': 6, 'brand': '에실로', 'name': '트랜지션스 Gen8', 'price': 150000, 'price_table': {'1.50 (일반)': 150000, '1.60 (고굴절)': 220000, '1.67 (초고굴절)': 280000}, 'img': 'https://via.placeholder.com/300x200?text=Transitions', 'spec_design': '변색 (Photochromic)', 'spec_material': 'Orma / Airwear', 'spec_coat': 'Crizal Sapphire', 'spec_uv': 'UV400', 'desc': '실내에서는 투명하게, 실외에서는 선글라스처럼 빠르게 변하는 전세계 1위 변색 렌즈.', 'tags': ['#변색렌즈', '#선글라스겸용', '#패션'], 'thin': 7, 'view': 8, 'coat': 8},
-            {'id': 7, 'brand': '토카이', 'name': '루티나', 'price': 180000, 'price_table': {'1.60 (고굴절)': 180000, '1.67 (초고굴절)': 250000, '1.76 (세계최초)': 400000}, 'img': 'https://via.placeholder.com/300x200?text=TOKAI+Lutina', 'spec_design': '비구면', 'spec_material': 'Lutina Material', 'spec_coat': 'ESC (P-UV)', 'spec_uv': 'HEV Cut', 'desc': '산화 스트레스를 유발하는 파장대를 차단하여 루테인을 보호하는 헬스케어 렌즈.', 'tags': ['#눈건강', '#망막보호', '#황반변성예방'], 'thin': 9, 'view': 9, 'coat': 10},
-            {'id': 8, 'brand': '자이스', 'name': '드라이브세이프', 'price': 250000, 'price_table': {'1.50 (일반)': 250000, '1.60 (고굴절)': 360000, '1.67 (초고굴절)': 480000}, 'img': 'https://via.placeholder.com/300x200?text=ZEISS+DriveSafe', 'spec_design': 'Luminance Design', 'spec_material': 'Zeiss Polymer', 'spec_coat': 'DriveSafe Coating', 'spec_uv': 'UVProtect', 'desc': '야간 운전 시 헤드라이트 눈부심을 억제하고 동공 크기를 고려하여 설계된 운전 전용 렌즈.', 'tags': ['#야간운전', '#빛번짐차단', '#안전운전'], 'thin': 8, 'view': 10, 'coat': 9}
+            {'id': 1, 'brand': '케미', 'name': '퍼펙트 UV', 'price': 30000, 'price_table': {'1.56 (중굴절)': 30000, '1.60 (고굴절)': 60000, '1.67 (초고굴절)': 90000, '1.74 (특초)': 150000}, 'img': 'https://via.placeholder.com/300x200?text=CHEMI+Perfect+UV', 'spec_design': '비구면 (AS)', 'spec_material': 'NK-55/MR-8', 'spec_coat': 'Perfect UV', 'spec_uv': 'UV400', 'desc': '자외선 99.9% 및 블루라이트 차단 가성비 렌즈.', 'tags': ['#가성비', '#청광차단'], 'thin': 6, 'view': 6, 'coat': 5},
+            {'id': 2, 'brand': '니콘', 'name': 'BLUV Plus', 'price': 60000, 'price_table': {'1.56 (중굴절)': 60000, '1.60 (고굴절)': 90000, '1.67 (초고굴절)': 120000}, 'img': 'https://via.placeholder.com/300x200?text=NIKON+BLUV', 'spec_design': '양면 UV', 'spec_material': 'Nikon', 'spec_coat': 'SeeCoat', 'spec_uv': '양면차단', 'desc': '후면 반사 자외선 차단 및 디지털 피로 완화.', 'tags': ['#디지털케어', '#양면차단'], 'thin': 7, 'view': 7, 'coat': 7},
+            {'id': 3, 'brand': '호야', 'name': '뉴럭스', 'price': 70000, 'price_table': {'1.60 (고굴절)': 70000, '1.67 (초고굴절)': 110000, '1.74 (특초)': 180000}, 'img': 'https://via.placeholder.com/300x200?text=HOYA+Nulux', 'spec_design': 'Trueform', 'spec_material': 'Eyas 1.60', 'spec_coat': 'VG(Venus Guard)', 'spec_uv': 'UV Ban', 'desc': '스크래치에 강한 고강도 코팅.', 'tags': ['#흠집방지', '#고강도'], 'thin': 7, 'view': 8, 'coat': 9},
+            {'id': 4, 'brand': '케미', 'name': '양면비구면 D-Free', 'price': 80000, 'price_table': {'1.60 (고굴절)': 80000, '1.67 (초고굴절)': 110000, '1.74 (특초)': 160000}, 'img': 'https://via.placeholder.com/300x200?text=CHEMI+D-Free', 'spec_design': '양면비구면', 'spec_material': 'MR-8', 'spec_coat': 'Aegis', 'spec_uv': 'Perfect UV', 'desc': '주변부 왜곡을 줄여 눈이 덜 작아 보임.', 'tags': ['#미용효과', '#난시교정'], 'thin': 8, 'view': 8, 'coat': 7},
+            {'id': 5, 'brand': '자이스', 'name': '클리어뷰', 'price': 100000, 'price_table': {'1.60 (고굴절)': 100000, '1.67 (초고굴절)': 140000, '1.74 (특초)': 200000}, 'img': 'https://via.placeholder.com/300x200?text=ZEISS+ClearView', 'spec_design': 'Freeform', 'spec_material': 'Zeiss', 'spec_coat': 'Platinum', 'spec_uv': 'UVProtect', 'desc': '3배 더 넓은 선명한 시야.', 'tags': ['#초선명', '#자이스'], 'thin': 8, 'view': 9, 'coat': 8},
+            {'id': 6, 'brand': '에실로', 'name': '트랜지션스 Gen8', 'price': 150000, 'price_table': {'1.50 (일반)': 150000, '1.60 (고굴절)': 220000, '1.67 (초고굴절)': 280000}, 'img': 'https://via.placeholder.com/300x200?text=Transitions', 'spec_design': '변색', 'spec_material': 'Orma', 'spec_coat': 'Sapphire', 'spec_uv': 'UV400', 'desc': '실내 투명, 실외 선글라스 자동 변색.', 'tags': ['#변색렌즈', '#패션'], 'thin': 7, 'view': 8, 'coat': 8},
+            {'id': 7, 'brand': '토카이', 'name': '루티나', 'price': 180000, 'price_table': {'1.60 (고굴절)': 180000, '1.67 (초고굴절)': 250000, '1.76 (세계최초)': 400000}, 'img': 'https://via.placeholder.com/300x200?text=TOKAI+Lutina', 'spec_design': '비구면', 'spec_material': 'Lutina', 'spec_coat': 'ESC', 'spec_uv': 'HEV Cut', 'desc': '루테인 보호, 망막 건강.', 'tags': ['#눈건강', '#망막보호'], 'thin': 9, 'view': 9, 'coat': 10},
+            {'id': 8, 'brand': '자이스', 'name': '드라이브세이프', 'price': 250000, 'price_table': {'1.50 (일반)': 250000, '1.60 (고굴절)': 360000, '1.67 (초고굴절)': 480000}, 'img': 'https://via.placeholder.com/300x200?text=ZEISS+DriveSafe', 'spec_design': 'Luminance', 'spec_material': 'Zeiss', 'spec_coat': 'DriveSafe', 'spec_uv': 'UVProtect', 'desc': '야간 운전 눈부심 감소.', 'tags': ['#야간운전', '#안전운전'], 'thin': 8, 'view': 10, 'coat': 9}
         ])
     else:
         return pd.DataFrame([
-            {'id': 101, 'brand': '미광', 'name': '클리어 원데이', 'price': 32000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=Clear+1-Day', 'spec_mat': 'Hioxifilcon A', 'spec_water': '58%', 'spec_dk': '25', 'spec_bc': '8.7', 'desc': '가성비 최고의 데일리 렌즈.', 'tags': ['#가성비갑', '#입문용'], 'dry': 4, 'handle': 9, 'oxygen': 3},
-            {'id': 102, 'brand': '쿠퍼비전', 'name': '클래리티 원데이', 'price': 45000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=Clarity+1-Day', 'spec_mat': 'Somofilcon A', 'spec_water': '56%', 'spec_dk': '86', 'spec_bc': '8.6', 'desc': '실리콘 하이드로겔 소재의 가성비 모델.', 'tags': ['#실리콘', '#가성비', '#숨쉬는렌즈'], 'dry': 7, 'handle': 7, 'oxygen': 8},
-            {'id': 103, 'brand': '인터로조', 'name': '오투오투 원데이', 'price': 45000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=O2O2+1-Day', 'spec_mat': 'Silicone Hydrogel', 'spec_water': '45%', 'spec_dk': '130', 'spec_bc': '8.8', 'desc': '높은 산소전달률을 자랑하는 국산 프리미엄.', 'tags': ['#국산', '#고산소', '#수지렌즈'], 'dry': 7, 'handle': 8, 'oxygen': 9},
-            {'id': 104, 'brand': '바슈롬', 'name': '울트라 원데이', 'price': 55000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=Ultra+1-Day', 'spec_mat': 'Kalifilcon A', 'spec_water': '55%', 'spec_dk': '134', 'spec_bc': '8.6', 'desc': '16시간 촉촉함 유지.', 'tags': ['#장시간착용', '#디지털기기', '#촉촉함'], 'dry': 8, 'handle': 8, 'oxygen': 9},
-            {'id': 105, 'brand': '아큐브', 'name': '오아시스 원데이', 'price': 63000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=Oasys+1-Day', 'spec_mat': 'Senofilcon A', 'spec_water': '38%', 'spec_dk': '121', 'spec_bc': '8.5/9.0', 'desc': '전 세계 베스트셀러.', 'tags': ['#베스트셀러', '#PC업무', '#믿고쓰는'], 'dry': 8, 'handle': 8, 'oxygen': 9},
-            {'id': 106, 'brand': '알콘', 'name': '데일리스 토탈원', 'price': 69000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=Total1', 'spec_mat': 'Delefilcon A', 'spec_water': '33%~80%', 'spec_dk': '156', 'spec_bc': '8.5', 'desc': '워터렌즈, 건조감 해결의 끝판왕.', 'tags': ['#강소라렌즈', '#건조감종결', '#프리미엄'], 'dry': 10, 'handle': 4, 'oxygen': 10},
-            {'id': 107, 'brand': '알콘', 'name': '토탈원 난시', 'price': 79000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=Total1+Toric', 'spec_mat': 'Delefilcon A', 'spec_water': '33%', 'spec_dk': '127', 'spec_bc': '8.6', 'desc': '토탈원의 촉촉함에 난시 교정.', 'tags': ['#난시교정', '#프리미엄', '#촉촉함'], 'dry': 10, 'handle': 4, 'oxygen': 9},
-            {'id': 108, 'brand': '아큐브', 'name': '오아시스 난시', 'price': 74000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=Oasys+Toric', 'spec_mat': 'Senofilcon A', 'spec_water': '38%', 'spec_dk': '121', 'spec_bc': '8.5', 'desc': '선명한 난시 교정.', 'tags': ['#난시교정', '#축안정', '#운동할때'], 'dry': 8, 'handle': 8, 'oxygen': 9}
+            {'id': 101, 'brand': '미광', 'name': '클리어 원데이', 'price': 32000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=Clear', 'spec_mat': 'Hioxifilcon A', 'spec_water': '58%', 'spec_dk': '25', 'spec_bc': '8.7', 'desc': '가성비 최고의 데일리 렌즈.', 'tags': ['#가성비갑'], 'dry': 4, 'handle': 9, 'oxygen': 3},
+            {'id': 102, 'brand': '쿠퍼비전', 'name': '클래리티 원데이', 'price': 45000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=Clarity', 'spec_mat': 'Somofilcon A', 'spec_water': '56%', 'spec_dk': '86', 'spec_bc': '8.6', 'desc': '실리콘 하이드로겔 소재 가성비.', 'tags': ['#실리콘'], 'dry': 7, 'handle': 7, 'oxygen': 8},
+            {'id': 103, 'brand': '인터로조', 'name': '오투오투 원데이', 'price': 45000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=O2O2', 'spec_mat': 'Silicone', 'spec_water': '45%', 'spec_dk': '130', 'spec_bc': '8.8', 'desc': '높은 산소전달률 국산 프리미엄.', 'tags': ['#국산'], 'dry': 7, 'handle': 8, 'oxygen': 9},
+            {'id': 104, 'brand': '바슈롬', 'name': '울트라 원데이', 'price': 55000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=Ultra', 'spec_mat': 'Kalifilcon A', 'spec_water': '55%', 'spec_dk': '134', 'spec_bc': '8.6', 'desc': '16시간 촉촉함.', 'tags': ['#장시간'], 'dry': 8, 'handle': 8, 'oxygen': 9},
+            {'id': 105, 'brand': '아큐브', 'name': '오아시스 원데이', 'price': 63000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=Oasys', 'spec_mat': 'Senofilcon A', 'spec_water': '38%', 'spec_dk': '121', 'spec_bc': '8.5/9.0', 'desc': '전 세계 베스트셀러.', 'tags': ['#베스트셀러'], 'dry': 8, 'handle': 8, 'oxygen': 9},
+            {'id': 106, 'brand': '알콘', 'name': '데일리스 토탈원', 'price': 69000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=Total1', 'spec_mat': 'Delefilcon A', 'spec_water': '33%~80%', 'spec_dk': '156', 'spec_bc': '8.5', 'desc': '워터렌즈, 건조감 해결.', 'tags': ['#강소라렌즈'], 'dry': 10, 'handle': 4, 'oxygen': 10},
+            {'id': 107, 'brand': '알콘', 'name': '토탈원 난시', 'price': 79000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=Total1+Toric', 'spec_mat': 'Delefilcon A', 'spec_water': '33%', 'spec_dk': '127', 'spec_bc': '8.6', 'desc': '토탈원의 촉촉함에 난시 교정.', 'tags': ['#난시교정'], 'dry': 10, 'handle': 4, 'oxygen': 9},
+            {'id': 108, 'brand': '아큐브', 'name': '오아시스 난시', 'price': 74000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=Oasys+Toric', 'spec_mat': 'Senofilcon A', 'spec_water': '38%', 'spec_dk': '121', 'spec_bc': '8.5', 'desc': '선명한 난시 교정.', 'tags': ['#난시교정'], 'dry': 8, 'handle': 8, 'oxygen': 9}
         ])
 
-# [추천 데이터]
 def load_recommendation_data(mode, sph=0, cyl=0):
     if mode == 'glasses':
         idx_name, idx_price, thin_score = get_index_recommendation(sph, cyl)
         data = [
-            {'id': 1, 'brand': '케미', 'name': '퍼펙트 UV', 'base_price': 30000, 'cat': 'general', 'tier': 0, 'view': 6, 'coat': 5, 'tags': ['#블루라이트차단', '#가성비', '#국민렌즈']},
-            {'id': 2, 'brand': '니콘', 'name': 'BLUV Plus', 'base_price': 60000, 'cat': 'digital', 'tier': 1, 'view': 7, 'coat': 7, 'tags': ['#양면자외선차단', '#디지털피로완화']},
-            {'id': 3, 'brand': '호야', 'name': '뉴럭스', 'base_price': 70000, 'cat': 'general', 'tier': 1, 'view': 8, 'coat': 9, 'tags': ['#고강도코팅', '#스크래치방지', '#선명함']},
-            {'id': 4, 'brand': '케미', 'name': '양면비구면 D-Free', 'base_price': 80000, 'cat': 'distortions', 'tier': 1, 'view': 8, 'coat': 7, 'tags': ['#왜곡최소화', '#눈이덜작아보임', '#난시추천']},
-            {'id': 5, 'brand': '자이스', 'name': '클리어뷰', 'base_price': 100000, 'cat': 'general', 'tier': 2, 'view': 9, 'coat': 8, 'tags': ['#더넓은시야', '#더얇은두께', '#프리미엄']},
-            {'id': 6, 'brand': '에실로', 'name': '트랜지션스 Gen8', 'base_price': 150000, 'cat': 'outdoor', 'tier': 2, 'view': 8, 'coat': 8, 'tags': ['#변색렌즈', '#선글라스겸용', '#빠른변색']},
-            {'id': 7, 'brand': '토카이', 'name': '루티나', 'base_price': 180000, 'cat': 'premium', 'tier': 3, 'view': 9, 'coat': 10, 'tags': ['#루테인보호', '#망막케어', '#최상급코팅']},
-            {'id': 8, 'brand': '자이스', 'name': '드라이브세이프', 'base_price': 250000, 'cat': 'drive', 'tier': 3, 'view': 10, 'coat': 9, 'tags': ['#야간운전', '#빛번짐차단', '#우천시선명']}
+            {'id': 1, 'brand': '케미', 'name': '퍼펙트 UV', 'base_price': 30000, 'cat': 'general', 'tier': 0, 'view': 6, 'coat': 5, 'tags': ['#블루라이트차단', '#가성비']},
+            {'id': 2, 'brand': '니콘', 'name': 'BLUV Plus', 'base_price': 60000, 'cat': 'digital', 'tier': 1, 'view': 7, 'coat': 7, 'tags': ['#양면차단', '#디지털피로']},
+            {'id': 3, 'brand': '호야', 'name': '뉴럭스', 'base_price': 70000, 'cat': 'general', 'tier': 1, 'view': 8, 'coat': 9, 'tags': ['#흠집방지', '#선명함']},
+            {'id': 4, 'brand': '케미', 'name': '양면비구면 D-Free', 'base_price': 80000, 'cat': 'distortions', 'tier': 1, 'view': 8, 'coat': 7, 'tags': ['#왜곡최소화', '#넓은시야']},
+            {'id': 5, 'brand': '자이스', 'name': '클리어뷰', 'base_price': 100000, 'cat': 'general', 'tier': 2, 'view': 9, 'coat': 8, 'tags': ['#초선명', '#얇은두께']},
+            {'id': 6, 'brand': '에실로', 'name': '트랜지션스 Gen8', 'base_price': 150000, 'cat': 'outdoor', 'tier': 2, 'view': 8, 'coat': 8, 'tags': ['#변색렌즈', '#선글라스']},
+            {'id': 7, 'brand': '토카이', 'name': '루티나', 'base_price': 180000, 'cat': 'premium', 'tier': 3, 'view': 9, 'coat': 10, 'tags': ['#눈건강', '#망막보호']},
+            {'id': 8, 'brand': '자이스', 'name': '드라이브세이프', 'base_price': 250000, 'cat': 'drive', 'tier': 3, 'view': 10, 'coat': 9, 'tags': ['#야간운전', '#빛번짐차단']}
         ]
         df = pd.DataFrame(data)
         df['final_price'] = df['base_price'] + idx_price
@@ -173,16 +136,15 @@ def load_recommendation_data(mode, sph=0, cyl=0):
         df['thin_score'] = [min(10, thin_score + (1 if sph < -4.0 else 0)) for _ in range(len(df))]
         return df
     else:
-        # [KeyError Fix] handling, oxygen 등 모든 점수 키값 포함
         data = [
-            {'id': 101, 'brand': '미광', 'name': '클리어 원데이', 'category': 'sphere', 'tier': 0, 'price': 32000, 'dry_score': 4, 'dkt': 25, 'handling': 9, 'oxygen': 3, 'tags': ['#가성비갑', '#입문용', '#막쓰기좋음']},
-            {'id': 102, 'brand': '쿠퍼비전', 'name': '클래리티 원데이', 'category': 'sphere', 'tier': 1, 'price': 45000, 'dry_score': 7, 'dkt': 86, 'handling': 7, 'oxygen': 8, 'tags': ['#실리콘', '#가성비', '#숨쉬는렌즈']},
-            {'id': 106, 'brand': '알콘', 'name': '데일리스 토탈원', 'category': 'sphere', 'tier': 3, 'price': 69000, 'dry_score': 10, 'dkt': 156, 'handling': 4, 'oxygen': 10, 'tags': ['#워터렌즈', '#건조감종결', '#이물감제로']},
-            {'id': 105, 'brand': '아큐브', 'name': '오아시스 원데이', 'category': 'sphere', 'tier': 2, 'price': 63000, 'dry_score': 8, 'dkt': 121, 'handling': 8, 'oxygen': 9, 'tags': ['#베스트셀러', '#PC업무', '#믿고쓰는']},
-            {'id': 103, 'brand': '인터로조', 'name': '오투오투 원데이', 'category': 'sphere', 'tier': 1, 'price': 45000, 'dry_score': 7, 'dkt': 130, 'handling': 8, 'oxygen': 9, 'tags': ['#국산', '#고산소', '#수지렌즈']},
-            {'id': 104, 'brand': '바슈롬', 'name': '울트라 원데이', 'category': 'sphere', 'tier': 2, 'price': 55000, 'dry_score': 8, 'dkt': 134, 'handling': 8, 'oxygen': 9, 'tags': ['#장시간착용', '#디지털기기', '#촉촉함']},
-            {'id': 107, 'brand': '알콘', 'name': '토탈원 난시', 'category': 'toric', 'tier': 3, 'price': 79000, 'dry_score': 10, 'dkt': 127, 'handling': 4, 'oxygen': 9, 'tags': ['#난시교정', '#프리미엄', '#하루종일촉촉']},
-            {'id': 108, 'brand': '아큐브', 'name': '오아시스 난시', 'category': 'toric', 'tier': 2, 'price': 74000, 'dry_score': 8, 'dkt': 121, 'handling': 8, 'oxygen': 9, 'tags': ['#난시교정', '#축안정', '#운동할때']}
+            {'id': 101, 'brand': '미광', 'name': '클리어 원데이', 'category': 'sphere', 'tier': 0, 'price': 32000, 'dry_score': 4, 'dkt': 25, 'handling': 9, 'oxygen': 3, 'tags': ['#가성비갑']},
+            {'id': 102, 'brand': '쿠퍼비전', 'name': '클래리티 원데이', 'category': 'sphere', 'tier': 1, 'price': 45000, 'dry_score': 7, 'dkt': 86, 'handling': 7, 'oxygen': 8, 'tags': ['#실리콘']},
+            {'id': 106, 'brand': '알콘', 'name': '데일리스 토탈원', 'category': 'sphere', 'tier': 3, 'price': 69000, 'dry_score': 10, 'dkt': 156, 'handling': 4, 'oxygen': 10, 'tags': ['#건조감종결']},
+            {'id': 105, 'brand': '아큐브', 'name': '오아시스 원데이', 'category': 'sphere', 'tier': 2, 'price': 63000, 'dry_score': 8, 'dkt': 121, 'handling': 8, 'oxygen': 9, 'tags': ['#베스트셀러']},
+            {'id': 103, 'brand': '인터로조', 'name': '오투오투 원데이', 'category': 'sphere', 'tier': 1, 'price': 45000, 'dry_score': 7, 'dkt': 130, 'handling': 8, 'oxygen': 9, 'tags': ['#국산']},
+            {'id': 104, 'brand': '바슈롬', 'name': '울트라 원데이', 'category': 'sphere', 'tier': 2, 'price': 55000, 'dry_score': 8, 'dkt': 134, 'handling': 8, 'oxygen': 9, 'tags': ['#촉촉함']},
+            {'id': 107, 'brand': '알콘', 'name': '토탈원 난시', 'category': 'toric', 'tier': 3, 'price': 79000, 'dry_score': 10, 'dkt': 127, 'handling': 4, 'oxygen': 9, 'tags': ['#난시교정']},
+            {'id': 108, 'brand': '아큐브', 'name': '오아시스 난시', 'category': 'toric', 'tier': 2, 'price': 74000, 'dry_score': 8, 'dkt': 121, 'handling': 8, 'oxygen': 9, 'tags': ['#축안정']}
         ]
         return pd.DataFrame(data)
 
@@ -282,11 +244,16 @@ if st.session_state['page'] == 'optician_view':
 
     st.markdown("---")
     st.markdown("<div style='font-weight:bold; margin-bottom:10px; color:#2563EB;'>📊 4대 핵심 지표 분석</div>", unsafe_allow_html=True)
-    metrics = [("디지털/실내 환경", data['env']), ("각막 민감도", data['sen']), ("가격/스펙 성향", data['val']), ("렌즈 관리 숙련도", data['pro'])]
-    for label, val in metrics:
-        st.markdown(f"<div class='metric-box'><div class='metric-header'><span>{label}</span><span style='color:#2563EB;'>{val}점</span></div><div style='background:#F1F5F9; height:8px; border-radius:4px; overflow:hidden;'><div style='background:#2563EB; height:100%; width:{val*10}%;'></div></div></div>", unsafe_allow_html=True)
-
-    st.markdown("""<div style="background:#F1F5F9; padding:15px; border-radius:10px; margin-top:15px; font-size:12px; color:#64748B; line-height:1.6;"><div style="font-weight:bold; margin-bottom:5px;">💡 지표 해석 가이드</div>• <b>디지털/실내:</b> 높을수록 디지털 기기 사용량 많음<br>• <b>각막 민감도:</b> 높을수록 건조감에 예민함<br>• <b>가격/스펙:</b> 높을수록 성능(T) 중시, 낮을수록 가성비(F)<br>• <b>관리 숙련도:</b> 높을수록 렌즈 관리에 능숙함</div>""", unsafe_allow_html=True)
+    metrics = [("디지털/실내 환경", data['env'], "높을수록 디지털 사용 많음"), 
+               ("각막 민감도", data['sen'], "높을수록 예민함"), 
+               ("가격/스펙 성향", data['val'], "높을수록 성능(T), 낮을수록 가성비(F)"), 
+               ("렌즈 관리 숙련도", data['pro'], "높을수록 숙련자")]
+    
+    for label, val, desc in metrics:
+        col1, col2 = st.columns([3, 7])
+        with col1: st.write(f"**{label}**")
+        with col2: st.progress(val / 10)
+        st.caption(f"{val}점 | {desc}")
 
     st.markdown("---")
     st.markdown("<div style='font-weight:bold; margin-bottom:15px; color:#333;'>📝 20문항 상세 답변</div>", unsafe_allow_html=True)
@@ -322,12 +289,13 @@ elif st.session_state['page'] == 'dictionary':
             st.image(sel['img'], use_container_width=True)
             st.markdown(f"<div class='detail-header'><div class='detail-brand'>{sel['brand']}</div><div class='detail-name'>{sel['name']}</div></div>", unsafe_allow_html=True)
             
-            p_rows = "".join([f"<tr><td>{k}</td><td>{format(v,',')}원</td></tr>" for k, v in sel['price_table'].items()])
+            p_rows = "".join([f"<tr><td>{k}</td><td>{format(v,',')}원 (권장소비자가)</td></tr>" for k, v in sel['price_table'].items()])
             st.markdown(f"<table class='price-table'>{p_rows}</table>", unsafe_allow_html=True)
             st.markdown(f"<div class='detail-desc-box'><b>💡 특징:</b><br>{sel['desc']}</div>", unsafe_allow_html=True)
             
             st.plotly_chart(make_radar_chart(sel['name'], [sel['thin'], sel['view'], sel['coat'], 9, 9], ['두께', '시야', '코팅', '가격', '내구']), use_container_width=True)
             
+            # [Nav Logic]
             if st.session_state.get('source_page') == 'result':
                 if st.button("🔙 분석 결과로 돌아가기", use_container_width=True): st.session_state['page'] = 'result'; st.rerun()
             else:
@@ -336,7 +304,7 @@ elif st.session_state['page'] == 'dictionary':
             for i, row in df.iterrows():
                 with st.container():
                     c1, c2 = st.columns([3, 1])
-                    with c1: st.markdown(f"<div class='dict-list-item'><div style='font-size:12px; color:#666; font-weight:bold;'>{row['brand']}</div><div style='font-size:16px; font-weight:800; color:#333;'>{row['name']}</div></div>", unsafe_allow_html=True)
+                    with c1: st.markdown(f"<div class='dict-list-item'><div style='font-size:12px; color:#666; font-weight:bold;'>{row['brand']}</div><div style='font-size:16px; font-weight:800; color:#333;'>{row['name']}</div><div style='font-size:12px; color:#2563EB; font-weight:bold; margin-top:5px;'>{format(row['price'],',')}원~ (권장소비자가)</div></div>", unsafe_allow_html=True)
                     with c2:
                         if st.button("상세보기", key=f"btn_g_{row['id']}", use_container_width=True):
                             st.session_state['dict_selected_id'] = row['id']; st.session_state['dict_cat'] = 'glasses'; st.rerun()
@@ -367,7 +335,7 @@ elif st.session_state['page'] == 'dictionary':
             for i, row in df.iterrows():
                 with st.container():
                     c1, c2 = st.columns([3, 1])
-                    with c1: st.markdown(f"<div class='dict-list-item'><div style='font-size:12px; color:#666; font-weight:bold;'>{row['brand']}</div><div style='font-size:16px; font-weight:800; color:#333;'>{row['name']}</div></div>", unsafe_allow_html=True)
+                    with c1: st.markdown(f"<div class='dict-list-item'><div style='font-size:12px; color:#666; font-weight:bold;'>{row['brand']}</div><div style='font-size:16px; font-weight:800; color:#333;'>{row['name']}</div><div style='font-size:12px; color:#2563EB; font-weight:bold; margin-top:5px;'>{format(row['price'],',')}원 (권장소비자가)</div></div>", unsafe_allow_html=True)
                     with c2:
                         if st.button("상세보기", key=f"btn_c_{row['id']}", use_container_width=True):
                             st.session_state['dict_selected_id'] = row['id']; st.session_state['dict_cat'] = 'contacts'; st.rerun()
@@ -460,7 +428,7 @@ elif st.session_state['page'] == 'result':
     stat_val = round(score_t / 2.5, 1) if type_t == 'T' else round(score_t / 2.5, 1)
     stat_pro = round(score_p / 2.5, 1)
 
-    personas = {"ISTP": {"title": "🔎 팩트체크 장인", "desc": "숫자와 스펙을 믿는 당신!", "strategy": "현존 최고 스펙 추천"}, "ENFP": {"title": "🦄 자유로운 영혼", "desc": "복잡한 관리는 딱 질색!", "strategy": "내구성 좋은 원데이 추천"}} 
+    personas = {"ISTP": {"title": "🔎 팩트체크 장인", "desc": "숫자와 스펙을 믿는 당신!", "strategy": "현존 최고 스펙 추천"}, "ENFP": {"title": "🦄 자유로운 영혼", "desc": "복잡한 관리는 딱 질색!", "strategy": "내구성 좋은 원데이 추천"}, "ISFJ": {"title": "🛡️ 눈 건강 지킴이", "desc": "돌다리도 두드려보고 건너는 신중파! <br>새로운 도전보다는 <b>검증된 브랜드와 안전한 소재</b>를 선호합니다.", "strategy": "안과의사 추천 베스트셀러"}, "ENTJ": {"title": "😎 효율 끝판왕", "desc": "가격 대비 성능비(ROI)가 확실해야 지갑을 여는 당신! <br><b>성능과 가격의 황금 밸런스</b>를 중요하게 생각합니다.", "strategy": "거품 빠진 실속형 제품"}, "ESTP": {"title": "⚡ 행동대장", "desc": "야외 활동을 즐기는 인싸! 자외선 차단이 필수입니다.", "strategy": "내구성 좋고 UV 차단 제품"}, "INFJ": {"title": "🔮 섬세한 예언자", "desc": "남들은 모르는 미세한 불편함까지 느끼는 섬세한 눈.", "strategy": "자극이 적은 저자극 소재"}, "INTP": {"title": "🧪 논리적인 분석가", "desc": "원리를 이해해야 직성이 풀립니다. 기술력이 중요해요.", "strategy": "최신 광학 기술 적용 렌즈"}, "ESFJ": {"title": "🤝 평화주의자", "desc": "주변 평판과 추천을 중요하게 생각합니다.", "strategy": "재구매율 1위 제품"}} 
     persona = personas.get(mbti_res, {"title": "⚖️ 밸런스형 스마트 컨슈머", "desc": "합리적인 선택을 하는 유연한 타입", "strategy": "올라운드 제품 추천"})
 
     st.markdown(f"""<div class="result-header"><div class="mbti-hero">{mbti_res}</div><div style="font-size: 26px; font-weight: 800; margin-bottom: 15px;">{persona['title']}</div><div class="persona-desc"><div style="margin-bottom:8px;"><b>🧐 분석:</b> {persona['desc']}</div><div><b>💡 공략법:</b> {persona['strategy']}</div></div></div>""", unsafe_allow_html=True)
@@ -476,6 +444,7 @@ elif st.session_state['page'] == 'result':
             if type_t == "T": total_score = (norm_spec * 0.8) + (price_score * 0.2)
             else: total_score = (norm_spec * 0.2) + (price_score * 0.8)
             cand_g.at[i, 'total_score'] = total_score
+            cand_g.at[i, 'visual_price_score'] = price_score
         
         ranks = cand_g.sort_values('total_score', ascending=False).head(3)
         top_score_g = ranks.iloc[0]['total_score'] # [Fix] 변수명 분리
