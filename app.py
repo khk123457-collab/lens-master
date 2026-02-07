@@ -57,12 +57,13 @@ st.markdown("""
     .why-text li { margin-bottom: 6px; position: relative; padding-left: 12px; }
     .why-text li:before { content: "•"; position: absolute; left: 0; color: #2563EB; font-weight: bold; }
 
-    /* 처방전 영역 */
+    /* 안경사 리포트 영역 */
     .qr-container { text-align: center; margin-top: 50px; padding: 30px; background: white; border-radius: 24px; border: 1px solid #E5E8EB; box-shadow: 0 10px 40px rgba(0,0,0,0.05); }
-    .rx-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; text-align: left; }
-    .rx-table th { background: #F8FAFC; padding: 8px; color: #64748B; border-bottom: 1px solid #E2E8F0; }
-    .rx-table td { padding: 8px; border-bottom: 1px solid #F1F5F9; color: #333; }
-    .rx-score { font-weight: bold; color: #2563EB; }
+    .optician-chart-row { display: flex; align-items: center; margin-bottom: 8px; font-size: 13px; }
+    .optician-label { width: 80px; text-align: right; margin-right: 10px; font-weight: 600; color: #555; }
+    .optician-bar-bg { flex: 1; background: #F1F5F9; height: 10px; border-radius: 5px; overflow: hidden; }
+    .optician-bar-fill { height: 100%; background: #2563EB; border-radius: 5px; }
+    .optician-val { width: 30px; text-align: left; margin-left: 10px; font-weight: bold; color: #2563EB; }
     
     .stTabs [data-baseweb="tab-list"] { gap: 8px; background-color: transparent; }
     .stTabs [data-baseweb="tab"] { height: 55px; background-color: #fff; border-radius: 12px; color: #64748B; font-weight: 600; border: 1px solid #E2E8F0; flex: 1; transition: all 0.2s; }
@@ -197,33 +198,36 @@ elif st.session_state['page'] == 'mbti_test':
 # 5. 통합 결과 리포트
 # ==============================================================================
 elif st.session_state['page'] == 'result':
-    # [NEW] 로딩 후 스크롤 자동 최상단 이동
-    components.html("""<script>window.scrollTo(0,0);</script>""", height=0)
-    
-    # [NEW] 섬세한 로딩 애니메이션 (3단계)
+    # [NEW] 로딩 애니메이션
     progress_bar = st.progress(0)
     status_text = st.empty()
-    
-    steps = ["🔎 고객 라이프스타일 분석 중...", "👁️ 시력 및 도수 데이터 계산 중...", "✨ 최적의 렌즈 제품 매칭 중..."]
+    steps = ["🔎 고객 라이프스타일 정밀 분석 중...", "👁️ 시력 데이터 및 굴절률 계산 중...", "✨ 최적의 렌즈 매칭 중..."]
     for i in range(100):
         if i < 30: status_text.text(steps[0])
         elif i < 60: status_text.text(steps[1])
         else: status_text.text(steps[2])
         progress_bar.progress(i + 1)
-        time.sleep(0.015)
-    
+        time.sleep(0.01)
     progress_bar.empty()
     status_text.empty()
     
     ans = st.session_state['answers']
     vision = st.session_state['vision']
     
+    # MBTI Calculation
     score_i = sum([ans[f'env_{i}'] for i in range(1,6)]); type_i = "I" if score_i >= 15 else "E"
     score_s = sum([ans[f'sen_{i}'] for i in range(1,6)]); type_s = "S" if score_s >= 15 else "N"
     score_t = sum([ans[f'val_{i}'] for i in range(1,6)]); type_t = "T" if score_t >= 15 else "F"
     score_p = sum([ans[f'exp_{i}'] for i in range(1,6)]); type_p = "P" if score_p >= 15 else "J"
     mbti_res = f"{type_i}{type_s}{type_t}{type_p}"
     
+    # 4가지 정량 지표 계산 (안경사용 10점 만점 변환)
+    # 각 섹션 5문항 * 5점 = 25점 만점 -> 10점 만점으로 환산 (score / 2.5)
+    stat_env = round(score_i / 2.5, 1) # 디지털 환경 점수 (높을수록 실내/디지털)
+    stat_sen = round(score_s / 2.5, 1) # 각막 민감도 점수 (높을수록 예민)
+    stat_val = round(score_t / 2.5, 1) # 성능 중시 점수 (높을수록 고스펙 선호)
+    stat_pro = round(score_p / 2.5, 1) # 관리 숙련도 점수 (높을수록 고수)
+
     personas = {
         "ISTP": {"title": "🔎 팩트체크 장인 (ISTP)", "desc": "화려한 마케팅 문구보다 <b>숫자와 스펙</b>을 믿는 당신! <br>작은 불편함도 용납 못 하는 예민한 눈의 소유자입니다.", "strategy": "묻지도 따지지도 말고 <b>현존 최고 스펙</b>으로 가야 후회가 없습니다."},
         "ENFP": {"title": "🦄 자유로운 영혼 (ENFP)", "desc": "복잡한 관리는 딱 질색! <br>활동적이고 에너지가 넘치는 당신에겐 <b>편하고 막 쓸 수 있는 렌즈</b>가 필요합니다.", "strategy": "끼고 빼기 쉽고, <b>내구성 좋은 원데이</b> 제품이 딱입니다."},
@@ -261,16 +265,13 @@ elif st.session_state['page'] == 'result':
             if ans['env_5'] >= 4 and r['cat'] == 'drive': final_spec += 30
             if abs(vision['cyl']) >= 1.0 and r['cat'] == 'distortions': final_spec += 30
             final_spec += (r['tier'] * 15) 
-            
             price_score = max(2, 10 - (r['final_price'] / 45000))
             if type_t == "T": total_score = (final_spec * 0.8) + (price_score * 2)
             else: total_score = (final_spec * 0.4) + (price_score * 6)
-            
             cand_g.at[i, 'total_score'] = total_score
             cand_g.at[i, 'visual_price_score'] = price_score
 
         ranks = cand_g.sort_values('total_score', ascending=False).head(3)
-        # [NEW] 1등 점수를 98점으로 잡고 상대평가로 % 계산
         top_score = ranks.iloc[0]['total_score']
         
         for rk, (idx, row) in enumerate(ranks.iterrows(), 1):
@@ -301,7 +302,7 @@ elif st.session_state['page'] == 'result':
                     </div>
                 </div>""", unsafe_allow_html=True)
             with c2:
-                st.plotly_chart(make_radar_chart(row['name'], [row['thin_score'], row['view'], row['coat'], row['visual_price_score'], 9], ['두께(얇음)', '시야(넓음)', '코팅(강함)', '가격경쟁력', '적합도']), use_container_width=True)
+                st.plotly_chart(make_radar_chart(row['name'], [row['thin_score'], row['view'], row['coat'], row['visual_price_score'], 9], ['두께', '시야', '코팅', '가격경쟁력', '적합도']), use_container_width=True)
 
     with tab2:
         st.markdown("### 💧 콘택트렌즈 솔루션 Best 3")
@@ -314,11 +315,9 @@ elif st.session_state['page'] == 'result':
             dry_concern = ans['sen_1'] + ans['sen_4']
             final_spec += (r['dry_score'] * dry_concern) 
             if ans['env_2'] >= 4: final_spec += (r['dkt'] / 10)
-            
             price_score = max(2, 10 - (r['price'] / 10000))
             if type_t == "T": total_score = (final_spec * 0.7) + (price_score * 3) + (r['tier'] * 20)
             else: total_score = (final_spec * 0.3) + (price_score * 7)
-            
             cand_c.at[i, 'total_score'] = total_score
             cand_c.at[i, 'visual_price_score'] = price_score
 
@@ -353,13 +352,30 @@ elif st.session_state['page'] == 'result':
             with c2: 
                 st.plotly_chart(make_radar_chart(row['name'], [row['dry_score'], row['handling'], min(row['dkt']/16, 10), row['visual_price_score'], 9.5], ['건조감', '핸들링', '산소', '가격경쟁력', '적합도']), use_container_width=True)
 
-    # QR 코드 및 상세 지표 설명
+    # [수정] QR 코드 및 안경사 리포트 통합 (정량 그래프 포함)
     st.markdown("### 📲 안경사 전용 처방전 (QR)")
     
     qr_data = f"LENS MASTER RX\nType:{mbti_res}\nSPH:{vision['sph']}\nCYL:{vision['cyl']}\nRec:{ranks.iloc[0]['name']}"
     qr = qrcode.QRCode(version=1, box_size=10, border=2); qr.add_data(qr_data); qr.make(fit=True)
     img = qr.make_image(fill_color="black", back_color="white"); buffered = BytesIO(); img.save(buffered, format="PNG"); img_str = base64.b64encode(buffered.getvalue()).decode()
     
+    # 4가지 지표 데이터 HTML 생성
+    stats_html = ""
+    metrics = [
+        ("디지털/실내 환경", stat_env),
+        ("각막 민감도", stat_sen),
+        ("가격 민감도", 10-stat_val if type_t=='F' else stat_val), # T면 높을수록 좋고 F면 낮을수록 좋게 표현
+        ("렌즈 관리 숙련도", stat_pro)
+    ]
+    for label, val in metrics:
+        stats_html += f"""
+        <div class="optician-chart-row">
+            <div class="optician-label">{label}</div>
+            <div class="optician-bar-bg"><div class="optician-bar-fill" style="width: {val*10}%;"></div></div>
+            <div class="optician-val">{val}</div>
+        </div>
+        """
+
     st.markdown(f"""
     <div class="qr-container">
         <div style="font-weight:bold; margin-bottom:10px; font-size:16px;">안경사님께 이 화면을 보여주세요</div>
@@ -368,15 +384,18 @@ elif st.session_state['page'] == 'result':
             <b>고객 유형:</b> {mbti_res} ({persona['title']})<br>
             <b>처방 도수:</b> SPH {vision['sph']} / CYL {vision['cyl']}
         </div>
-        <div style="border-top:1px solid #eee; padding-top:15px; text-align:left;">
-            <div style="font-weight:bold; margin-bottom:8px; font-size:14px; color:#2563EB;">📊 주요 지표 해석 가이드</div>
-            <table class="rx-table">
-                <tr><th>지표</th><th>점수</th><th>의미 및 세일즈 포인트</th></tr>
-                <tr><td>건조감 방어</td><td class="rx-score">{'High' if ans['sen_1']>=4 else 'Mid'}</td><td>{'고함수/실리콘 재질 추천 필수 (오후 충혈 호소)' if ans['sen_1']>=4 else '일반 소재도 무난하게 적응 가능'}</td></tr>
-                <tr><td>디지털 피로</td><td class="rx-score">{'High' if ans['env_1']>=4 else 'Low'}</td><td>{'블루라이트/기능성 렌즈 권장 (PC 8시간+)' if ans['env_1']>=4 else '일상적인 코팅으로 충분'}</td></tr>
-                <tr><td>가격 민감도</td><td class="rx-score">{type_t}</td><td>{'가격보다 성능/스펙 위주 설명 필요' if type_t=='T' else '프로모션 및 가성비 위주 제안 필요'}</td></tr>
-            </table>
+        <div style="border-top:1px solid #eee; padding-top:20px; text-align:left;">
+            <div style="font-weight:bold; margin-bottom:12px; font-size:14px; color:#2563EB;">📊 고객 성향 정량 분석 (10점 만점)</div>
+            {stats_html}
+            <div style="margin-top:15px; font-size:12px; color:#888;">
+                * <b>디지털/실내:</b> 높을수록 근거리 작업 및 디지털 기기 사용량 많음<br>
+                * <b>각막 민감도:</b> 높을수록 건조감 및 이물감 예민 (프리미엄 권장)<br>
+                * <b>가격 민감도:</b> 높을수록 스펙(T) 중시, 낮을수록 가성비(F) 중시
+            </div>
         </div>
     </div>""", unsafe_allow_html=True)
+    
+    # 마지막으로 스크롤 강제 이동 (JavaScript Injection)
+    components.html("""<script>window.scrollTo(0,0);</script>""", height=0)
     
     if st.button("처음으로 돌아가기", use_container_width=True): go_to('home'); st.rerun()
