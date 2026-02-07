@@ -21,21 +21,28 @@ st.markdown("""
     @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
     html, body, [class*="css"] { font-family: 'Pretendard', sans-serif; background-color: #F0F2F6; }
     
+    /* 헤더 & 텍스트 */
     h1, .header-title { color: #1E3A8A !important; font-weight: 800 !important; letter-spacing: -1px; word-break: keep-all; }
     
+    /* 버튼 커스텀 (파란색) */
     div.stButton > button:first-child { background-color: #2563EB !important; color: white !important; border-color: #2563EB !important; font-weight: bold; }
     div.stButton > button:hover { background-color: #1D4ED8 !important; border-color: #1D4ED8 !important; }
     div.stButton > button:focus { box-shadow: none !important; outline: none !important; }
 
+    /* 로딩바 중앙 정렬 */
     .stSpinner > div { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; }
     
+    /* 박스 스타일 */
     .desc-box { background-color: #fff; padding: 22px; border-radius: 16px; border: 1px solid #E5E8EB; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
     .desc-title { font-size: 16px; font-weight: 700; color: #333; margin-bottom: 12px; border-bottom: 2px solid #F2F4F6; padding-bottom: 8px; }
     .desc-text { font-size: 14px; color: #555; line-height: 1.7; margin-bottom: 6px; }
     .desc-highlight { color: #2563EB; font-weight: 700; background-color: #EFF6FF; padding: 2px 8px; border-radius: 6px; }
 
+    /* 질문지 */
     .q-text { font-size: 17px; font-weight: 700; color: #111; margin-top: 35px; margin-bottom: 12px; word-break: keep-all; }
     .scale-labels { display: flex; justify-content: space-between; font-size: 12px; color: #888; font-weight: 500; padding: 0 10px; margin-bottom: 8px; }
+    
+    /* 라디오 버튼 */
     div[role="radiogroup"] { gap: 0; justify-content: space-between; margin-bottom: 20px; }
     div[role="radiogroup"] label { background-color: white !important; border: 1px solid #E5E8EB !important; border-radius: 50% !important; width: 48px; height: 48px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
     div[role="radiogroup"] label:hover { background-color: #F8FAFC !important; transform: translateY(-3px); }
@@ -44,21 +51,25 @@ st.markdown("""
     div[role="radiogroup"] label:has(input:checked) p { color: white !important; font-weight: bold !important; }
     div[role="radiogroup"] label > div:first-child { display: none; }
 
+    /* 결과 헤더 */
     .result-header { background: #1E3A8A; color: white; padding: 45px 25px; border-radius: 0 0 30px 30px; margin: -25px -25px 25px -25px; text-align: center; box-shadow: 0 10px 30px rgba(30, 58, 138, 0.3); }
     .mbti-hero { font-size: 60px; font-weight: 900; margin: 15px 0; text-shadow: 0 4px 15px rgba(0,0,0,0.2); letter-spacing: 2px; }
     .persona-desc { background: rgba(255,255,255,0.15); padding: 20px; border-radius: 15px; font-size: 15px; line-height: 1.6; margin-top: 20px; text-align: left; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
     
+    /* 제품 카드 */
     .prod-card { border: 1px solid #E5E8EB; border-radius: 20px; padding: 25px; margin-bottom: 25px; background: white; box-shadow: 0 8px 25px rgba(0,0,0,0.05); position: relative; overflow: hidden; }
     .prod-rank { position: absolute; top: 0; left: 0; background: #2563EB; color: white; padding: 8px 18px; border-radius: 0 0 20px 0; font-weight: 800; font-size: 15px; z-index: 10; box-shadow: 2px 2px 10px rgba(0,0,0,0.1); }
     .match-badge { display: inline-block; background: #E0F2FE; color: #0284C7; font-size: 12px; font-weight: 800; padding: 4px 8px; border-radius: 6px; margin-left: 8px; vertical-align: middle; }
     .tag-box { margin-top: 8px; margin-bottom: 15px; }
     .feature-tag { display: inline-block; background: #F3F4F6; color: #4B5563; font-size: 11px; padding: 4px 8px; border-radius: 6px; margin-right: 5px; margin-bottom: 5px; font-weight: 600; }
     
+    /* 상세 분석 박스 */
     .why-box { background: #F8FAFC; padding: 20px; border-radius: 12px; margin-top: 20px; border-left: 4px solid #2563EB; word-break: keep-all; }
-    .why-cat { font-size: 13px; font-weight: 800; color: #1E3A8A; margin-bottom: 4px; display: block; margin-top: 10px; }
+    .why-cat { font-size: 13px; font-weight: 800; color: #1E3A8A; margin-bottom: 6px; display: block; margin-top: 12px; }
     .why-cat:first-child { margin-top: 0; }
     .why-desc { font-size: 13px; color: #555; line-height: 1.5; margin-bottom: 8px; }
 
+    /* 안경사 리포트 */
     .qr-container { text-align: center; margin-top: 50px; padding: 30px; background: white; border-radius: 24px; border: 1px solid #E5E8EB; box-shadow: 0 10px 40px rgba(0,0,0,0.05); }
     .capture-guide { color: #E11D48; font-weight: 800; margin-top: 10px; font-size: 14px; }
     .metric-box { margin-bottom: 15px; }
@@ -130,6 +141,7 @@ def make_radar_chart(product_name, scores, categories):
     )
     return fig
 
+# 20문항 키
 all_q_keys = [
     'env_1', 'env_2', 'env_3', 'env_4', 'env_5',
     'sen_1', 'sen_2', 'sen_3', 'sen_4', 'sen_5',
@@ -160,7 +172,7 @@ q_labels = {
 }
 
 # ==============================================================================
-# 3. 상태 관리 & 안경사 모드 진입 체크
+# 3. 상태 관리
 # ==============================================================================
 query_params = st.query_params
 if 'mode' in query_params and query_params['mode'] == 'result':
@@ -349,21 +361,6 @@ elif st.session_state['page'] == 'mbti_test':
             go_to('result'); st.rerun()
 
 elif st.session_state['page'] == 'result':
-    # [강력한 스크롤 강제 이동] 로딩 전, 로딩 중, 로딩 후 3번 강제 실행
-    js_scroll = """
-    <script>
-        function scrollToTop() {
-            var body = window.parent.document.querySelector(".main");
-            if (body) { body.scrollTop = 0; }
-        }
-        scrollToTop();
-        setTimeout(scrollToTop, 100);
-        setTimeout(scrollToTop, 500);
-        setTimeout(scrollToTop, 1000);
-    </script>
-    """
-    components.html(js_scroll, height=0)
-    
     with st.spinner(''):
         progress_bar = st.progress(0)
         status_text = st.empty()
@@ -376,8 +373,7 @@ elif st.session_state['page'] == 'result':
         progress_bar.empty()
         status_text.empty()
     
-    # 로딩 끝난 후 한번 더 스크롤
-    components.html(js_scroll, height=0)
+    # [수정] 스크립트 실행 위치를 맨 마지막으로 이동하여 강제성 부여
     
     ans = st.session_state['answers']
     vision = st.session_state['vision']
@@ -440,13 +436,25 @@ elif st.session_state['page'] == 'result':
         for rk, (idx, row) in enumerate(ranks.iterrows(), 1):
             match_percent = int((row['total_score'] / top_score) * 98)
             reasons = []
-            if ans['env_1'] >= 4 and row['cat'] == 'digital': reasons.append("<li>하루 8시간 이상 모니터를 보는 <b>고객님의 눈 피로를 덜어주는 '디지털 전용 설계'</b>입니다.</li>")
-            if ans['env_5'] >= 4 and row['cat'] == 'drive': reasons.append("<li>야간 운전 시 <b>빛 번짐을 잡아주는 특수 코팅</b>이 적용되어 훨씬 선명합니다.</li>")
-            if abs(vision['cyl']) >= 1.0 and row['cat'] == 'distortions': reasons.append("<li>난시 도수로 인한 <b>울렁임과 주변부 왜곡을 최소화</b>한 설계입니다.</li>")
-            if type_t == "T" and row['tier'] >= 2: reasons.append("<li>성능을 중시하는 고객님을 위해, <b>브랜드 내에서도 최상급 코팅과 기술</b>이 들어간 제품을 골랐습니다.</li>")
-            if type_t == "F" and row['tier'] <= 1: reasons.append("<li>가성비를 중요하게 생각하셔서, <b>불필요한 가격 거품은 빼고 기본기에 충실한</b> 실속형입니다.</li>")
-            if not reasons: reasons.append("<li>고객님의 도수와 라이프스타일 밸런스가 가장 훌륭한 <b>올라운드 제품</b>입니다.</li>")
             
+            # [수정] AI 추천 사유 디테일 강화 (안경)
+            life_reasons = []
+            if ans['env_1'] == 5: life_reasons.append("하루 8시간 이상 모니터를 보는 극한의 디지털 환경")
+            elif ans['env_1'] == 4: life_reasons.append("디지털 기기 사용량이 많은 환경")
+            if ans['env_5'] >= 4: life_reasons.append("잦은 야간 운전")
+            if ans['env_3'] >= 4: life_reasons.append("활발한 야외 활동")
+            
+            spec_reasons = []
+            if 'digital' in row['cat']: spec_reasons.append("조절력 피로를 완화하는 <b>어시스트 설계</b>")
+            if 'drive' in row['cat']: spec_reasons.append("헤드라이트 눈부심을 90% 차단하는 <b>드라이브 코팅</b>")
+            if abs(vision['cyl']) >= 1.0 and ('distortions' in row['cat'] or 'premium' in row['cat']): spec_reasons.append("난시 왜곡을 최소화하는 <b>양면비구면 설계</b>")
+            if row['tier'] == 3: spec_reasons.append("브랜드 최상위 <b>하이엔드 등급</b>")
+            
+            val_reasons = []
+            if type_t == "T": val_reasons.append("<b>성능 최우선</b> 성향에 맞춰 최고 스펙 제품을 선정")
+            elif type_t == "F": val_reasons.append("<b>가성비</b>를 고려하여 거품 없는 실속형 제품을 선정")
+            else: val_reasons.append("가격과 성능의 <b>최적 밸런스</b>를 고려")
+
             c1, c2 = st.columns([1.6, 1])
             with c1:
                 tags_html = "".join([f"<span class='feature-tag'>{t}</span>" for t in row['tags']])
@@ -462,9 +470,11 @@ elif st.session_state['page'] == 'result':
                     <div class="why-box">
                         <div class="why-title">🧐 AI 상세 분석</div>
                         <span class="why-cat">🏢 라이프스타일 매칭</span>
-                        <div class="why-desc">{' / '.join([r.replace('<li>', '').replace('</li>', '').replace('<b>', '').replace('</b>', '') for r in reasons if '디지털' in r or '야간' in r or '난시' in r] or ['일상 생활 밸런스'])}</div>
-                        <span class="why-cat">💰 가치관 및 예산</span>
-                        <div class="why-desc">{'성능 중시' if type_t == 'T' else '가성비 중시'} 성향에 부합하는 제품입니다.</div>
+                        <div class="why-desc">{' / '.join(life_reasons) if life_reasons else '일상적인 생활 패턴'}에 적합합니다.</div>
+                        <span class="why-cat">👁️ 기술적 해결책</span>
+                        <div class="why-desc">{' + '.join(spec_reasons) if spec_reasons else '표준 광학 설계'}가 적용되었습니다.</div>
+                        <span class="why-cat">⚖️ 선정 기준</span>
+                        <div class="why-desc">{val_reasons[0]}했습니다.</div>
                     </div>
                 </div>""", unsafe_allow_html=True)
             with c2:
@@ -490,11 +500,22 @@ elif st.session_state['page'] == 'result':
         top_score_c = ranks_c.iloc[0]['total_score']
         for rk, (idx, row) in enumerate(ranks_c.iterrows(), 1):
             match_percent = int((row['total_score'] / top_score_c) * 98)
-            reasons = []
-            if ans['sen_1'] >= 4 and row['dry_score'] >= 9: reasons.append(f"<li><b>오후 건조감(Q6)이 심하다</b>고 답변하셨습니다. 이를 해결하기 위해 <b>수분 유지력이 최상위 등급({row['dry_score']}점)</b>인 제품을 선정했습니다.</li>")
-            if type_i == "I" and row['dkt'] >= 120: reasons.append(f"<li>건조한 실내 환경(I형)에서도 눈이 숨 쉴 수 있도록, <b>산소투과율({row['dkt']})이 압도적으로 높은 재질</b>입니다.</li>")
-            if type_t == "F" and row['price'] < 40000: reasons.append("<li>매일 착용해도 부담 없도록, <b>가성비(F)가 가장 뛰어난 실속형 제품</b>입니다.</li>")
-            if not reasons: reasons.append("<li>고객님의 눈물량과 라이프스타일 데이터를 분석했을 때 가장 적합한 렌즈입니다.</li>")
+            
+            # [수정] AI 추천 사유 디테일 강화 (렌즈) & 압도적 기준 상향
+            life_reasons = []
+            if ans['sen_1'] >= 4: life_reasons.append("오후 시간대 극심한 건조감 호소")
+            elif ans['sen_1'] == 3: life_reasons.append("간헐적인 눈 마름 증상")
+            if type_i == "I": life_reasons.append("건조한 실내/디지털 환경 상주")
+            
+            spec_reasons = []
+            if row['dkt'] >= 130: spec_reasons.append(f"<b>압도적인 산소투과율(Dk/t {row['dkt']})</b>")
+            elif row['dkt'] >= 100: spec_reasons.append(f"우수한 산소 전달량(Dk/t {row['dkt']})")
+            if row['dry_score'] >= 9: spec_reasons.append("최상급 습윤성 재질")
+            
+            val_reasons = []
+            if type_t == "T": val_reasons.append("눈 건강을 위해 <b>최고 스펙</b> 제품을 선정")
+            else: val_reasons.append("매일 착용해도 부담 없는 <b>합리적 가격</b>을 우선")
+
             c1, c2 = st.columns([1.6, 1])
             with c1:
                 tags_html = "".join([f"<span class='feature-tag'>{t}</span>" for t in row['tags']])
@@ -510,9 +531,11 @@ elif st.session_state['page'] == 'result':
                     <div class="why-box">
                         <div class="why-title">🧐 AI 상세 분석</div>
                         <span class="why-cat">🏢 라이프스타일 매칭</span>
-                        <div class="why-desc">{' / '.join([r.replace('<li>', '').replace('</li>', '').replace('<b>', '').replace('</b>', '') for r in reasons if '건조감' in r or '실내' in r] or ['데일리 케어'])}</div>
-                        <span class="why-cat">💰 가치관 및 예산</span>
-                        <div class="why-desc">{'가성비' if type_t == 'F' else '눈 건강'} 우선 성향에 부합합니다.</div>
+                        <div class="why-desc">{' / '.join(life_reasons) if life_reasons else '데일리 케어'}에 집중했습니다.</div>
+                        <span class="why-cat">👁️ 기술적 해결책</span>
+                        <div class="why-desc">{' + '.join(spec_reasons) if spec_reasons else '표준 재질'}이 눈을 보호합니다.</div>
+                        <span class="why-cat">⚖️ 선정 기준</span>
+                        <div class="why-desc">{val_reasons[0]}했습니다.</div>
                     </div>
                 </div>""", unsafe_allow_html=True)
             with c2: 
@@ -547,3 +570,19 @@ elif st.session_state['page'] == 'result':
     
     st.markdown("<div style='margin-bottom:30px;'></div>", unsafe_allow_html=True)
     if st.button("처음으로 돌아가기", use_container_width=True): go_to('home'); st.rerun()
+    
+    # [핵심] 렌더링 끝난 후 스크롤 최상단 이동 (가장 강력한 위치)
+    js_scroll = """
+        <script>
+            function scrollToTop() {
+                var body = window.parent.document.querySelector(".main");
+                var html = window.parent.document.querySelector("html");
+                if (body) body.scrollTop = 0;
+                if (html) html.scrollTop = 0;
+            }
+            scrollToTop();
+            setTimeout(scrollToTop, 100);
+            setTimeout(scrollToTop, 300);
+        </script>
+    """
+    components.html(js_scroll, height=0)
