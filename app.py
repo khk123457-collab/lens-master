@@ -11,35 +11,23 @@ import base64
 # 0. 기본 설정 & URL
 # ==============================================================================
 st.set_page_config(page_title="Lens Master Pro", page_icon="👁️", layout="centered")
-# [중요] 배포된 앱의 실제 주소를 입력하세요
 BASE_URL = "https://lens-master-fhsfp5b458nqhycwenbvga.streamlit.app/"
 
 # ==============================================================================
-# 1. 디자인 (CSS) - 파란색 테마 강제 적용
+# 1. 디자인 (CSS)
 # ==============================================================================
 st.markdown("""
 <style>
     @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
     html, body, [class*="css"] { font-family: 'Pretendard', sans-serif; background-color: #F0F2F6; }
     
-    /* [수정] 모든 헤더 및 중요 텍스트 파란색 통일 */
+    /* 헤더 및 텍스트 */
     h1, .header-title { color: #1E3A8A !important; font-weight: 800 !important; letter-spacing: -1px; word-break: keep-all; }
     
-    /* [핵심 수정] Primary 버튼(원래 빨강)을 파란색으로 강제 변경 */
-    div.stButton > button:first-child {
-        background-color: #2563EB !important;
-        color: white !important;
-        border-color: #2563EB !important;
-        font-weight: bold;
-    }
-    div.stButton > button:hover {
-        background-color: #1D4ED8 !important;
-        border-color: #1D4ED8 !important;
-    }
-    div.stButton > button:focus {
-        box-shadow: none !important;
-        outline: none !important;
-    }
+    /* 버튼 색상 (파란색 통일) */
+    div.stButton > button:first-child { background-color: #2563EB !important; color: white !important; border-color: #2563EB !important; font-weight: bold; }
+    div.stButton > button:hover { background-color: #1D4ED8 !important; border-color: #1D4ED8 !important; }
+    div.stButton > button:focus { box-shadow: none !important; outline: none !important; }
 
     /* 로딩 컨테이너 중앙 정렬 */
     .stSpinner > div { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; }
@@ -53,8 +41,6 @@ st.markdown("""
     /* 질문지 */
     .q-text { font-size: 17px; font-weight: 700; color: #111; margin-top: 35px; margin-bottom: 12px; word-break: keep-all; }
     .scale-labels { display: flex; justify-content: space-between; font-size: 12px; color: #888; font-weight: 500; padding: 0 10px; margin-bottom: 8px; }
-    
-    /* 라디오 버튼 */
     div[role="radiogroup"] { gap: 0; justify-content: space-between; margin-bottom: 20px; }
     div[role="radiogroup"] label { background-color: white !important; border: 1px solid #E5E8EB !important; border-radius: 50% !important; width: 48px; height: 48px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
     div[role="radiogroup"] label:hover { background-color: #F8FAFC !important; transform: translateY(-3px); }
@@ -75,15 +61,18 @@ st.markdown("""
     .tag-box { margin-top: 8px; margin-bottom: 15px; }
     .feature-tag { display: inline-block; background: #F3F4F6; color: #4B5563; font-size: 11px; padding: 4px 8px; border-radius: 6px; margin-right: 5px; margin-bottom: 5px; font-weight: 600; }
     
-    .why-box { background: #F8FAFC; padding: 18px; border-radius: 12px; margin-top: 20px; border-left: 4px solid #2563EB; word-break: keep-all; }
-    .why-title { font-size: 14px; font-weight: 700; color: #1E3A8A; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-    .why-text { font-size: 13px; color: #4B5563; line-height: 1.6; list-style-type: none; padding: 0; margin: 0; }
-    .why-text li { margin-bottom: 6px; position: relative; padding-left: 12px; }
-    .why-text li:before { content: "•"; position: absolute; left: 0; color: #2563EB; font-weight: bold; }
+    /* 추천 사유 박스 (디테일 강화) */
+    .why-box { background: #F8FAFC; padding: 20px; border-radius: 12px; margin-top: 20px; border-left: 4px solid #2563EB; word-break: keep-all; }
+    .why-cat { font-size: 13px; font-weight: 800; color: #1E3A8A; margin-bottom: 4px; display: block; margin-top: 10px; }
+    .why-cat:first-child { margin-top: 0; }
+    .why-desc { font-size: 13px; color: #555; line-height: 1.5; margin-bottom: 8px; }
 
     /* 안경사 리포트 영역 */
     .qr-container { text-align: center; margin-top: 50px; padding: 30px; background: white; border-radius: 24px; border: 1px solid #E5E8EB; box-shadow: 0 10px 40px rgba(0,0,0,0.05); }
     .capture-guide { color: #E11D48; font-weight: 800; margin-top: 10px; font-size: 14px; }
+    .metric-box { margin-bottom: 15px; }
+    .metric-header { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px; color: #333; font-weight: 600; }
+    .metric-meaning { font-size: 11px; color: #666; text-align: right; margin-top: 2px; }
     
     .stTabs [data-baseweb="tab-list"] { gap: 8px; background-color: transparent; }
     .stTabs [data-baseweb="tab"] { height: 55px; background-color: #fff; border-radius: 12px; color: #64748B; font-weight: 600; border: 1px solid #E2E8F0; flex: 1; transition: all 0.2s; }
@@ -196,7 +185,7 @@ if 'mode' in query_params and query_params['mode'] == 'result':
             'val': float(query_params.get('val', 5.0)),
             'pro': float(query_params.get('pro', 5.0)),
             'answers_str': query_params.get('answers', '3'*20),
-            'dk': query_params.get('dk', '0') # 도수 모름 여부 (1:모름, 0:앎)
+            'dk': query_params.get('dk', '0')
         }
     except:
         st.session_state['page'] = 'home'
@@ -208,27 +197,19 @@ if 'vision' not in st.session_state: st.session_state['vision'] = {'sph': 0.0, '
 def go_to(page): st.session_state['page'] = page
 
 # ==============================================================================
-# 4. 안경사 전용 뷰
+# 4. 안경사 전용 뷰 (QR 스캔 시)
 # ==============================================================================
 if st.session_state['page'] == 'optician_view':
     data = st.session_state['restored_data']
     st.markdown(f"<div class='header-title' style='font-size:24px; color:#1E3A8A;'>👓 안경사 전용 리포트</div>", unsafe_allow_html=True)
     
-    # [수정] 도수 정보 표시 (모름 선택 시 상담 필요 출력)
     if data.get('dk') == '1':
         st.error("**기존 처방 도수:** 상담 필요 (도수 정보 없음)")
     else:
         st.info(f"**기존 처방 도수:** SPH {data['sph']} / CYL {data['cyl']}")
     
-    st.markdown("<div style='font-weight:bold; margin-top:20px; margin-bottom:10px; color:#2563EB;'>📊 4대 지표 분석 (10점 만점)</div>", unsafe_allow_html=True)
-    metrics = [("디지털/실내 환경", data['env']), ("각막 민감도", data['sen']), ("가격 민감도", data['val']), ("관리 숙련도", data['pro'])]
-    for label, val in metrics:
-        col1, col2 = st.columns([2, 5])
-        with col1: st.write(f"**{label}** ({val}점)")
-        with col2: st.progress(val / 10)
-
-    st.markdown("---")
-    st.markdown("<div style='font-weight:bold; margin-bottom:15px; color:#333;'>🏆 AI 추천 제품 (Top 3)</div>", unsafe_allow_html=True)
+    # [수정] 순서 변경: 추천 제품(Top 3)을 위로
+    st.markdown("<div style='font-weight:bold; margin-top:20px; margin-bottom:15px; color:#333;'>🏆 AI 추천 제품 (Top 3)</div>", unsafe_allow_html=True)
     
     type_t = "T" if data['val'] >= 6 else "F"
     type_i = "I" if data['env'] >= 6 else "E"
@@ -272,6 +253,40 @@ if st.session_state['page'] == 'optician_view':
                 <div style="color:#666; font-size:13px;">{row['brand']} | {format(row['price'],',')}원</div>
             </div>""", unsafe_allow_html=True)
 
+    # [수정] 4대 지표 직관적 해석 (점수 + 의미)
+    st.markdown("---")
+    st.markdown("<div style='font-weight:bold; margin-bottom:10px; color:#2563EB;'>📊 4대 핵심 지표 분석</div>", unsafe_allow_html=True)
+    
+    # 지표별 상태 메시지 함수
+    def get_status(val, type):
+        if type == "env": return "디지털 과몰입 (주의)" if val >= 7 else "보통 수준"
+        if type == "sen": return "초예민 (건조감 호소)" if val >= 7 else "건강한 편"
+        if type == "val": return "고스펙 중시 (T형)" if val >= 6 else "가성비 중시 (F형)"
+        if type == "pro": return "숙련자 (관리 능숙)" if val >= 7 else "입문자 (관리 미숙)"
+        return ""
+
+    metrics = [
+        ("디지털/실내 환경", data['env'], "env"),
+        ("각막 민감도", data['sen'], "sen"),
+        ("가격/스펙 성향", data['val'], "val"),
+        ("렌즈 관리 숙련도", data['pro'], "pro")
+    ]
+    
+    for label, val, type in metrics:
+        status = get_status(val, type)
+        st.markdown(f"""
+        <div class="metric-box">
+            <div class="metric-header">
+                <span>{label}</span>
+                <span style="color:#2563EB;">{val}점</span>
+            </div>
+            <div style="background:#F1F5F9; height:8px; border-radius:4px; overflow:hidden;">
+                <div style="background:#2563EB; height:100%; width:{val*10}%;"></div>
+            </div>
+            <div class="metric-meaning">{status}</div>
+        </div>
+        """, unsafe_allow_html=True)
+
     st.markdown("---")
     st.markdown("<div style='font-weight:bold; margin-bottom:15px; color:#333;'>📝 20문항 상세 답변</div>", unsafe_allow_html=True)
     ans_str = data['answers_str']
@@ -280,9 +295,6 @@ if st.session_state['page'] == 'optician_view':
             for i, key in enumerate(all_q_keys):
                 score = ans_str[i]
                 st.markdown(f"<div style='font-size:13px; border-bottom:1px solid #f0f0f0; padding:8px 0; display:flex; justify-content:space-between;'><span style='color:#555; flex:1; word-break:keep-all; padding-right:10px;'>{q_labels[key]}</span> <span style='font-weight:bold; color:#2563EB;'>{score}점</span></div>", unsafe_allow_html=True)
-
-    # [수정] 고객 성향 맨 아래로 이동
-    st.success(f"**고객 성향:** {data['mbti']}")
 
     if st.button("메인으로 돌아가기", use_container_width=True):
         st.query_params.clear()
@@ -304,8 +316,8 @@ elif st.session_state['page'] == 'mbti_test':
     st.markdown("<div class='header-title'>정밀 시력 성향 검사</div>", unsafe_allow_html=True)
     with st.container():
         st.markdown("<div style='background:#F8FAFC; padding:20px; border-radius:15px; margin-bottom:30px; border:1px solid #E2E8F0;'>", unsafe_allow_html=True)
-        st.markdown("<b>🎛️ 도수 정보 (선택)</b>", unsafe_allow_html=True)
-        dont_know = st.checkbox("🤔 정확한 도수를 몰라요 (검안 필요)", value=False)
+        st.markdown("<b>🎛️ 기존 처방 도수 (선택)</b>", unsafe_allow_html=True)
+        dont_know = st.checkbox("🤔 정확한 도수를 몰라요 (상담 필요)", value=False)
         if not dont_know:
             c1, c2 = st.columns(2)
             sph = c1.number_input("SPH (근시)", -20.0, 10.0, -2.5, 0.25)
@@ -337,12 +349,10 @@ elif st.session_state['page'] == 'mbti_test':
         for q_text, key in q_list:
             st.markdown(f"<div class='q-text'>{q_text}</div>", unsafe_allow_html=True)
             st.markdown("""<div class="scale-labels"><span>전혀 아니다(1)</span><span>보통이다(3)</span><span>매우 그렇다(5)</span></div>""", unsafe_allow_html=True)
-            # [수정] index=None으로 초기화 (선택 안 된 상태)
             answers[key] = st.radio(key, [1,2,3,4,5], horizontal=True, key=key, index=None, label_visibility="collapsed")
         st.markdown("---")
     
     if st.button("✨ 결과 분석하기", type="primary", use_container_width=True):
-        # [수정] 유효성 검사 (하나라도 선택 안 하면 경고)
         if None in answers.values():
             st.error("⚠️ 정확한 분석을 위해 모든 문항을 선택해주세요!")
         else:
@@ -350,7 +360,7 @@ elif st.session_state['page'] == 'mbti_test':
             go_to('result'); st.rerun()
 
 elif st.session_state['page'] == 'result':
-    # [수정] 스크롤 강제 이동 (로딩 전 실행)
+    # [강력한 스크롤 강제 이동] 로딩바 전후 2번 실행
     components.html("""<script>window.parent.document.querySelector('section.main').scrollTo(0, 0);</script>""", height=0)
     
     with st.spinner(''):
@@ -364,8 +374,7 @@ elif st.session_state['page'] == 'result':
             time.sleep(0.015)
         progress_bar.empty()
         status_text.empty()
-        
-    # [수정] 스크롤 강제 이동 (로딩 후 한번 더 실행)
+    
     components.html("""<script>window.parent.document.querySelector('section.main').scrollTo(0, 0);</script>""", height=0)
     
     ans = st.session_state['answers']
@@ -428,14 +437,30 @@ elif st.session_state['page'] == 'result':
         
         for rk, (idx, row) in enumerate(ranks.iterrows(), 1):
             match_percent = int((row['total_score'] / top_score) * 98)
-            reasons = []
-            if ans['env_1'] >= 4 and row['cat'] == 'digital': reasons.append("<li>하루 8시간 이상 모니터를 보는 <b>고객님의 눈 피로를 덜어주는 '디지털 전용 설계'</b>입니다.</li>")
-            if ans['env_5'] >= 4 and row['cat'] == 'drive': reasons.append("<li>야간 운전 시 <b>빛 번짐을 잡아주는 특수 코팅</b>이 적용되어 훨씬 선명합니다.</li>")
-            if abs(vision['cyl']) >= 1.0 and row['cat'] == 'distortions': reasons.append("<li>난시 도수로 인한 <b>울렁임과 주변부 왜곡을 최소화</b>한 설계입니다.</li>")
-            if type_t == "T" and row['tier'] >= 2: reasons.append("<li>성능을 중시하는 고객님을 위해, <b>브랜드 내에서도 최상급 코팅과 기술</b>이 들어간 제품을 골랐습니다.</li>")
-            if type_t == "F" and row['tier'] <= 1: reasons.append("<li>가성비를 중요하게 생각하셔서, <b>불필요한 가격 거품은 빼고 기본기에 충실한</b> 실속형입니다.</li>")
-            if not reasons: reasons.append("<li>고객님의 도수와 라이프스타일 밸런스가 가장 훌륭한 <b>올라운드 제품</b>입니다.</li>")
             
+            # [수정] 추천 사유를 3가지 섹션으로 분리
+            r_life = []
+            r_spec = []
+            r_val = []
+            
+            # Life (라이프스타일)
+            if ans['env_1'] >= 4: r_life.append("디지털 기기 장시간 사용")
+            if ans['env_5'] >= 4: r_life.append("야간 운전 빈도 높음")
+            if ans['env_3'] >= 4: r_life.append("야외 활동 많음")
+            if not r_life: r_life.append("일상 생활 밸런스")
+            
+            # Spec (기능)
+            if 'digital' in row['cat']: r_spec.append("조절 피로 완화 어시스트")
+            if 'drive' in row['cat']: r_spec.append("빛 번짐 차단 특수 코팅")
+            if 'distortions' in row['cat'] or abs(vision['cyl']) >= 1.0: r_spec.append("주변부 울렁임 제어 설계")
+            if row['tier'] == 3: r_spec.append("브랜드 최상위 하이엔드")
+            if not r_spec: r_spec.append("표준 광학 설계")
+            
+            # Value (가치)
+            if type_t == "T": r_val.append("최고 성능 지향")
+            elif type_t == "F": r_val.append("합리적 가격")
+            else: r_val.append("가격/성능 밸런스 우수")
+
             c1, c2 = st.columns([1.6, 1])
             with c1:
                 tags_html = "".join([f"<span class='feature-tag'>{t}</span>" for t in row['tags']])
@@ -449,8 +474,13 @@ elif st.session_state['page'] == 'result':
                     <div class="tag-box">{tags_html}</div>
                     <div style="font-size:18px; font-weight:800; color:#2563EB;">{format(int(row['final_price']),',')}원 <span style="font-size:12px; color:#999; font-weight:normal;">(권장소비자가)</span></div>
                     <div class="why-box">
-                        <div class="why-title">🧐 AI 추천 사유</div>
-                        <ul class="why-text">{"".join(reasons)}</ul>
+                        <div class="why-title">🧐 AI 상세 분석</div>
+                        <span class="why-cat">🏢 라이프스타일 매칭</span>
+                        <div class="why-desc">{' / '.join(r_life)} 환경에 최적화되었습니다.</div>
+                        <span class="why-cat">👁️ 광학적 스펙 적합도</span>
+                        <div class="why-desc">{' / '.join(r_spec)} 기능이 탑재되어 있습니다.</div>
+                        <span class="why-cat">💰 예산 및 가치관</span>
+                        <div class="why-desc">고객님의 {r_val[0]} 성향에 부합하는 제품입니다.</div>
                     </div>
                 </div>""", unsafe_allow_html=True)
             with c2:
@@ -476,11 +506,21 @@ elif st.session_state['page'] == 'result':
         top_score_c = ranks_c.iloc[0]['total_score']
         for rk, (idx, row) in enumerate(ranks_c.iterrows(), 1):
             match_percent = int((row['total_score'] / top_score_c) * 98)
-            reasons = []
-            if ans['sen_1'] >= 4 and row['dry_score'] >= 9: reasons.append(f"<li>오후 건조감이 심하다고 하셔서(Q6), <b>건조감 방어력 최상위({row['dry_score']}점)</b> 제품을 선정했습니다.</li>")
-            if type_i == "I" and row['dkt'] >= 120: reasons.append(f"<li>디지털 환경(I형)에서 눈이 숨 쉴 수 있게 <b>산소투과율({row['dkt']})이 압도적</b>입니다.</li>")
-            if type_t == "F" and row['price'] < 40000: reasons.append("<li>가성비(F형)를 1순위로 꼽으셔서, <b>성능 대비 가격이 훌륭한 실속형</b>입니다.</li>")
-            if not reasons: reasons.append("<li>고객님의 눈물량과 라이프스타일 데이터를 분석했을 때 가장 적합한 렌즈입니다.</li>")
+            
+            # 렌즈 추천 사유 분리
+            r_life = []
+            if ans['sen_1'] >= 4: r_life.append("오후 건조감 심함")
+            if type_i == "I": r_life.append("실내 건조 환경")
+            if not r_life: r_life.append("데일리 착용")
+            
+            r_spec = []
+            if row['dry_score'] >= 9: r_spec.append("최상급 습윤성 재질")
+            if row['dkt'] >= 100: r_spec.append("고산소투과율(숨쉬는 렌즈)")
+            
+            r_val = []
+            if type_t == "T": r_val.append("눈 건강 최우선")
+            else: r_val.append("합리적 가성비")
+
             c1, c2 = st.columns([1.6, 1])
             with c1:
                 tags_html = "".join([f"<span class='feature-tag'>{t}</span>" for t in row['tags']])
@@ -494,8 +534,13 @@ elif st.session_state['page'] == 'result':
                     <div class="tag-box">{tags_html}</div>
                     <div style="font-size:18px; font-weight:800; color:#2563EB;">{format(row['price'],',')}원 <span style="font-size:12px; color:#999; font-weight:normal;">(권장소비자가)</span></div>
                     <div class="why-box">
-                        <div class="why-title">🧐 AI 추천 사유</div>
-                        <ul class="why-text">{"".join(reasons)}</ul>
+                        <div class="why-title">🧐 AI 상세 분석</div>
+                        <span class="why-cat">🏢 라이프스타일 매칭</span>
+                        <div class="why-desc">{' / '.join(r_life)} 케어에 집중했습니다.</div>
+                        <span class="why-cat">👁️ 광학적 스펙 적합도</span>
+                        <div class="why-desc">{' / '.join(r_spec)} 스펙을 보유했습니다.</div>
+                        <span class="why-cat">💰 예산 및 가치관</span>
+                        <div class="why-desc">고객님의 {r_val[0]} 성향에 부합합니다.</div>
                     </div>
                 </div>""", unsafe_allow_html=True)
             with c2: 
@@ -503,7 +548,6 @@ elif st.session_state['page'] == 'result':
 
     # QR 코드 생성
     ans_str = "".join([str(ans[k]) for k in all_q_keys])
-    # [수정] dk(도수 모름 여부)를 URL에 포함
     dk_flag = '1' if vision['dont_know'] else '0'
     params = f"mode=result&mbti={mbti_res}&sph={vision['sph']}&cyl={vision['cyl']}&env={stat_env}&sen={stat_sen}&val={stat_val}&pro={stat_pro}&answers={ans_str}&dk={dk_flag}"
     qr_url = f"{BASE_URL}?{params}"
