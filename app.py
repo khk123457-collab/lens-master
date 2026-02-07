@@ -8,14 +8,14 @@ from io import BytesIO
 import base64
 
 # ==============================================================================
-# 0. 기본 설정 & URL (여기에 대표님 앱 주소를 넣습니다)
+# 0. 기본 설정 & URL
 # ==============================================================================
 st.set_page_config(page_title="Lens Master Pro", page_icon="👁️", layout="centered")
 # [중요] 배포된 앱의 실제 주소를 입력하세요 (QR코드 연결용)
 BASE_URL = "https://lens-master-fhsfp5b458nqhycwenbvga.streamlit.app/"
 
 # ==============================================================================
-# 1. 디자인 (CSS)
+# 1. 디자인 (CSS) - 불안정한 bar 스타일 제거
 # ==============================================================================
 st.markdown("""
 <style>
@@ -58,15 +58,9 @@ st.markdown("""
     .why-text li { margin-bottom: 6px; position: relative; padding-left: 12px; }
     .why-text li:before { content: "•"; position: absolute; left: 0; color: #2563EB; font-weight: bold; }
 
-    /* 안경사 차트 (Optician Chart) - CSS 수정됨 */
-    .opt-chart-container { margin-top: 10px; margin-bottom: 10px; }
-    .opt-row { display: flex; align-items: center; margin-bottom: 8px; font-size: 13px; }
-    .opt-label { width: 90px; text-align: right; margin-right: 12px; font-weight: 700; color: #4B5563; font-size: 12px; }
-    .opt-bar-bg { flex: 1; background-color: #E2E8F0; height: 10px; border-radius: 5px; overflow: hidden; }
-    .opt-bar-fill { height: 100%; background-color: #2563EB; border-radius: 5px; transition: width 0.5s ease; }
-    .opt-val { width: 35px; text-align: left; margin-left: 8px; font-weight: 800; color: #2563EB; font-size: 12px; }
-
+    /* 안경사 리포트 영역 */
     .qr-container { text-align: center; margin-top: 50px; padding: 30px; background: white; border-radius: 24px; border: 1px solid #E5E8EB; box-shadow: 0 10px 40px rgba(0,0,0,0.05); }
+    .capture-guide { color: #E11D48; font-weight: 800; margin-top: 10px; font-size: 14px; }
     
     .stTabs [data-baseweb="tab-list"] { gap: 8px; background-color: transparent; }
     .stTabs [data-baseweb="tab"] { height: 55px; background-color: #fff; border-radius: 12px; color: #64748B; font-weight: 600; border: 1px solid #E2E8F0; flex: 1; transition: all 0.2s; }
@@ -133,14 +127,26 @@ def make_radar_chart(product_name, scores, categories):
     )
     return fig
 
+# 20문항 키 리스트 (순서 보장용)
+all_q_keys = [
+    'env_1', 'env_2', 'env_3', 'env_4', 'env_5',
+    'sen_1', 'sen_2', 'sen_3', 'sen_4', 'sen_5',
+    'val_1', 'val_2', 'val_3', 'val_4', 'val_5',
+    'exp_1', 'exp_2', 'exp_3', 'exp_4', 'exp_5'
+]
+q_labels = {
+    'env_1': 'Q1.디지털(8h+)', 'env_2': 'Q2.건조한실내', 'env_3': 'Q3.야외활동', 'env_4': 'Q4.미세먼지', 'env_5': 'Q5.야간운전',
+    'sen_1': 'Q6.오후뻑뻑함', 'sen_2': 'Q7.이물감예민', 'sen_3': 'Q8.눈피로/붓기', 'sen_4': 'Q9.시림/따가움', 'sen_5': 'Q10.난시번짐',
+    'val_1': 'Q11.고가투자', 'val_2': 'Q12.신기술선호', 'val_3': 'Q13.브랜드중시', 'val_4': 'Q14.할인/행사', 'val_5': 'Q15.기존제품고수',
+    'exp_1': 'Q16.착용능숙도', 'exp_2': 'Q17.관리편의성', 'exp_3': 'Q18.도수인지', 'exp_4': 'Q19.성공경험', 'exp_5': 'Q20.자가선택'
+}
+
 # ==============================================================================
-# 3. 상태 관리 (Query Param 처리)
+# 3. 상태 관리 & 안경사 모드 진입 체크
 # ==============================================================================
-# URL 파라미터 확인 (안경사 모드 진입용)
 query_params = st.query_params
 if 'mode' in query_params and query_params['mode'] == 'result':
     st.session_state['page'] = 'optician_view'
-    # URL에서 데이터 복원
     try:
         st.session_state['restored_data'] = {
             'mbti': query_params.get('mbti', 'ISTP'),
@@ -149,10 +155,11 @@ if 'mode' in query_params and query_params['mode'] == 'result':
             'env': float(query_params.get('env', 5.0)),
             'sen': float(query_params.get('sen', 5.0)),
             'val': float(query_params.get('val', 5.0)),
-            'pro': float(query_params.get('pro', 5.0))
+            'pro': float(query_params.get('pro', 5.0)),
+            'answers_str': query_params.get('answers', '3'*20) # 20문항 답변 문자열
         }
     except:
-        st.session_state['page'] = 'home' # 에러시 홈으로
+        st.session_state['page'] = 'home'
 
 if 'page' not in st.session_state: st.session_state['page'] = 'home'
 if 'answers' not in st.session_state: st.session_state['answers'] = {}
@@ -161,44 +168,39 @@ if 'vision' not in st.session_state: st.session_state['vision'] = {'sph': 0.0, '
 def go_to(page): st.session_state['page'] = page
 
 # ==============================================================================
-# 4. 안경사 전용 뷰 (QR 스캔 시 보이는 화면)
+# 4. 안경사 전용 뷰 (QR 스캔 시)
 # ==============================================================================
 if st.session_state['page'] == 'optician_view':
     data = st.session_state['restored_data']
     st.markdown(f"<div class='header-title' style='font-size:22px;'>👓 안경사 전용 리포트</div>", unsafe_allow_html=True)
     
-    # 1. 고객 성향 차트 (깨짐 수정됨)
-    metrics = [
-        ("디지털/실내", data['env']),
-        ("각막 민감도", data['sen']),
-        ("가격 민감도", data['val']),
-        ("관리 숙련도", data['pro'])
-    ]
-    
-    chart_html = "<div class='desc-box' style='padding:15px; margin-top:10px;'>"
-    chart_html += "<div style='font-weight:bold; margin-bottom:10px; color:#2563EB;'>📊 고객 성향 정량 분석 (10점 만점)</div>"
-    for label, val in metrics:
-        chart_html += f"""
-        <div class="opt-row">
-            <div class="opt-label">{label}</div>
-            <div class="opt-bar-bg"><div class="opt-bar-fill" style="width: {val*10}%;"></div></div>
-            <div class="opt-val">{val}</div>
-        </div>
-        """
-    chart_html += "</div>"
-    st.markdown(chart_html, unsafe_allow_html=True)
-    
-    # 2. 처방 정보
     st.info(f"**처방 도수:** SPH {data['sph']} / CYL {data['cyl']}")
-    st.success(f"**MBTI 유형:** {data['mbti']}")
+    st.success(f"**고객 성향:** {data['mbti']}")
     
+    st.markdown("<div style='font-weight:bold; margin-top:20px; margin-bottom:10px; color:#2563EB;'>📊 4대 지표 분석 (10점 만점)</div>", unsafe_allow_html=True)
+    metrics = [("디지털/실내 환경", data['env']), ("각막 민감도", data['sen']), ("가격 민감도", data['val']), ("관리 숙련도", data['pro'])]
+    for label, val in metrics:
+        col1, col2 = st.columns([2, 5])
+        with col1: st.write(f"**{label}** ({val}점)")
+        with col2: st.progress(val / 10) # [핵심] 절대 깨지지 않는 내장 프로그레스 바 사용
+
+    st.markdown("---")
+    st.markdown("<div style='font-weight:bold; margin-bottom:15px; color:#333;'>📝 20문항 상세 답변 내역 (1~5점)</div>", unsafe_allow_html=True)
+    ans_str = data['answers_str']
+    if len(ans_str) == 20:
+        with st.container():
+            c1, c2 = st.columns(2)
+            for i, key in enumerate(all_q_keys):
+                score = ans_str[i]
+                target_col = c1 if i < 10 else c2
+                target_col.markdown(f"<div style='font-size:13px; border-bottom:1px solid #eee; padding:5px 0;'><span style='color:#666;'>{q_labels[key]}:</span> <span style='font-weight:bold; color:#2563EB; float:right;'>{score}점</span></div>", unsafe_allow_html=True)
+
     if st.button("메인으로 돌아가기", use_container_width=True):
         st.query_params.clear()
-        go_to('home')
-        st.rerun()
+        go_to('home'); st.rerun()
 
 # ==============================================================================
-# 5. 일반 사용자 흐름 (Home -> Test -> Result)
+# 5. 일반 사용자 흐름
 # ==============================================================================
 elif st.session_state['page'] == 'home':
     st.markdown("<div class='header-title'>LENS MASTER</div>", unsafe_allow_html=True)
@@ -253,25 +255,21 @@ elif st.session_state['page'] == 'mbti_test':
         go_to('result'); st.rerun()
 
 elif st.session_state['page'] == 'result':
-    # [NEW] 강제 스크롤 업 (JavaScript)
     components.html("""<script>window.parent.document.querySelector('section.main').scrollTo(0, 0);</script>""", height=0)
+    with st.spinner('🧬 AI가 고객님의 시각 성향을 분석하여 최적의 제품을 매칭 중입니다...'): time.sleep(1.0)
     
-    with st.spinner('🧬 AI가 고객님의 시각 성향을 분석하여 최적의 제품을 매칭 중입니다...'): time.sleep(1.5)
     ans = st.session_state['answers']
     vision = st.session_state['vision']
     
-    # MBTI Calculation
     score_i = sum([ans[f'env_{i}'] for i in range(1,6)]); type_i = "I" if score_i >= 15 else "E"
     score_s = sum([ans[f'sen_{i}'] for i in range(1,6)]); type_s = "S" if score_s >= 15 else "N"
     score_t = sum([ans[f'val_{i}'] for i in range(1,6)]); type_t = "T" if score_t >= 15 else "F"
     score_p = sum([ans[f'exp_{i}'] for i in range(1,6)]); type_p = "P" if score_p >= 15 else "J"
     mbti_res = f"{type_i}{type_s}{type_t}{type_p}"
     
-    # 4가지 정량 지표 (안경사 차트용)
     stat_env = round(score_i / 2.5, 1)
     stat_sen = round(score_s / 2.5, 1)
-    # T/F는 스펙 지향성으로 변환 (T일수록 높게, F일수록 낮게)
-    stat_val = round(score_t / 2.5, 1) if type_t == 'T' else round(score_t / 2.5, 1) # 단순 점수
+    stat_val = round(score_t / 2.5, 1) if type_t == 'T' else round(score_t / 2.5, 1)
     stat_pro = round(score_p / 2.5, 1)
 
     personas = {
@@ -299,7 +297,6 @@ elif st.session_state['page'] == 'result':
     """, unsafe_allow_html=True)
 
     tab1, tab2 = st.tabs(["👓 안경렌즈 추천", "💧 콘택트렌즈 추천"])
-
     with tab1:
         st.markdown("### 👓 안경렌즈 솔루션 Best 3")
         df_g = load_data('glasses', vision['sph'], vision['cyl'])
@@ -354,7 +351,6 @@ elif st.session_state['page'] == 'result':
         df_c = load_data('contacts')
         is_toric = True if abs(vision['cyl']) >= 0.75 and not vision['dont_know'] else False
         cand_c = df_c[df_c['category'].str.contains('toric' if is_toric else 'sphere')].copy()
-        
         for i, r in cand_c.iterrows():
             final_spec = 0
             dry_concern = ans['sen_1'] + ans['sen_4']
@@ -368,7 +364,6 @@ elif st.session_state['page'] == 'result':
 
         ranks_c = cand_c.sort_values('total_score', ascending=False).head(3)
         top_score_c = ranks_c.iloc[0]['total_score']
-
         for rk, (idx, row) in enumerate(ranks_c.iterrows(), 1):
             match_percent = int((row['total_score'] / top_score_c) * 98)
             reasons = []
@@ -376,7 +371,6 @@ elif st.session_state['page'] == 'result':
             if type_i == "I" and row['dkt'] >= 120: reasons.append(f"<li>디지털 환경(I형)에서 눈이 숨 쉴 수 있게 <b>산소투과율({row['dkt']})이 압도적</b>입니다.</li>")
             if type_t == "F" and row['price'] < 40000: reasons.append("<li>가성비(F형)를 1순위로 꼽으셔서, <b>성능 대비 가격이 훌륭한 실속형</b>입니다.</li>")
             if not reasons: reasons.append("<li>고객님의 눈물량과 라이프스타일 데이터를 분석했을 때 가장 적합한 렌즈입니다.</li>")
-            
             c1, c2 = st.columns([1.6, 1])
             with c1:
                 tags_html = "".join([f"<span class='feature-tag'>{t}</span>" for t in row['tags']])
@@ -397,43 +391,34 @@ elif st.session_state['page'] == 'result':
             with c2: 
                 st.plotly_chart(make_radar_chart(row['name'], [row['dry_score'], row['handling'], min(row['dkt']/16, 10), row['visual_price_score'], 9.5], ['건조감', '핸들링', '산소', '가격경쟁력', '적합도']), use_container_width=True)
 
-    # [수정] QR 코드 생성 (안경사 전용 뷰 링크 포함)
-    # URL 파라미터 생성
-    params = f"mode=result&mbti={mbti_res}&sph={vision['sph']}&cyl={vision['cyl']}&env={stat_env}&sen={stat_sen}&val={stat_val}&pro={stat_pro}"
+    # QR 코드 생성 및 하단 표시 (캡처 안내 문구 포함)
+    # 20문항 답변 압축
+    ans_str = "".join([str(ans[k]) for k in all_q_keys])
+    params = f"mode=result&mbti={mbti_res}&sph={vision['sph']}&cyl={vision['cyl']}&env={stat_env}&sen={stat_sen}&val={stat_val}&pro={stat_pro}&answers={ans_str}"
     qr_url = f"{BASE_URL}?{params}"
-    
     qr = qrcode.QRCode(version=1, box_size=10, border=2); qr.add_data(qr_url); qr.make(fit=True)
     img = qr.make_image(fill_color="black", back_color="white"); buffered = BytesIO(); img.save(buffered, format="PNG"); img_str = base64.b64encode(buffered.getvalue()).decode()
     
-    # 4가지 지표 데이터 HTML 생성 (깨짐 수정됨 & unsafe_allow_html 적용)
-    stats_html = ""
-    metrics = [
-        ("디지털/실내", stat_env),
-        ("각막 민감도", stat_sen),
-        ("가격 민감도", 10-stat_val if type_t=='F' else stat_val),
-        ("렌즈 관리 숙련도", stat_pro)
-    ]
-    for label, val in metrics:
-        stats_html += f"""
-        <div class="opt-row">
-            <div class="opt-label">{label}</div>
-            <div class="opt-bar-bg"><div class="opt-bar-fill" style="width: {val*10}%;"></div></div>
-            <div class="opt-val">{val}</div>
-        </div>
-        """
-
+    # [핵심 수정] QR 코드 하단에 캡처 안내 문구 추가 및 바 그래프를 st.progress로 교체
     st.markdown(f"""
     <div class="qr-container">
         <div style="font-weight:bold; margin-bottom:10px; font-size:16px;">👨‍⚕️ 안경사 전용 리포트 (Scan Me)</div>
         <img src="data:image/png;base64,{img_str}" width="160">
-        <div style="font-size:12px; color:#888; margin-top:10px; margin-bottom:20px;">
-            스캔 시 <b>안경사 전용 분석 화면</b>으로 이동합니다.
+        <div class="capture-guide">📸 이 화면을 캡처해서 안경사님께 보여주세요!</div>
+        <div style="font-size:12px; color:#888; margin-top:5px; margin-bottom:20px;">
+            (또는 QR코드를 스캔하면 상세 분석 화면으로 이동합니다)
         </div>
-        
-        <div class="opt-chart-container">
-            <div style="font-weight:bold; margin-bottom:12px; font-size:14px; color:#2563EB; text-align:left;">📊 고객 성향 정량 분석 (10점 만점)</div>
-            {stats_html}
+        <div style="border-top:1px solid #eee; padding-top:20px; text-align:left;">
+            <div style="font-weight:bold; margin-bottom:12px; font-size:14px; color:#2563EB;">📊 고객 성향 정량 분석 (10점 만점)</div>
         </div>
     </div>""", unsafe_allow_html=True)
     
+    # [핵심 수정] HTML Bar 대신 안정적인 st.progress 사용
+    metrics = [("디지털/실내 환경", stat_env), ("각막 민감도", stat_sen), ("가격 민감도", stat_val), ("관리 숙련도", stat_pro)]
+    for label, val in metrics:
+        col1, col2 = st.columns([2, 5])
+        with col1: st.write(f"**{label}** ({val}점)")
+        with col2: st.progress(val / 10)
+    
+    st.markdown("<div style='margin-bottom:30px;'></div>", unsafe_allow_html=True) # 하단 여백
     if st.button("처음으로 돌아가기", use_container_width=True): go_to('home'); st.rerun()
