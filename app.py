@@ -15,22 +15,23 @@ st.set_page_config(page_title="Lens Master Pro", page_icon="👁️", layout="ce
 BASE_URL = "https://lens-master-fhsfp5b458nqhycwenbvga.streamlit.app/"
 
 # ==============================================================================
-# 1. 디자인 (CSS) - 불안정한 bar 스타일 제거
+# 1. 디자인 (CSS)
 # ==============================================================================
 st.markdown("""
 <style>
     @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
     html, body, [class*="css"] { font-family: 'Pretendard', sans-serif; background-color: #F0F2F6; }
     
-    /* 공통 스타일 */
-    .header-title { font-size: 28px; font-weight: 800; color: #1E3A8A; margin-bottom: 5px; letter-spacing: -1px; }
+    /* [수정 1] 헤더 타이틀: 모바일에서 잘리지 않고 자연스럽게 줄바꿈 */
+    .header-title { font-size: 28px; font-weight: 800; color: #1E3A8A; margin-bottom: 5px; letter-spacing: -1px; word-break: keep-all; line-height: 1.2; }
+    
     .desc-box { background-color: #fff; padding: 22px; border-radius: 16px; border: 1px solid #E5E8EB; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
     .desc-title { font-size: 16px; font-weight: 700; color: #333; margin-bottom: 12px; border-bottom: 2px solid #F2F4F6; padding-bottom: 8px; }
     .desc-text { font-size: 14px; color: #555; line-height: 1.7; margin-bottom: 6px; }
     .desc-highlight { color: #2563EB; font-weight: 700; background-color: #EFF6FF; padding: 2px 8px; border-radius: 6px; }
 
     /* 질문지 & 버튼 */
-    .q-text { font-size: 17px; font-weight: 700; color: #111; margin-top: 35px; margin-bottom: 12px; }
+    .q-text { font-size: 17px; font-weight: 700; color: #111; margin-top: 35px; margin-bottom: 12px; word-break: keep-all; }
     .scale-labels { display: flex; justify-content: space-between; font-size: 12px; color: #888; font-weight: 500; padding: 0 10px; margin-bottom: 8px; }
     div[role="radiogroup"] { gap: 0; justify-content: space-between; margin-bottom: 20px; }
     div[role="radiogroup"] label { background-color: white !important; border: 1px solid #E5E8EB !important; border-radius: 50% !important; width: 48px; height: 48px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
@@ -40,8 +41,8 @@ st.markdown("""
     div[role="radiogroup"] label:has(input:checked) p { color: white !important; font-weight: bold !important; }
     div[role="radiogroup"] label > div:first-child { display: none; }
 
-    /* 결과 페이지 */
-    .result-header { background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%); color: white; padding: 45px 25px; border-radius: 0 0 30px 30px; margin: -25px -25px 25px -25px; text-align: center; box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2); }
+    /* [수정 2] 결과 페이지 헤더 색상 통일 (그라데이션 제거 -> 단색 적용) */
+    .result-header { background: #1E3A8A; color: white; padding: 45px 25px; border-radius: 0 0 30px 30px; margin: -25px -25px 25px -25px; text-align: center; box-shadow: 0 10px 30px rgba(30, 58, 138, 0.3); }
     .mbti-hero { font-size: 60px; font-weight: 900; margin: 15px 0; text-shadow: 0 4px 15px rgba(0,0,0,0.2); letter-spacing: 2px; }
     .persona-desc { background: rgba(255,255,255,0.15); padding: 20px; border-radius: 15px; font-size: 15px; line-height: 1.6; margin-top: 20px; text-align: left; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
     
@@ -52,7 +53,7 @@ st.markdown("""
     .tag-box { margin-top: 8px; margin-bottom: 15px; }
     .feature-tag { display: inline-block; background: #F3F4F6; color: #4B5563; font-size: 11px; padding: 4px 8px; border-radius: 6px; margin-right: 5px; margin-bottom: 5px; font-weight: 600; }
     
-    .why-box { background: #F8FAFC; padding: 18px; border-radius: 12px; margin-top: 20px; border-left: 4px solid #2563EB; }
+    .why-box { background: #F8FAFC; padding: 18px; border-radius: 12px; margin-top: 20px; border-left: 4px solid #2563EB; word-break: keep-all; }
     .why-title { font-size: 14px; font-weight: 700; color: #1E3A8A; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
     .why-text { font-size: 13px; color: #4B5563; line-height: 1.6; list-style-type: none; padding: 0; margin: 0; }
     .why-text li { margin-bottom: 6px; position: relative; padding-left: 12px; }
@@ -65,6 +66,9 @@ st.markdown("""
     .stTabs [data-baseweb="tab-list"] { gap: 8px; background-color: transparent; }
     .stTabs [data-baseweb="tab"] { height: 55px; background-color: #fff; border-radius: 12px; color: #64748B; font-weight: 600; border: 1px solid #E2E8F0; flex: 1; transition: all 0.2s; }
     .stTabs [aria-selected="true"] { background-color: #EFF6FF; color: #2563EB; border-color: #2563EB; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15); }
+
+    /* [수정 5] 로딩 컨테이너 중앙 정렬 */
+    .loading-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; text-align: center; width: 80%; max-width: 400px; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -127,18 +131,35 @@ def make_radar_chart(product_name, scores, categories):
     )
     return fig
 
-# 20문항 키 리스트 (순서 보장용)
+# 20문항 키 리스트
 all_q_keys = [
     'env_1', 'env_2', 'env_3', 'env_4', 'env_5',
     'sen_1', 'sen_2', 'sen_3', 'sen_4', 'sen_5',
     'val_1', 'val_2', 'val_3', 'val_4', 'val_5',
     'exp_1', 'exp_2', 'exp_3', 'exp_4', 'exp_5'
 ]
+# [수정 3] 안경사 리포트용 문항 라벨 상세화 (이해하기 쉽게 풀어서 기술)
 q_labels = {
-    'env_1': 'Q1.디지털(8h+)', 'env_2': 'Q2.건조한실내', 'env_3': 'Q3.야외활동', 'env_4': 'Q4.미세먼지', 'env_5': 'Q5.야간운전',
-    'sen_1': 'Q6.오후뻑뻑함', 'sen_2': 'Q7.이물감예민', 'sen_3': 'Q8.눈피로/붓기', 'sen_4': 'Q9.시림/따가움', 'sen_5': 'Q10.난시번짐',
-    'val_1': 'Q11.고가투자', 'val_2': 'Q12.신기술선호', 'val_3': 'Q13.브랜드중시', 'val_4': 'Q14.할인/행사', 'val_5': 'Q15.기존제품고수',
-    'exp_1': 'Q16.착용능숙도', 'exp_2': 'Q17.관리편의성', 'exp_3': 'Q18.도수인지', 'exp_4': 'Q19.성공경험', 'exp_5': 'Q20.자가선택'
+    'env_1': 'Q1.하루 8시간 이상 디지털 기기 사용', 
+    'env_2': 'Q2.건조한 실내 환경(히터/에어컨) 상주', 
+    'env_3': 'Q3.야외 활동 및 자외선 노출 빈도 높음', 
+    'env_4': 'Q4.미세먼지/바람 등 거친 환경 노출', 
+    'env_5': 'Q5.야간 운전 빈도 높음',
+    'sen_1': 'Q6.오후 시간대 눈 뻑뻑함/충혈 발생', 
+    'sen_2': 'Q7.렌즈 착용 시 이물감 예민하게 느낌', 
+    'sen_3': 'Q8.눈이 쉽게 붓거나 피로감 느낌', 
+    'sen_4': 'Q9.눈 시림 및 따가움 자주 느낌', 
+    'sen_5': 'Q10.난시로 인한 글자 번짐/흐림 심함',
+    'val_1': 'Q11.눈을 위한 고가 제품 투자 의향 있음', 
+    'val_2': 'Q12.최신 기술 및 신제품 선호 성향', 
+    'val_3': 'Q13.브랜드 인지도 및 명성 중요시', 
+    'val_4': 'Q14.할인 행사 및 가성비 중요시', 
+    'val_5': 'Q15.기존 사용 제품 고수 성향 (보수적)',
+    'exp_1': 'Q16.렌즈 착용 및 제거 능숙도 높음', 
+    'exp_2': 'Q17.렌즈 세척 및 관리 귀찮지 않음', 
+    'exp_3': 'Q18.본인의 정확한 도수 인지하고 있음', 
+    'exp_4': 'Q19.과거 렌즈 착용 성공 경험 있음', 
+    'exp_5': 'Q20.전문가 도움 없이 스스로 제품 선택 가능'
 }
 
 # ==============================================================================
@@ -156,7 +177,7 @@ if 'mode' in query_params and query_params['mode'] == 'result':
             'sen': float(query_params.get('sen', 5.0)),
             'val': float(query_params.get('val', 5.0)),
             'pro': float(query_params.get('pro', 5.0)),
-            'answers_str': query_params.get('answers', '3'*20) # 20문항 답변 문자열
+            'answers_str': query_params.get('answers', '3'*20)
         }
     except:
         st.session_state['page'] = 'home'
@@ -172,7 +193,8 @@ def go_to(page): st.session_state['page'] = page
 # ==============================================================================
 if st.session_state['page'] == 'optician_view':
     data = st.session_state['restored_data']
-    st.markdown(f"<div class='header-title' style='font-size:22px;'>👓 안경사 전용 리포트</div>", unsafe_allow_html=True)
+    # 헤더 색상 통일
+    st.markdown(f"<div class='header-title' style='font-size:24px; color:#1E3A8A;'>👓 안경사 전용 리포트</div>", unsafe_allow_html=True)
     
     st.info(f"**처방 도수:** SPH {data['sph']} / CYL {data['cyl']}")
     st.success(f"**고객 성향:** {data['mbti']}")
@@ -182,18 +204,17 @@ if st.session_state['page'] == 'optician_view':
     for label, val in metrics:
         col1, col2 = st.columns([2, 5])
         with col1: st.write(f"**{label}** ({val}점)")
-        with col2: st.progress(val / 10) # [핵심] 절대 깨지지 않는 내장 프로그레스 바 사용
+        with col2: st.progress(val / 10)
 
     st.markdown("---")
-    st.markdown("<div style='font-weight:bold; margin-bottom:15px; color:#333;'>📝 20문항 상세 답변 내역 (1~5점)</div>", unsafe_allow_html=True)
+    st.markdown("<div style='font-weight:bold; margin-bottom:15px; color:#333;'>📝 20문항 상세 답변 내역 (1점:전혀아님 ~ 5점:매우그렇다)</div>", unsafe_allow_html=True)
     ans_str = data['answers_str']
     if len(ans_str) == 20:
         with st.container():
-            c1, c2 = st.columns(2)
             for i, key in enumerate(all_q_keys):
                 score = ans_str[i]
-                target_col = c1 if i < 10 else c2
-                target_col.markdown(f"<div style='font-size:13px; border-bottom:1px solid #eee; padding:5px 0;'><span style='color:#666;'>{q_labels[key]}:</span> <span style='font-weight:bold; color:#2563EB; float:right;'>{score}점</span></div>", unsafe_allow_html=True)
+                # 질문 내용이 길어지므로 한 줄에 하나씩 표시
+                st.markdown(f"<div style='font-size:13px; border-bottom:1px solid #f0f0f0; padding:8px 0; display:flex; justify-content:space-between;'><span style='color:#555; flex:1; word-break:keep-all; padding-right:10px;'>{q_labels[key]}</span> <span style='font-weight:bold; color:#2563EB;'>{score}점</span></div>", unsafe_allow_html=True)
 
     if st.button("메인으로 돌아가기", use_container_width=True):
         st.query_params.clear()
@@ -255,8 +276,24 @@ elif st.session_state['page'] == 'mbti_test':
         go_to('result'); st.rerun()
 
 elif st.session_state['page'] == 'result':
+    # [수정 4] 가장 강력한 스크롤 강제 이동 (JS Injection 위치 변경)
     components.html("""<script>window.parent.document.querySelector('section.main').scrollTo(0, 0);</script>""", height=0)
-    with st.spinner('🧬 AI가 고객님의 시각 성향을 분석하여 최적의 제품을 매칭 중입니다...'): time.sleep(1.0)
+
+    # [수정 5] 로딩 애니메이션 중앙 정렬 구현
+    with st.container():
+        st.markdown('<div class="loading-container">', unsafe_allow_html=True)
+        progress_bar = st.progress(0)
+        status_text = st.empty()
+        steps = ["🔎 고객 라이프스타일 정밀 분석 중...", "👁️ 시력 데이터 및 굴절률 계산 중...", "✨ 최적의 렌즈 매칭 중..."]
+        for i in range(100):
+            if i < 30: status_text.markdown(f"<div style='text-align:center; font-weight:bold; color:#1E3A8A; margin-bottom:10px;'>{steps[0]}</div>", unsafe_allow_html=True)
+            elif i < 60: status_text.markdown(f"<div style='text-align:center; font-weight:bold; color:#1E3A8A; margin-bottom:10px;'>{steps[1]}</div>", unsafe_allow_html=True)
+            else: status_text.markdown(f"<div style='text-align:center; font-weight:bold; color:#1E3A8A; margin-bottom:10px;'>{steps[2]}</div>", unsafe_allow_html=True)
+            progress_bar.progress(i + 1)
+            time.sleep(0.015)
+        progress_bar.empty()
+        status_text.empty()
+        st.markdown('</div>', unsafe_allow_html=True)
     
     ans = st.session_state['answers']
     vision = st.session_state['vision']
@@ -391,15 +428,13 @@ elif st.session_state['page'] == 'result':
             with c2: 
                 st.plotly_chart(make_radar_chart(row['name'], [row['dry_score'], row['handling'], min(row['dkt']/16, 10), row['visual_price_score'], 9.5], ['건조감', '핸들링', '산소', '가격경쟁력', '적합도']), use_container_width=True)
 
-    # QR 코드 생성 및 하단 표시 (캡처 안내 문구 포함)
-    # 20문항 답변 압축
+    # QR 코드 생성
     ans_str = "".join([str(ans[k]) for k in all_q_keys])
     params = f"mode=result&mbti={mbti_res}&sph={vision['sph']}&cyl={vision['cyl']}&env={stat_env}&sen={stat_sen}&val={stat_val}&pro={stat_pro}&answers={ans_str}"
     qr_url = f"{BASE_URL}?{params}"
     qr = qrcode.QRCode(version=1, box_size=10, border=2); qr.add_data(qr_url); qr.make(fit=True)
     img = qr.make_image(fill_color="black", back_color="white"); buffered = BytesIO(); img.save(buffered, format="PNG"); img_str = base64.b64encode(buffered.getvalue()).decode()
     
-    # [핵심 수정] QR 코드 하단에 캡처 안내 문구 추가 및 바 그래프를 st.progress로 교체
     st.markdown(f"""
     <div class="qr-container">
         <div style="font-weight:bold; margin-bottom:10px; font-size:16px;">👨‍⚕️ 안경사 전용 리포트 (Scan Me)</div>
@@ -413,12 +448,11 @@ elif st.session_state['page'] == 'result':
         </div>
     </div>""", unsafe_allow_html=True)
     
-    # [핵심 수정] HTML Bar 대신 안정적인 st.progress 사용
     metrics = [("디지털/실내 환경", stat_env), ("각막 민감도", stat_sen), ("가격 민감도", stat_val), ("관리 숙련도", stat_pro)]
     for label, val in metrics:
         col1, col2 = st.columns([2, 5])
         with col1: st.write(f"**{label}** ({val}점)")
         with col2: st.progress(val / 10)
     
-    st.markdown("<div style='margin-bottom:30px;'></div>", unsafe_allow_html=True) # 하단 여백
+    st.markdown("<div style='margin-bottom:30px;'></div>", unsafe_allow_html=True)
     if st.button("처음으로 돌아가기", use_container_width=True): go_to('home'); st.rerun()
