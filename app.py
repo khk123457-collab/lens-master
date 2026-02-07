@@ -15,7 +15,7 @@ st.set_page_config(page_title="Lens Master Pro", page_icon="👁️", layout="ce
 BASE_URL = "https://lens-master-fhsfp5b458nqhycwenbvga.streamlit.app/"
 
 # ==============================================================================
-# 1. 디자인 (CSS)
+# 1. 디자인 (CSS) - 디자인 완전 복구 및 고정
 # ==============================================================================
 st.markdown("""
 <style>
@@ -24,36 +24,70 @@ st.markdown("""
     
     h1, .header-title { color: #1E3A8A !important; font-weight: 800 !important; letter-spacing: -1px; word-break: keep-all; }
     
+    /* 버튼 스타일 */
     div.stButton > button { border-radius: 12px; height: 50px; font-size: 15px; font-weight: 700; transition: all 0.2s; width: 100%; }
     div.stButton > button:first-child { background-color: #2563EB !important; color: white !important; border: none !important; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
     div.stButton > button:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
     
     .stSpinner > div { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; }
     
-    .spec-table, .price-table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 20px; font-size: 14px; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
-    .spec-table th, .price-table th { background: #F1F5F9; color: #475569; padding: 12px; text-align: left; font-weight: 600; width: 40%; border-bottom: 1px solid #E2E8F0; }
-    .spec-table td, .price-table td { padding: 12px; color: #1E293B; border-bottom: 1px solid #E2E8F0; font-weight: 500; text-align: right; }
-    .spec-table td { text-align: left; }
+    /* 결과 페이지 헤더 (MBTI 강조) - 복구됨 */
+    .result-header { 
+        background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%); 
+        color: white; 
+        padding: 40px 20px; 
+        border-radius: 0 0 30px 30px; 
+        margin: -60px -20px 30px -20px; 
+        text-align: center; 
+        box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+    }
+    .mbti-hero { 
+        font-size: 65px; 
+        font-weight: 900; 
+        margin: 10px 0; 
+        text-shadow: 0 4px 10px rgba(0,0,0,0.3); 
+        letter-spacing: 3px; 
+        color: #FFFFFF;
+    }
+    .persona-desc { 
+        background: rgba(255,255,255,0.15); 
+        padding: 20px; 
+        border-radius: 15px; 
+        font-size: 15px; 
+        line-height: 1.6; 
+        margin-top: 20px; 
+        text-align: left; 
+        backdrop-filter: blur(10px); 
+        border: 1px solid rgba(255,255,255,0.2); 
+    }
     
-    .prod-card, .dict-list-item { background: white; border-radius: 16px; padding: 20px; border: 1px solid #E2E8F0; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: all 0.2s; }
-    .prod-card:hover, .dict-list-item:hover { border-color: #2563EB; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(37, 99, 235, 0.1); }
+    /* 제품 카드 (적합도 배지 분리) */
+    .prod-card { background: white; border-radius: 16px; padding: 25px; border: 1px solid #E2E8F0; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); position: relative; overflow: hidden; }
+    .prod-rank { position: absolute; top: 0; left: 0; background: #2563EB; color: white; padding: 6px 16px; border-radius: 0 0 16px 0; font-weight: 800; font-size: 14px; z-index: 10; }
+    .match-point { 
+        position: absolute; top: 15px; right: 15px; 
+        background: #EFF6FF; color: #2563EB; 
+        font-weight: 800; font-size: 13px; 
+        padding: 6px 12px; border-radius: 20px; 
+        border: 1px solid #DBEAFE;
+    }
     
     .why-box { background: #F8FAFC; padding: 20px; border-radius: 12px; margin-top: 15px; border-left: 4px solid #2563EB; }
     .why-cat { font-size: 13px; font-weight: 800; color: #1E3A8A; margin-bottom: 4px; display: block; margin-top: 10px; }
     .why-cat:first-child { margin-top: 0; }
     .why-desc { font-size: 13px; color: #555; line-height: 1.5; margin-bottom: 8px; }
-    
-    .result-header { background: #1E3A8A; color: white; padding: 40px 20px; border-radius: 0 0 30px 30px; margin: -60px -20px 30px -20px; text-align: center; }
     .feature-tag { display: inline-block; background: #F3F4F6; color: #4B5563; font-size: 11px; padding: 4px 8px; border-radius: 6px; margin-right: 5px; margin-bottom: 5px; font-weight: 600; }
+
+    /* 도감 및 상세 페이지 */
+    .spec-table, .price-table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 20px; font-size: 14px; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+    .spec-table th, .price-table th { background: #F1F5F9; color: #475569; padding: 12px; text-align: left; font-weight: 600; width: 40%; border-bottom: 1px solid #E2E8F0; }
+    .spec-table td, .price-table td { padding: 12px; color: #1E293B; border-bottom: 1px solid #E2E8F0; font-weight: 500; text-align: right; }
+    .spec-table td { text-align: left; }
     
     .qr-container { text-align: center; margin-top: 40px; padding: 25px; background: white; border-radius: 20px; border: 1px solid #E5E8EB; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
     .metric-box { margin-bottom: 12px; }
     .metric-header { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px; color: #333; font-weight: 600; }
     
-    /* 가이드 박스 스타일 */
-    .guide-box { background: #F1F5F9; padding: 15px; border-radius: 10px; margin-top: 20px; font-size: 12px; color: #64748B; line-height: 1.6; text-align: left; }
-    .guide-title { font-weight: bold; margin-bottom: 5px; color: #475569; display: block; }
-
     .stTabs [data-baseweb="tab-list"] { gap: 8px; background-color: transparent; }
     .stTabs [data-baseweb="tab"] { height: 50px; background-color: #fff; border-radius: 12px; color: #64748B; font-weight: 600; border: 1px solid #E2E8F0; flex: 1; }
     .stTabs [aria-selected="true"] { background-color: #EFF6FF; color: #2563EB; border-color: #2563EB; }
@@ -62,12 +96,15 @@ st.markdown("""
     .hero-title { font-size: 36px; font-weight: 900; color: #1E3A8A; margin-bottom: 10px; text-shadow: 0 2px 10px rgba(30, 58, 138, 0.1); }
     .hero-sub { font-size: 16px; color: #64748B; font-weight: 500; margin-bottom: 40px; }
     
+    .dict-list-item { padding: 15px; background: white; border-radius: 12px; margin-bottom: 10px; border: 1px solid #E2E8F0; cursor: pointer; transition: all 0.2s; }
+    .dict-list-item:hover { border-color: #2563EB; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.1); }
     .detail-header { background: white; padding: 25px; border-radius: 20px; text-align: center; margin-bottom: 20px; border: 1px solid #E2E8F0; }
     .detail-brand { font-size: 14px; color: #64748B; font-weight: 600; }
     .detail-name { font-size: 24px; font-weight: 900; color: #1E293B; margin: 5px 0 10px 0; }
     .detail-price-main { font-size: 22px; font-weight: 800; color: #2563EB; margin-bottom: 10px; }
     .detail-desc-box { background: white; padding: 20px; border-radius: 12px; border: 1px solid #E2E8F0; margin-bottom: 20px; line-height: 1.6; color: #334155; font-size: 15px; }
-    
+
+    /* 질문지 */
     .q-text { font-size: 17px; font-weight: 700; color: #111; margin-top: 35px; margin-bottom: 12px; word-break: keep-all; }
     .scale-labels { display: flex; justify-content: space-between; font-size: 12px; color: #888; font-weight: 500; padding: 0 10px; margin-bottom: 8px; }
     div[role="radiogroup"] { gap: 0; justify-content: space-between; margin-bottom: 20px; }
@@ -133,6 +170,7 @@ def load_recommendation_data(mode, sph=0, cyl=0):
         df['thin_score'] = [min(10, thin_score + (1 if sph < -4.0 else 0)) for _ in range(len(df))]
         return df
     else:
+        # [KeyError Fix] handling, dry_score, dkt 등 필수 키 모두 포함
         data = [
             {'id': 101, 'brand': '미광', 'name': '클리어 원데이', 'category': 'sphere', 'tier': 0, 'price': 32000, 'dry_score': 4, 'dkt': 25, 'handling': 9, 'oxygen': 3, 'tags': ['#가성비갑']},
             {'id': 102, 'brand': '쿠퍼비전', 'name': '클래리티 원데이', 'category': 'sphere', 'tier': 1, 'price': 45000, 'dry_score': 7, 'dkt': 86, 'handling': 7, 'oxygen': 8, 'tags': ['#실리콘']},
@@ -161,6 +199,7 @@ def make_radar_chart(product_name, scores, categories):
     )
     return fig
 
+# 설문 문항 키
 all_q_keys = ['env_1', 'env_2', 'env_3', 'env_4', 'env_5', 'sen_1', 'sen_2', 'sen_3', 'sen_4', 'sen_5', 'val_1', 'val_2', 'val_3', 'val_4', 'val_5', 'exp_1', 'exp_2', 'exp_3', 'exp_4', 'exp_5']
 q_labels = {
     'env_1': 'Q1.하루 8시간 이상 디지털 기기 사용', 'env_2': 'Q2.건조한 실내 환경 상주', 'env_3': 'Q3.야외 활동 및 자외선 노출', 'env_4': 'Q4.미세먼지/바람 등 거친 환경 노출', 'env_5': 'Q5.야간 운전 빈도',
@@ -246,16 +285,8 @@ if st.session_state['page'] == 'optician_view':
     for label, val in metrics:
         st.markdown(f"<div class='metric-box'><div class='metric-header'><span>{label}</span><span style='color:#2563EB;'>{val}점</span></div><div style='background:#F1F5F9; height:8px; border-radius:4px; overflow:hidden;'><div style='background:#2563EB; height:100%; width:{val*10}%;'></div></div></div>", unsafe_allow_html=True)
 
-    # [NEW] 해석 가이드 복구
-    st.markdown("""
-    <div style="background:#F1F5F9; padding:15px; border-radius:10px; margin-top:15px; font-size:12px; color:#64748B; line-height:1.6;">
-        <div style="font-weight:bold; margin-bottom:5px;">💡 지표 해석 가이드</div>
-        • <b>디지털/실내:</b> 점수가 높을수록 디지털 기기 사용 시간이 길고 실내 활동이 많습니다.<br>
-        • <b>각막 민감도:</b> 점수가 높을수록 건조감과 이물감을 예민하게 느낍니다.<br>
-        • <b>가격/스펙:</b> 점수가 높을수록 고성능(T)을 선호하며, 낮을수록 가성비(F)를 중시합니다.<br>
-        • <b>관리 숙련도:</b> 점수가 높을수록 렌즈 착용 및 관리에 능숙합니다.
-    </div>
-    """, unsafe_allow_html=True)
+    # [가이드 복구]
+    st.markdown("""<div style="background:#F1F5F9; padding:15px; border-radius:10px; margin-top:15px; font-size:12px; color:#64748B; line-height:1.6;"><div style="font-weight:bold; margin-bottom:5px;">💡 지표 해석 가이드</div>• <b>디지털/실내:</b> 높을수록 디지털 기기 사용량 많음<br>• <b>각막 민감도:</b> 높을수록 건조감에 예민함<br>• <b>가격/스펙:</b> 높을수록 성능(T) 중시, 낮을수록 가성비(F)<br>• <b>관리 숙련도:</b> 높을수록 렌즈 관리에 능숙함</div>""", unsafe_allow_html=True)
 
     st.markdown("---")
     st.markdown("<div style='font-weight:bold; margin-bottom:15px; color:#333;'>📝 20문항 상세 답변</div>", unsafe_allow_html=True)
@@ -271,7 +302,7 @@ if st.session_state['page'] == 'optician_view':
         go_to('home'); st.rerun()
 
 # ==============================================================================
-# 5. 렌즈 도감
+# 5. [NEW] 렌즈 도감
 # ==============================================================================
 elif st.session_state['page'] == 'dictionary':
     st.markdown("<div class='header-title'>📕 렌즈 도감</div>", unsafe_allow_html=True)
@@ -290,11 +321,14 @@ elif st.session_state['page'] == 'dictionary':
             sel = df[df['id'] == st.session_state['dict_selected_id']].iloc[0]
             st.image(sel['img'], use_container_width=True)
             st.markdown(f"<div class='detail-header'><div class='detail-brand'>{sel['brand']}</div><div class='detail-name'>{sel['name']}</div></div>", unsafe_allow_html=True)
+            
             p_rows = "".join([f"<tr><td>{k}</td><td>{format(v,',')}원</td></tr>" for k, v in sel['price_table'].items()])
             st.markdown(f"<table class='price-table'>{p_rows}</table>", unsafe_allow_html=True)
             st.markdown(f"<div class='detail-desc-box'><b>💡 특징:</b><br>{sel['desc']}</div>", unsafe_allow_html=True)
+            
             st.plotly_chart(make_radar_chart(sel['name'], [sel['thin'], sel['view'], sel['coat'], 9, 9], ['두께', '시야', '코팅', '가격', '내구']), use_container_width=True)
             
+            # [Nav Logic]
             if st.session_state.get('source_page') == 'result':
                 if st.button("🔙 분석 결과로 돌아가기", use_container_width=True): st.session_state['page'] = 'result'; st.rerun()
             else:
@@ -415,7 +449,7 @@ elif st.session_state['page'] == 'result':
     
     ans = st.session_state['answers']
     vision = st.session_state['vision']
-    
+    # (점수 계산 로직)
     score_i = sum([ans[f'env_{i}'] for i in range(1,6)]); type_i = "I" if score_i >= 15 else "E"
     score_s = sum([ans[f'sen_{i}'] for i in range(1,6)]); type_s = "S" if score_s >= 15 else "N"
     score_t = sum([ans[f'val_{i}'] for i in range(1,6)]); type_t = "T" if score_t >= 15 else "F"
@@ -445,10 +479,11 @@ elif st.session_state['page'] == 'result':
             cand_g.at[i, 'visual_price_score'] = price_score
         
         ranks = cand_g.sort_values('total_score', ascending=False).head(3)
-        top_score_g = ranks.iloc[0]['total_score']
+        top_score_g = ranks.iloc[0]['total_score'] # [Fix] 변수명 분리
         
         for rk, (idx, row) in enumerate(ranks.iterrows(), 1):
             match_percent = int((row['total_score'] / top_score_g) * 98)
+            
             reasons = []
             life_reasons = []
             if ans['env_1'] >= 4: life_reasons.append("디지털 과몰입")
@@ -471,7 +506,26 @@ elif st.session_state['page'] == 'result':
             c1, c2 = st.columns([1.6, 1])
             with c1:
                 tags_html = "".join([f"<span class='feature-tag'>{t}</span>" for t in row['tags']])
-                st.markdown(f"""<div class="prod-card"><div class="prod-rank">{rk}위</div><div style="font-size:20px; font-weight:800; margin-top:15px;">{row['name']} <span class="match-badge">{match_percent}% 일치</span></div><div style="font-size:14px; color:#666; margin-bottom:8px;">{row['brand']} | 굴절률 {row['index_info']}</div><div class="tag-box">{tags_html}</div><div style="font-size:18px; font-weight:800; color:#2563EB;">{format(int(row['final_price']),',')}원 <span style="font-size:12px; color:#999; font-weight:normal;">(권장소비자가)</span></div><div class="why-box"><div class="why-title">🧐 AI 상세 분석</div><span class="why-cat">🏢 라이프스타일 매칭</span><div class="why-desc">{' / '.join(life_reasons) if life_reasons else '일상적인 생활 패턴'}에 적합합니다.</div><span class="why-cat">👁️ 기술적 해결책</span><div class="why-desc">{' + '.join(spec_reasons) if spec_reasons else '표준 광학 설계'}가 적용되었습니다.</div><span class="why-cat">⚖️ 선정 기준</span><div class="why-desc">{val_reasons[0]}했습니다.</div></div></div>""", unsafe_allow_html=True)
+                st.markdown(f"""
+                <div class="prod-card">
+                    <div class="prod-rank">{rk}위</div>
+                    <span class="match-point">{match_percent}% 일치</span>
+                    <div style="font-size:20px; font-weight:800; margin-top:20px; margin-bottom:5px; color:#111;">
+                        {row['name']}
+                    </div>
+                    <div style="font-size:14px; color:#666; margin-bottom:8px;">{row['brand']} | 굴절률 {row['index_info']}</div>
+                    <div class="tag-box">{tags_html}</div>
+                    <div style="font-size:18px; font-weight:800; color:#2563EB;">{format(int(row['final_price']),',')}원 <span style="font-size:12px; color:#999; font-weight:normal;">(권장소비자가)</span></div>
+                    <div class="why-box">
+                        <div class="why-title">🧐 AI 상세 분석</div>
+                        <span class="why-cat">🏢 라이프스타일 매칭</span>
+                        <div class="why-desc">{' / '.join(life_reasons) if life_reasons else '일상적인 생활 패턴'}에 적합합니다.</div>
+                        <span class="why-cat">👁️ 기술적 해결책</span>
+                        <div class="why-desc">{' + '.join(spec_reasons) if spec_reasons else '표준 광학 설계'}가 적용되었습니다.</div>
+                        <span class="why-cat">⚖️ 선정 기준</span>
+                        <div class="why-desc">{val_reasons[0]}했습니다.</div>
+                    </div>
+                </div>""", unsafe_allow_html=True)
             with c2:
                 st.plotly_chart(make_radar_chart(row['name'], [row['thin_score'], row['view'], row['coat'], row['visual_price_score'], 9], ['두께', '시야', '코팅', '가격', '적합']), use_container_width=True)
             if st.button("📖 상세 스펙 보기 (도감)", key=f"go_dict_g_{rk}", use_container_width=True):
@@ -493,7 +547,7 @@ elif st.session_state['page'] == 'result':
         
         for rk, (idx, row) in enumerate(ranks_c.iterrows(), 1):
             match_percent = int((row['total_score'] / top_score_c) * 98)
-            reasons = []
+            
             life_reasons = []
             if ans['sen_1'] >= 4: life_reasons.append("오후 건조감 심함")
             elif ans['sen_1'] == 3: life_reasons.append("간헐적 눈 마름")
@@ -514,7 +568,26 @@ elif st.session_state['page'] == 'result':
             c1, c2 = st.columns([1.6, 1])
             with c1:
                 tags_html = "".join([f"<span class='feature-tag'>{t}</span>" for t in row['tags']])
-                st.markdown(f"""<div class="prod-card"><div class="prod-rank">{rk}위</div><div style="font-size:20px; font-weight:800; margin-top:15px;">{row['name']} <span class="match-badge">{match_percent}% 일치</span></div><div style="font-size:14px; color:#666; margin-bottom:8px;">{row['brand']}</div><div class="tag-box">{tags_html}</div><div style="font-size:18px; font-weight:800; color:#2563EB;">{format(row['price'],',')}원 <span style="font-size:12px; color:#999; font-weight:normal;">(권장소비자가)</span></div><div class="why-box"><div class="why-title">🧐 AI 상세 분석</div><span class="why-cat">🏢 라이프스타일 매칭</span><div class="why-desc">{' / '.join(life_reasons) if life_reasons else '데일리 케어'}에 집중했습니다.</div><span class="why-cat">👁️ 기술적 해결책</span><div class="why-desc">{' + '.join(spec_reasons) if spec_reasons else '표준 재질'}이 눈을 보호합니다.</div><span class="why-cat">⚖️ 선정 기준</span><div class="why-desc">{val_reasons[0]}했습니다.</div></div></div>""", unsafe_allow_html=True)
+                st.markdown(f"""
+                <div class="prod-card">
+                    <div class="prod-rank">{rk}위</div>
+                    <span class="match-point">{match_percent}% 일치</span>
+                    <div style="font-size:20px; font-weight:800; margin-top:20px; margin-bottom:5px; color:#111;">
+                        {row['name']}
+                    </div>
+                    <div style="font-size:14px; color:#666; margin-bottom:8px;">{row['brand']}</div>
+                    <div class="tag-box">{tags_html}</div>
+                    <div style="font-size:18px; font-weight:800; color:#2563EB;">{format(row['price'],',')}원 <span style="font-size:12px; color:#999; font-weight:normal;">(권장소비자가)</span></div>
+                    <div class="why-box">
+                        <div class="why-title">🧐 AI 상세 분석</div>
+                        <span class="why-cat">🏢 라이프스타일 매칭</span>
+                        <div class="why-desc">{' / '.join(life_reasons) if life_reasons else '데일리 케어'}에 집중했습니다.</div>
+                        <span class="why-cat">👁️ 기술적 해결책</span>
+                        <div class="why-desc">{' + '.join(spec_reasons) if spec_reasons else '표준 재질'}이 눈을 보호합니다.</div>
+                        <span class="why-cat">⚖️ 선정 기준</span>
+                        <div class="why-desc">{val_reasons[0]}했습니다.</div>
+                    </div>
+                </div>""", unsafe_allow_html=True)
             with c2:
                 # [Fix] handling 키 사용
                 st.plotly_chart(make_radar_chart(row['name'], [row['dry_score'], row['handling'], min(row['dkt']/16, 10), row['visual_price_score'], 9.5], ['건조', '핸들링', '산소', '가격', '적합']), use_container_width=True)
