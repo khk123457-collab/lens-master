@@ -24,14 +24,12 @@ st.markdown("""
     
     h1, .header-title { color: #1E3A8A !important; font-weight: 800 !important; letter-spacing: -1px; word-break: keep-all; }
     
-    /* 버튼 커스텀 */
     div.stButton > button { border-radius: 12px; height: 50px; font-size: 15px; font-weight: 700; transition: all 0.2s; width: 100%; }
     div.stButton > button:first-child { background-color: #2563EB !important; color: white !important; border: none !important; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
     div.stButton > button:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
     
     .stSpinner > div { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; }
     
-    /* 테이블 & 박스 */
     .spec-table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 20px; font-size: 14px; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
     .spec-table th { background: #F1F5F9; color: #475569; padding: 12px; text-align: left; font-weight: 600; width: 40%; border-bottom: 1px solid #E2E8F0; }
     .spec-table td { padding: 12px; color: #1E293B; border-bottom: 1px solid #E2E8F0; font-weight: 500; }
@@ -99,7 +97,7 @@ def get_index_recommendation(sph, cyl):
     elif power < 6.0: return "1.67 (초고굴절)", 50000, 8
     else: return "1.74 (특초고굴절)", 90000, 10
 
-# [NEW] 도감용 상세 데이터
+# [도감용 상세 데이터]
 def get_dictionary_data(category):
     if category == 'glasses':
         return pd.DataFrame([
@@ -117,7 +115,7 @@ def get_dictionary_data(category):
                 'img': 'https://via.placeholder.com/300x200?text=NIKON+BLUV',
                 'spec_design': '양면 UV 차단', 'spec_material': 'Nikon Optical', 'spec_coat': 'SeeCoat Plus', 'spec_uv': '전후면 UV 차단', 
                 'desc': '후면 반사 자외선까지 차단하여 눈을 완벽하게 보호하며, 디지털 피로 완화 기능을 제공합니다.', 
-                'tags': ['#디지털케어', '#양면차단', '#프리미엄코팅'], 'thin': 7, 'view': 7, 'coat': 7
+                'tags': ['#디지털케어', '#양면차단', '#프리미엄코팅'], 'thin': 7, 'view': 7, 'coat': 8
             },
             {
                 'id': 3, 'brand': '호야 (Hoya)', 'name': '뉴럭스 (Nulux)', 
@@ -140,7 +138,7 @@ def get_dictionary_data(category):
                 'price_table': {'1.60 (고굴절)': 100000, '1.67 (초고굴절)': 140000, '1.74 (특초)': 200000},
                 'img': 'https://via.placeholder.com/300x200?text=ZEISS+ClearView',
                 'spec_design': 'Freeform 3.0', 'spec_material': 'Zeiss Polymer', 'spec_coat': 'DuraVision Platinum', 'spec_uv': 'UVProtect', 
-                'desc': '기존 비구면 대비 3배 더 넓은 선명한 시야 구간을 제공하는 자이스의 신기술 렌즈.', 
+                'desc': '자이스의 최신 프리폼 기술로 기존 비구면 대비 3배 더 넓은 선명한 시야를 제공합니다.', 
                 'tags': ['#초선명', '#자이스기술', '#얇은두께'], 'thin': 8, 'view': 9, 'coat': 8
             },
             {
@@ -155,8 +153,8 @@ def get_dictionary_data(category):
                 'id': 7, 'brand': '토카이 (Tokai)', 'name': '루티나 (Lutina)', 
                 'price_table': {'1.60 (고굴절)': 180000, '1.67 (초고굴절)': 250000, '1.76 (세계최초)': 400000},
                 'img': 'https://via.placeholder.com/300x200?text=TOKAI+Lutina',
-                'spec_design': '비구면', 'spec_material': 'Lutina Material', 'spec_coat': 'ESC (P-UV)', 'spec_uv': 'HEV Cut (420nm)', 
-                'desc': '산화 스트레스를 유발하는 루테인 손상을 막아 망막 건강을 지켜주는 헬스케어 렌즈.', 
+                'spec_design': '비구면', 'spec_material': 'Lutina Material', 'spec_coat': 'ESC (P-UV)', 'spec_uv': 'HEV Cut', 
+                'desc': '산화 스트레스를 유발하는 파장대를 차단하여 루테인을 보호하는 헬스케어 렌즈.', 
                 'tags': ['#눈건강', '#망막보호', '#황반변성예방'], 'thin': 9, 'view': 9, 'coat': 10
             },
             {
@@ -164,60 +162,20 @@ def get_dictionary_data(category):
                 'price_table': {'1.50 (일반)': 250000, '1.60 (고굴절)': 360000, '1.67 (초고굴절)': 480000},
                 'img': 'https://via.placeholder.com/300x200?text=ZEISS+DriveSafe',
                 'spec_design': 'Luminance Design', 'spec_material': 'Zeiss Polymer', 'spec_coat': 'DriveSafe Coating', 'spec_uv': 'UVProtect', 
-                'desc': '야간 및 우천 시 헤드라이트 눈부심을 억제하고 동공 크기를 고려하여 설계된 운전 전용 렌즈.', 
-                'tags': ['#야간운전', '#빛번짐차단', '#안전운전'], 'thin': 8, 'view': 10, 'coat': 9
+                'desc': '야간 운전 시 헤드라이트 눈부심을 억제하고 동공 크기를 고려하여 설계된 운전 전용 렌즈.', 
+                'tags': ['#야간운전', '#빛번짐차단', '#안전운전'], 'thin': 8, 'view': 10, 'coat': 10
             }
         ])
     else:
         return pd.DataFrame([
-            {
-                'id': 101, 'brand': '미광', 'name': '클리어 원데이', 'price': 32000, 
-                'spec_mat': 'Hioxifilcon A', 'spec_water': '58%', 'spec_dk': '25', 'spec_bc': '8.7', 'spec_dia': '14.2',
-                'desc': '합리적인 가격으로 부담 없이 사용할 수 있는 데일리 렌즈.', 
-                'tags': ['#가성비갑', '#입문용'], 'qty': '30p', 'dry': 4, 'handle': 9, 'oxygen': 3
-            },
-            {
-                'id': 102, 'brand': '쿠퍼비전', 'name': '클래리티 원데이', 'price': 45000, 
-                'spec_mat': 'Somofilcon A', 'spec_water': '56%', 'spec_dk': '86', 'spec_bc': '8.6', 'spec_dia': '14.1',
-                'desc': '실리콘 하이드로겔 소재로 산소 투과율이 높아 눈이 숨 쉬기 편안합니다.', 
-                'tags': ['#실리콘', '#가성비', '#숨쉬는렌즈'], 'qty': '30p', 'dry': 7, 'handle': 7, 'oxygen': 8
-            },
-            {
-                'id': 103, 'brand': '인터로조', 'name': '오투오투 원데이', 'price': 45000, 
-                'spec_mat': 'Silicone Hydrogel', 'spec_water': '45%', 'spec_dk': '130', 'spec_bc': '8.8', 'spec_dia': '14.2',
-                'desc': '높은 산소전달률(130)을 자랑하는 대한민국 대표 프리미엄 렌즈.', 
-                'tags': ['#국산', '#고산소', '#수지렌즈'], 'qty': '30p', 'dry': 7, 'handle': 8, 'oxygen': 9
-            },
-            {
-                'id': 104, 'brand': '바슈롬', 'name': '울트라 원데이', 'price': 55000, 
-                'spec_mat': 'Kalifilcon A', 'spec_water': '55%', 'spec_dk': '134', 'spec_bc': '8.6', 'spec_dia': '14.2',
-                'desc': '모이스처 씰 기술로 16시간 착용 후에도 96%의 수분을 유지합니다.', 
-                'tags': ['#장시간착용', '#디지털기기', '#촉촉함'], 'qty': '30p', 'dry': 8, 'handle': 8, 'oxygen': 9
-            },
-            {
-                'id': 105, 'brand': '아큐브', 'name': '오아시스 원데이', 'price': 63000, 
-                'spec_mat': 'Senofilcon A', 'spec_water': '38%', 'spec_dk': '121', 'spec_bc': '8.5/9.0', 'spec_dia': '14.3',
-                'desc': '눈물과 유사한 습윤 인자가 함유되어 디지털 기기 사용 시에도 편안합니다.', 
-                'tags': ['#베스트셀러', '#PC업무', '#믿고쓰는'], 'qty': '30p', 'dry': 8, 'handle': 8, 'oxygen': 9
-            },
-            {
-                'id': 106, 'brand': '알콘', 'name': '데일리스 토탈원', 'price': 69000, 
-                'spec_mat': 'Delefilcon A', 'spec_water': '33%(속)~80%(표면)', 'spec_dk': '156', 'spec_bc': '8.5', 'spec_dia': '14.1',
-                'desc': '렌즈 표면 함수율이 80% 이상인 워터 그라디언트 재질로 이물감이 거의 없습니다.', 
-                'tags': ['#강소라렌즈', '#건조감종결', '#프리미엄'], 'qty': '30p', 'dry': 10, 'handle': 4, 'oxygen': 10
-            },
-            {
-                'id': 107, 'brand': '알콘', 'name': '토탈원 난시', 'price': 79000, 
-                'spec_mat': 'Delefilcon A', 'spec_water': '33%', 'spec_dk': '127', 'spec_bc': '8.6', 'spec_dia': '14.5',
-                'desc': '토탈원의 압도적인 착용감에 탁월한 난시 교정 축 안정성을 더했습니다.', 
-                'tags': ['#난시교정', '#프리미엄', '#촉촉함'], 'qty': '30p', 'dry': 10, 'handle': 4, 'oxygen': 9
-            },
-            {
-                'id': 108, 'brand': '아큐브', 'name': '오아시스 난시', 'price': 74000, 
-                'spec_mat': 'Senofilcon A', 'spec_water': '38%', 'spec_dk': '121', 'spec_bc': '8.5', 'spec_dia': '14.3',
-                'desc': '눈의 깜빡임을 이용한 ASD 기술로 어떤 자세에서도 선명한 난시 교정을 제공합니다.', 
-                'tags': ['#난시교정', '#축안정', '#운동할때'], 'qty': '30p', 'dry': 8, 'handle': 8, 'oxygen': 9
-            }
+            {'id': 101, 'brand': '미광', 'name': '클리어 원데이', 'price': 32000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=Clear+1-Day', 'spec_mat': 'Hioxifilcon A', 'spec_water': '58%', 'spec_dk': '25', 'spec_bc': '8.7', 'spec_dia': '14.2', 'desc': '높은 함수율로 초기 착용감이 촉촉하며, 가격 부담 없이 매일 착용하기 좋은 최고의 가성비 렌즈.', 'tags': ['#가성비갑', '#입문용'], 'dry': 4, 'handle': 9, 'oxygen': 3},
+            {'id': 102, 'brand': '쿠퍼비전', 'name': '클래리티 원데이', 'price': 45000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=Clarity+1-Day', 'spec_mat': 'Somofilcon A', 'spec_water': '56%', 'spec_dk': '86', 'spec_bc': '8.6', 'spec_dia': '14.1', 'desc': '실리콘 하이드로겔 소재를 합리적인 가격에 제공. 부드러운 모듈러스로 이물감이 적습니다.', 'tags': ['#실리콘', '#가성비', '#숨쉬는렌즈'], 'dry': 7, 'handle': 7, 'oxygen': 8},
+            {'id': 103, 'brand': '인터로조', 'name': '오투오투 원데이', 'price': 45000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=O2O2+1-Day', 'spec_mat': 'Silicone Hydrogel', 'spec_water': '45%', 'spec_dk': '130', 'spec_bc': '8.8', 'spec_dia': '14.2', 'desc': '높은 산소전달률(130)을 자랑하는 대한민국 대표 프리미엄 렌즈.', 'tags': ['#국산', '#고산소', '#수지렌즈'], 'dry': 7, 'handle': 8, 'oxygen': 9},
+            {'id': 104, 'brand': '바슈롬', 'name': '울트라 원데이', 'price': 55000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=Ultra+1-Day', 'spec_mat': 'Kalifilcon A', 'spec_water': '55%', 'spec_dk': '134', 'spec_bc': '8.6', 'spec_dia': '14.2', 'desc': '모이스처 씰 기술로 16시간 착용 후에도 96%의 수분을 유지합니다.', 'tags': ['#장시간착용', '#디지털기기', '#촉촉함'], 'dry': 8, 'handle': 8, 'oxygen': 9},
+            {'id': 105, 'brand': '아큐브', 'name': '오아시스 원데이', 'price': 63000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=Oasys+1-Day', 'spec_mat': 'Senofilcon A', 'spec_water': '38%', 'spec_dk': '121', 'spec_bc': '8.5/9.0', 'spec_dia': '14.3', 'desc': '눈물 유사 습윤 인자 함유로 디지털 기기 사용 시에도 편안한 전 세계 베스트셀러.', 'tags': ['#베스트셀러', '#PC업무', '#믿고쓰는'], 'dry': 8, 'handle': 8, 'oxygen': 9},
+            {'id': 106, 'brand': '알콘', 'name': '데일리스 토탈원', 'price': 69000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=Dailies+Total1', 'spec_mat': 'Delefilcon A', 'spec_water': '33%~80%', 'spec_dk': '156', 'spec_bc': '8.5', 'spec_dia': '14.1', 'desc': '워터 그라디언트 기술로 표면 함수율 80% 이상. 건조감 해결의 끝판왕.', 'tags': ['#강소라렌즈', '#건조감종결', '#프리미엄'], 'dry': 10, 'handle': 4, 'oxygen': 10},
+            {'id': 107, 'brand': '알콘', 'name': '토탈원 난시', 'price': 79000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=Total1+Toric', 'spec_mat': 'Delefilcon A', 'spec_water': '33%', 'spec_dk': '127', 'spec_bc': '8.6', 'spec_dia': '14.5', 'desc': '토탈원의 압도적인 착용감에 탁월한 난시 교정 축 안정성을 더했습니다.', 'tags': ['#난시교정', '#프리미엄', '#촉촉함'], 'dry': 10, 'handle': 4, 'oxygen': 9},
+            {'id': 108, 'brand': '아큐브', 'name': '오아시스 난시', 'price': 74000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=Oasys+Toric', 'spec_mat': 'Senofilcon A', 'spec_water': '38%', 'spec_dk': '121', 'spec_bc': '8.5', 'spec_dia': '14.3', 'desc': '눈의 깜빡임을 이용한 ASD 기술로 어떤 자세에서도 선명한 난시 교정을 제공합니다.', 'tags': ['#난시교정', '#축안정', '#운동할때'], 'dry': 8, 'handle': 8, 'oxygen': 9}
         ])
 
 # [BUG FIX] 추천 엔진용 데이터에 'handling' 등 누락된 키 추가!
@@ -226,7 +184,7 @@ def load_recommendation_data(mode, sph=0, cyl=0):
         idx_name, idx_price, thin_score = get_index_recommendation(sph, cyl)
         data = [
             {'id': 1, 'brand': '케미', 'name': '퍼펙트 UV', 'base_price': 30000, 'cat': 'general', 'tier': 0, 'view': 6, 'coat': 5, 'tags': ['#블루라이트차단', '#가성비', '#국민렌즈']},
-            {'id': 2, 'brand': '니콘', 'name': 'BLUV Plus', 'base_price': 60000, 'cat': 'digital', 'tier': 1, 'view': 7, 'coat': 7, 'tags': ['#양면자외선차단', '#디지털피로완화']},
+            {'id': 2, 'brand': '니콘', 'name': 'BLUV Plus', 'base_price': 60000, 'cat': 'digital', 'tier': 1, 'view': 7, 'coat': 8, 'tags': ['#양면자외선차단', '#디지털피로완화']}, # 점수 8로 상향
             {'id': 3, 'brand': '호야', 'name': '뉴럭스', 'base_price': 70000, 'cat': 'general', 'tier': 1, 'view': 8, 'coat': 9, 'tags': ['#고강도코팅', '#스크래치방지', '#선명함']},
             {'id': 4, 'brand': '케미', 'name': '양면비구면 D-Free', 'base_price': 80000, 'cat': 'distortions', 'tier': 1, 'view': 8, 'coat': 7, 'tags': ['#왜곡최소화', '#눈이덜작아보임', '#난시추천']},
             {'id': 5, 'brand': '자이스', 'name': '클리어뷰', 'base_price': 100000, 'cat': 'general', 'tier': 2, 'view': 9, 'coat': 8, 'tags': ['#더넓은시야', '#더얇은두께', '#프리미엄']},
@@ -344,7 +302,6 @@ if st.session_state['page'] == 'optician_view':
     st.markdown("<div style='font-weight:bold; margin-top:20px; margin-bottom:15px; color:#333;'>🏆 AI 추천 제품 (Top 3)</div>", unsafe_allow_html=True)
     
     type_t = "T" if data['val'] >= 6 else "F"
-    type_i = "I" if data['env'] >= 6 else "E"
     
     tab1, tab2 = st.tabs(["👓 안경렌즈", "💧 콘택트렌즈"])
     with tab1:
@@ -525,7 +482,13 @@ elif st.session_state['page'] == 'dictionary':
             st.markdown(f"<div class='detail-desc-box'><b>💡 제품 특징:</b><br>{sel['desc']}</div>", unsafe_allow_html=True)
             
             st.markdown("##### 📊 성능 분석")
-            st.plotly_chart(make_radar_chart(sel['name'], [sel['dry'], sel['handle'], sel['oxygen'], 9, 9], ['건조감', '핸들링', '산소', '가성비', '착용감']), use_container_width=True)
+            # [Fix] KeyError 방지를 위해 누락된 컬럼에 대한 기본값 처리 또는 올바른 컬럼 사용
+            # make_radar_chart 호출 시 사용되는 값들이 DataFrame에 있는지 확인
+            dry = sel['dry'] if 'dry' in sel else 5
+            handle = sel['handle'] if 'handle' in sel else 5
+            oxygen = sel['oxygen'] if 'oxygen' in sel else 5
+            
+            st.plotly_chart(make_radar_chart(sel['name'], [dry, handle, oxygen, 9, 9], ['건조감', '핸들링', '산소', '가성비', '착용감']), use_container_width=True)
             
             if st.button("목록으로 돌아가기", key="back_c", use_container_width=True):
                 st.session_state['dict_selected_id'] = None
@@ -546,7 +509,7 @@ elif st.session_state['page'] == 'dictionary':
     if st.button("🏠 홈으로 가기", use_container_width=True): go_to('home'); st.rerun()
 
 # ==============================================================================
-# 6. 일반 사용자 흐름 (Home, MBTI, Result) - 기존과 동일
+# 6. 일반 사용자 흐름 (Home, MBTI, Result)
 # ==============================================================================
 elif st.session_state['page'] == 'home':
     st.markdown("""
@@ -612,7 +575,7 @@ elif st.session_state['page'] == 'mbti_test':
         "E/I (환경)": [("Q1. 스마트폰/PC 사용이 8시간 이상인가요?", "env_1"), ("Q2. 건조한 실내 환경에 주로 계신가요?", "env_2"), ("Q3. 야외 활동을 자주 즐기시나요?", "env_3"), ("Q4. 미세먼지나 바람이 많은 환경인가요?", "env_4"), ("Q5. 야간 운전을 자주 하시나요?", "env_5")],
         "S/N (예민도)": [("Q6. 오후가 되면 눈이 뻑뻑하신가요?", "sen_1"), ("Q7. 렌즈 이물감을 잘 느끼시나요?", "sen_2"), ("Q8. 눈이 쉽게 붓거나 피로해지나요?", "sen_3"), ("Q9. 눈 시림/따가움을 자주 느끼나요?", "sen_4"), ("Q10. 난시(글자 번짐)가 심한가요?", "sen_5")],
         "T/F (가치관)": [("Q11. 눈을 위해 고가 제품 투자가 가능한가요?", "val_1"), ("Q12. 최신 기술/신제품을 선호하나요?", "val_2"), ("Q13. 브랜드 명성을 중요하게 생각하나요?", "val_3"), ("Q14. 1+1이나 할인이 제품 선택의 기준인가요?", "val_4"), ("Q15. 한 번 정착하면 잘 안 바꾸시나요?", "val_5")],
-        "P/J (숙련도)": [("Q16. 렌즈 착용/관리에 능숙하신가요?", "exp_1"), ("Q17. 세척/관리가 귀찮지 않으신가요?", "exp_2"), ("Q18. 본인의 도수를 알고 계신가요?", "exp_3"), ("Q19.렌즈 착용 실패 경험이 없으신가요?", "exp_4"), ("Q20. 전문가 도움 없이도 고를 수 있나요?", "exp_5")]
+        "P/J (숙련도)": [("Q16. 렌즈 착용/관리에 능숙하신가요?", "exp_1"), ("Q17. 세척/관리가 귀찮지 않으신가요?", "exp_2"), ("Q18. 본인의 도수를 알고 계신가요?", "exp_3"), ("Q19. 렌즈 착용 실패 경험이 없으신가요?", "exp_4"), ("Q20. 전문가 도움 없이도 고를 수 있나요?", "exp_5")]
     }
     
     answers = {}
@@ -792,8 +755,7 @@ elif st.session_state['page'] == 'result':
     with tab2:
         st.markdown("### 💧 콘택트렌즈 솔루션 Best 3")
         df_c = load_recommendation_data('contacts')
-        is_toric = True if abs(vision['cyl']) >= 0.75 and not vision['dont_know'] else False
-        cand_c = df_c[df_c['category'].str.contains('toric' if is_toric else 'sphere')].copy()
+        cand_c = df_c.copy()
         for i, r in cand_c.iterrows():
             norm_spec = r['dry_score'] # 0~10
             if ans['sen_1'] >= 4: norm_spec += 2
@@ -890,7 +852,7 @@ elif st.session_state['page'] == 'result':
     
     st.markdown("<div style='margin-bottom:30px;'></div>", unsafe_allow_html=True)
     
-    # [NEW] 안경원 찾기 버튼
+    # [NEW] 안경원 찾기 버튼 추가
     if st.button("📍 내 주변 안경원 찾기", use_container_width=True):
         st.session_state['page'] = 'map_view'
         st.rerun()
