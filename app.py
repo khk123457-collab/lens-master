@@ -22,12 +22,10 @@ st.markdown("""
     @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
     html, body, [class*="css"] { font-family: 'Pretendard', sans-serif; background-color: #F8F9FA; }
     
-    /* 헤더 & 텍스트 */
     h1, .header-title { color: #1E3A8A !important; font-weight: 800 !important; letter-spacing: -1px; word-break: keep-all; }
     
     /* 버튼 커스텀 */
     div.stButton > button { border-radius: 12px; height: 50px; font-size: 15px; font-weight: 700; transition: all 0.2s; width: 100%; }
-    /* Primary (파란색) */
     div.stButton > button:first-child { background-color: #2563EB !important; color: white !important; border: none !important; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
     div.stButton > button:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
     
@@ -101,40 +99,140 @@ def get_index_recommendation(sph, cyl):
     elif power < 6.0: return "1.67 (초고굴절)", 50000, 8
     else: return "1.74 (특초고굴절)", 90000, 10
 
-# 도감용 데이터
+# [NEW] 도감용 상세 데이터
 def get_dictionary_data(category):
     if category == 'glasses':
         return pd.DataFrame([
-            {'id': 1, 'brand': '케미', 'name': '퍼펙트 UV', 'price': 30000, 'price_table': {'1.56': 30000, '1.60': 60000, '1.67': 90000, '1.74': 150000}, 'img': 'https://via.placeholder.com/300x200?text=CHEMI+Perfect+UV', 'spec_design': '비구면 (AS)', 'spec_material': 'NK-55 / MR-8', 'spec_coat': 'Perfect UV', 'spec_uv': 'UV400 + BlueCut', 'desc': '자외선 99.9% 및 유해 블루라이트를 효과적으로 차단하는 국내 점유율 1위 가성비 렌즈.', 'tags': ['#가성비', '#청광차단', '#국민렌즈'], 'thin': 6, 'view': 6, 'coat': 5},
-            {'id': 2, 'brand': '니콘', 'name': 'BLUV Plus', 'price': 60000, 'price_table': {'1.56': 60000, '1.60': 90000, '1.67': 120000}, 'img': 'https://via.placeholder.com/300x200?text=NIKON+BLUV', 'spec_design': '양면 UV 차단', 'spec_material': 'Nikon Optical', 'spec_coat': 'SeeCoat Plus', 'spec_uv': '전후면 UV 차단', 'desc': '후면 반사 자외선까지 차단하여 눈을 완벽하게 보호하며, 디지털 피로 완화 기능을 제공합니다.', 'tags': ['#디지털케어', '#양면차단', '#프리미엄코팅'], 'thin': 7, 'view': 7, 'coat': 7},
-            {'id': 3, 'brand': '호야', 'name': '뉴럭스', 'price': 70000, 'price_table': {'1.60': 70000, '1.67': 110000, '1.74': 180000}, 'img': 'https://via.placeholder.com/300x200?text=HOYA+Nulux', 'spec_design': 'Trueform 비구면', 'spec_material': 'Eyas 1.60', 'spec_coat': 'VG(Venus Guard)', 'spec_uv': 'UV Ban', 'desc': '호야의 독자적인 고강도 코팅 기술로 스크래치에 매우 강하며, 선명도가 뛰어난 베스트셀러.', 'tags': ['#흠집방지', '#고강도', '#선명함'], 'thin': 7, 'view': 8, 'coat': 9},
-            {'id': 4, 'brand': '케미', 'name': '양면비구면 D-Free', 'price': 80000, 'price_table': {'1.60': 80000, '1.67': 110000, '1.74': 160000}, 'img': 'https://via.placeholder.com/300x200?text=CHEMI+D-Free', 'spec_design': '양면 비구면 (DAS)', 'spec_material': 'MR-8 / MR-7', 'spec_coat': 'Aegis Coating', 'spec_uv': 'Perfect UV', 'desc': '렌즈의 앞면과 뒷면 모두를 비구면 설계하여, 주변부 왜곡을 획기적으로 줄여 눈이 덜 작아 보입니다.', 'tags': ['#미용효과', '#난시교정', '#넓은시야'], 'thin': 8, 'view': 8, 'coat': 7},
-            {'id': 5, 'brand': '자이스', 'name': '클리어뷰', 'price': 100000, 'price_table': {'1.60': 100000, '1.67': 140000, '1.74': 200000}, 'img': 'https://via.placeholder.com/300x200?text=ZEISS+ClearView', 'spec_design': 'Freeform 3.0', 'spec_material': 'Zeiss Polymer', 'spec_coat': 'DuraVision Platinum', 'spec_uv': 'UVProtect', 'desc': '자이스의 최신 프리폼 기술로 기존 비구면 대비 3배 더 넓은 선명한 시야를 제공합니다.', 'tags': ['#초선명', '#자이스기술', '#얇은두께'], 'thin': 8, 'view': 9, 'coat': 8},
-            {'id': 6, 'brand': '에실로', 'name': '트랜지션스 Gen8', 'price': 150000, 'price_table': {'1.50': 150000, '1.60': 220000, '1.67': 280000}, 'img': 'https://via.placeholder.com/300x200?text=Transitions', 'spec_design': '변색 (Photochromic)', 'spec_material': 'Orma / Airwear', 'spec_coat': 'Crizal Sapphire', 'spec_uv': 'UV400', 'desc': '실내에서는 투명하게, 실외에서는 선글라스처럼 빠르게 변하는 전세계 1위 변색 렌즈.', 'tags': ['#변색렌즈', '#선글라스겸용', '#패션'], 'thin': 7, 'view': 8, 'coat': 8},
-            {'id': 7, 'brand': '토카이', 'name': '루티나', 'price': 180000, 'price_table': {'1.60': 180000, '1.67': 250000, '1.76': 400000}, 'img': 'https://via.placeholder.com/300x200?text=TOKAI+Lutina', 'spec_design': '비구면', 'spec_material': 'Lutina Material', 'spec_coat': 'ESC (P-UV)', 'spec_uv': 'HEV Cut', 'desc': '산화 스트레스를 유발하는 파장대를 차단하여 루테인을 보호하는 헬스케어 렌즈.', 'tags': ['#눈건강', '#망막보호', '#황반변성예방'], 'thin': 9, 'view': 9, 'coat': 10},
-            {'id': 8, 'brand': '자이스', 'name': '드라이브세이프', 'price': 250000, 'price_table': {'1.50': 250000, '1.60': 360000, '1.67': 480000}, 'img': 'https://via.placeholder.com/300x200?text=ZEISS+DriveSafe', 'spec_design': 'Luminance Design', 'spec_material': 'Zeiss Polymer', 'spec_coat': 'DriveSafe Coating', 'spec_uv': 'UVProtect', 'desc': '야간 운전 시 헤드라이트 눈부심을 억제하고 동공 크기를 고려하여 설계된 운전 전용 렌즈.', 'tags': ['#야간운전', '#빛번짐차단', '#안전운전'], 'thin': 8, 'view': 10, 'coat': 9}
+            {
+                'id': 1, 'brand': '케미 (Chemi)', 'name': '퍼펙트 UV', 
+                'price_table': {'1.56 (중굴절)': 30000, '1.60 (고굴절)': 60000, '1.67 (초고굴절)': 90000, '1.74 (특초)': 150000},
+                'img': 'https://via.placeholder.com/300x200?text=CHEMI+Perfect+UV',
+                'spec_design': '비구면 (AS)', 'spec_material': 'NK-55 / MR-8 / MR-7', 'spec_coat': 'Perfect UV', 'spec_uv': 'UV400 + BlueCut 30%', 
+                'desc': '자외선 99.9% 및 유해 블루라이트를 효과적으로 차단하는 국내 점유율 1위 렌즈.', 
+                'tags': ['#가성비', '#청광차단', '#국민렌즈'], 'thin': 6, 'view': 6, 'coat': 5
+            },
+            {
+                'id': 2, 'brand': '니콘 (Nikon)', 'name': 'BLUV Plus', 
+                'price_table': {'1.56 (중굴절)': 60000, '1.60 (고굴절)': 90000, '1.67 (초고굴절)': 120000},
+                'img': 'https://via.placeholder.com/300x200?text=NIKON+BLUV',
+                'spec_design': '양면 UV 차단', 'spec_material': 'Nikon Optical', 'spec_coat': 'SeeCoat Plus', 'spec_uv': '전후면 UV 차단', 
+                'desc': '후면 반사 자외선까지 차단하여 눈을 완벽하게 보호하며, 디지털 피로 완화 기능을 제공합니다.', 
+                'tags': ['#디지털케어', '#양면차단', '#프리미엄코팅'], 'thin': 7, 'view': 7, 'coat': 7
+            },
+            {
+                'id': 3, 'brand': '호야 (Hoya)', 'name': '뉴럭스 (Nulux)', 
+                'price_table': {'1.60 (고굴절)': 70000, '1.67 (초고굴절)': 110000, '1.74 (특초)': 180000},
+                'img': 'https://via.placeholder.com/300x200?text=HOYA+Nulux',
+                'spec_design': 'Trueform 비구면', 'spec_material': 'Eyas 1.60', 'spec_coat': 'VG(Venus Guard)', 'spec_uv': 'UV Ban', 
+                'desc': '호야의 독자적인 고강도 코팅 기술로 스크래치에 매우 강하며, 선명도가 뛰어납니다.', 
+                'tags': ['#흠집방지', '#고강도', '#선명함'], 'thin': 7, 'view': 8, 'coat': 9
+            },
+            {
+                'id': 4, 'brand': '케미 (Chemi)', 'name': '양면비구면 D-Free', 
+                'price_table': {'1.60 (고굴절)': 80000, '1.67 (초고굴절)': 110000, '1.74 (특초)': 160000},
+                'img': 'https://via.placeholder.com/300x200?text=CHEMI+D-Free',
+                'spec_design': '양면 비구면 (DAS)', 'spec_material': 'MR-8 / MR-7 / MR-174', 'spec_coat': 'Aegis Coating', 'spec_uv': 'Perfect UV', 
+                'desc': '렌즈 주변부의 울렁임과 왜곡을 최소화하여 눈이 작아 보이는 현상을 완화합니다.', 
+                'tags': ['#미용효과', '#난시교정', '#넓은시야'], 'thin': 8, 'view': 8, 'coat': 7
+            },
+            {
+                'id': 5, 'brand': '자이스 (Zeiss)', 'name': '클리어뷰 (ClearView)', 
+                'price_table': {'1.60 (고굴절)': 100000, '1.67 (초고굴절)': 140000, '1.74 (특초)': 200000},
+                'img': 'https://via.placeholder.com/300x200?text=ZEISS+ClearView',
+                'spec_design': 'Freeform 3.0', 'spec_material': 'Zeiss Polymer', 'spec_coat': 'DuraVision Platinum', 'spec_uv': 'UVProtect', 
+                'desc': '기존 비구면 대비 3배 더 넓은 선명한 시야 구간을 제공하는 자이스의 신기술 렌즈.', 
+                'tags': ['#초선명', '#자이스기술', '#얇은두께'], 'thin': 8, 'view': 9, 'coat': 8
+            },
+            {
+                'id': 6, 'brand': '에실로 (Essilor)', 'name': '트랜지션스 Gen8', 
+                'price_table': {'1.50 (일반)': 150000, '1.60 (고굴절)': 220000, '1.67 (초고굴절)': 280000},
+                'img': 'https://via.placeholder.com/300x200?text=Transitions',
+                'spec_design': '변색 (Photochromic)', 'spec_material': 'Orma / Airwear', 'spec_coat': 'Crizal Sapphire', 'spec_uv': 'UV400', 
+                'desc': '실내에서는 투명하게, 실외에서는 선글라스처럼 빠르게 변하는 전세계 1위 변색 렌즈.', 
+                'tags': ['#변색렌즈', '#선글라스겸용', '#패션'], 'thin': 7, 'view': 8, 'coat': 8
+            },
+            {
+                'id': 7, 'brand': '토카이 (Tokai)', 'name': '루티나 (Lutina)', 
+                'price_table': {'1.60 (고굴절)': 180000, '1.67 (초고굴절)': 250000, '1.76 (세계최초)': 400000},
+                'img': 'https://via.placeholder.com/300x200?text=TOKAI+Lutina',
+                'spec_design': '비구면', 'spec_material': 'Lutina Material', 'spec_coat': 'ESC (P-UV)', 'spec_uv': 'HEV Cut (420nm)', 
+                'desc': '산화 스트레스를 유발하는 루테인 손상을 막아 망막 건강을 지켜주는 헬스케어 렌즈.', 
+                'tags': ['#눈건강', '#망막보호', '#황반변성예방'], 'thin': 9, 'view': 9, 'coat': 10
+            },
+            {
+                'id': 8, 'brand': '자이스 (Zeiss)', 'name': '드라이브세이프', 
+                'price_table': {'1.50 (일반)': 250000, '1.60 (고굴절)': 360000, '1.67 (초고굴절)': 480000},
+                'img': 'https://via.placeholder.com/300x200?text=ZEISS+DriveSafe',
+                'spec_design': 'Luminance Design', 'spec_material': 'Zeiss Polymer', 'spec_coat': 'DriveSafe Coating', 'spec_uv': 'UVProtect', 
+                'desc': '야간 및 우천 시 헤드라이트 눈부심을 억제하고 동공 크기를 고려하여 설계된 운전 전용 렌즈.', 
+                'tags': ['#야간운전', '#빛번짐차단', '#안전운전'], 'thin': 8, 'view': 10, 'coat': 9
+            }
         ])
     else:
         return pd.DataFrame([
-            {'id': 101, 'brand': '미광', 'name': '클리어 원데이', 'price': 32000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=Clear+1-Day', 'spec_mat': 'Hioxifilcon A', 'spec_water': '58%', 'spec_dk': '25', 'spec_bc': '8.7', 'desc': '높은 함수율로 초기 착용감이 촉촉하며, 가격 부담 없이 매일 착용하기 좋은 최고의 가성비 렌즈.', 'tags': ['#가성비갑', '#입문용'], 'dry': 4, 'handle': 9, 'oxygen': 3},
-            {'id': 102, 'brand': '쿠퍼비전', 'name': '클래리티 원데이', 'price': 45000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=Clarity+1-Day', 'spec_mat': 'Somofilcon A', 'spec_water': '56%', 'spec_dk': '86', 'spec_bc': '8.6', 'desc': '실리콘 하이드로겔 소재를 합리적인 가격에 제공. 부드러운 모듈러스로 이물감이 적습니다.', 'tags': ['#실리콘', '#가성비', '#숨쉬는렌즈'], 'dry': 7, 'handle': 7, 'oxygen': 8},
-            {'id': 106, 'brand': '알콘', 'name': '데일리스 토탈원', 'price': 69000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=Dailies+Total1', 'spec_mat': 'Delefilcon A', 'spec_water': '33%~80%', 'spec_dk': '156', 'spec_bc': '8.5', 'desc': '워터 그라디언트 기술로 표면 함수율 80% 이상. 건조감 해결의 끝판왕.', 'tags': ['#강소라렌즈', '#건조감종결', '#프리미엄'], 'dry': 10, 'handle': 4, 'oxygen': 10},
-            {'id': 105, 'brand': '아큐브', 'name': '오아시스 원데이', 'price': 63000, 'qty': '30p', 'img': 'https://via.placeholder.com/300x200?text=Oasys+1-Day', 'spec_mat': 'Senofilcon A', 'spec_water': '38%', 'spec_dk': '121', 'spec_bc': '8.5/9.0', 'desc': '눈물 유사 습윤 인자 함유로 디지털 기기 사용 시에도 편안한 전 세계 베스트셀러.', 'tags': ['#베스트셀러', '#PC업무', '#믿고쓰는'], 'dry': 8, 'handle': 8, 'oxygen': 9}
+            {
+                'id': 101, 'brand': '미광', 'name': '클리어 원데이', 'price': 32000, 
+                'spec_mat': 'Hioxifilcon A', 'spec_water': '58%', 'spec_dk': '25', 'spec_bc': '8.7', 'spec_dia': '14.2',
+                'desc': '합리적인 가격으로 부담 없이 사용할 수 있는 데일리 렌즈.', 
+                'tags': ['#가성비갑', '#입문용'], 'qty': '30p', 'dry': 4, 'handle': 9, 'oxygen': 3
+            },
+            {
+                'id': 102, 'brand': '쿠퍼비전', 'name': '클래리티 원데이', 'price': 45000, 
+                'spec_mat': 'Somofilcon A', 'spec_water': '56%', 'spec_dk': '86', 'spec_bc': '8.6', 'spec_dia': '14.1',
+                'desc': '실리콘 하이드로겔 소재로 산소 투과율이 높아 눈이 숨 쉬기 편안합니다.', 
+                'tags': ['#실리콘', '#가성비', '#숨쉬는렌즈'], 'qty': '30p', 'dry': 7, 'handle': 7, 'oxygen': 8
+            },
+            {
+                'id': 103, 'brand': '인터로조', 'name': '오투오투 원데이', 'price': 45000, 
+                'spec_mat': 'Silicone Hydrogel', 'spec_water': '45%', 'spec_dk': '130', 'spec_bc': '8.8', 'spec_dia': '14.2',
+                'desc': '높은 산소전달률(130)을 자랑하는 대한민국 대표 프리미엄 렌즈.', 
+                'tags': ['#국산', '#고산소', '#수지렌즈'], 'qty': '30p', 'dry': 7, 'handle': 8, 'oxygen': 9
+            },
+            {
+                'id': 104, 'brand': '바슈롬', 'name': '울트라 원데이', 'price': 55000, 
+                'spec_mat': 'Kalifilcon A', 'spec_water': '55%', 'spec_dk': '134', 'spec_bc': '8.6', 'spec_dia': '14.2',
+                'desc': '모이스처 씰 기술로 16시간 착용 후에도 96%의 수분을 유지합니다.', 
+                'tags': ['#장시간착용', '#디지털기기', '#촉촉함'], 'qty': '30p', 'dry': 8, 'handle': 8, 'oxygen': 9
+            },
+            {
+                'id': 105, 'brand': '아큐브', 'name': '오아시스 원데이', 'price': 63000, 
+                'spec_mat': 'Senofilcon A', 'spec_water': '38%', 'spec_dk': '121', 'spec_bc': '8.5/9.0', 'spec_dia': '14.3',
+                'desc': '눈물과 유사한 습윤 인자가 함유되어 디지털 기기 사용 시에도 편안합니다.', 
+                'tags': ['#베스트셀러', '#PC업무', '#믿고쓰는'], 'qty': '30p', 'dry': 8, 'handle': 8, 'oxygen': 9
+            },
+            {
+                'id': 106, 'brand': '알콘', 'name': '데일리스 토탈원', 'price': 69000, 
+                'spec_mat': 'Delefilcon A', 'spec_water': '33%(속)~80%(표면)', 'spec_dk': '156', 'spec_bc': '8.5', 'spec_dia': '14.1',
+                'desc': '렌즈 표면 함수율이 80% 이상인 워터 그라디언트 재질로 이물감이 거의 없습니다.', 
+                'tags': ['#강소라렌즈', '#건조감종결', '#프리미엄'], 'qty': '30p', 'dry': 10, 'handle': 4, 'oxygen': 10
+            },
+            {
+                'id': 107, 'brand': '알콘', 'name': '토탈원 난시', 'price': 79000, 
+                'spec_mat': 'Delefilcon A', 'spec_water': '33%', 'spec_dk': '127', 'spec_bc': '8.6', 'spec_dia': '14.5',
+                'desc': '토탈원의 압도적인 착용감에 탁월한 난시 교정 축 안정성을 더했습니다.', 
+                'tags': ['#난시교정', '#프리미엄', '#촉촉함'], 'qty': '30p', 'dry': 10, 'handle': 4, 'oxygen': 9
+            },
+            {
+                'id': 108, 'brand': '아큐브', 'name': '오아시스 난시', 'price': 74000, 
+                'spec_mat': 'Senofilcon A', 'spec_water': '38%', 'spec_dk': '121', 'spec_bc': '8.5', 'spec_dia': '14.3',
+                'desc': '눈의 깜빡임을 이용한 ASD 기술로 어떤 자세에서도 선명한 난시 교정을 제공합니다.', 
+                'tags': ['#난시교정', '#축안정', '#운동할때'], 'qty': '30p', 'dry': 8, 'handle': 8, 'oxygen': 9
+            }
         ])
 
-# 추천 엔진 로직 (ID 매핑 확인)
+# [BUG FIX] 추천 엔진용 데이터에 'handling' 등 누락된 키 추가!
 def load_recommendation_data(mode, sph=0, cyl=0):
     if mode == 'glasses':
         idx_name, idx_price, thin_score = get_index_recommendation(sph, cyl)
         data = [
-            {'id': 1, 'brand': '케미', 'name': '퍼펙트 UV', 'base_price': 30000, 'cat': 'general', 'tier': 0, 'view': 6, 'coat': 5, 'tags': ['#블루라이트차단', '#가성비']},
-            {'id': 2, 'brand': '니콘', 'name': 'BLUV Plus', 'base_price': 60000, 'cat': 'digital', 'tier': 1, 'view': 7, 'coat': 7, 'tags': ['#양면차단', '#디지털피로']},
-            {'id': 3, 'brand': '호야', 'name': '뉴럭스', 'base_price': 70000, 'cat': 'general', 'tier': 1, 'view': 8, 'coat': 9, 'tags': ['#흠집방지', '#선명함']},
-            {'id': 4, 'brand': '케미', 'name': '양면비구면 D-Free', 'base_price': 80000, 'cat': 'distortions', 'tier': 1, 'view': 8, 'coat': 7, 'tags': ['#왜곡최소화', '#넓은시야']},
-            {'id': 5, 'brand': '자이스', 'name': '클리어뷰', 'base_price': 100000, 'cat': 'general', 'tier': 2, 'view': 9, 'coat': 8, 'tags': ['#초선명', '#얇은두께']},
-            {'id': 6, 'brand': '에실로', 'name': '트랜지션스 Gen8', 'base_price': 150000, 'cat': 'outdoor', 'tier': 2, 'view': 8, 'coat': 8, 'tags': ['#변색렌즈', '#선글라스']},
-            {'id': 7, 'brand': '토카이', 'name': '루티나', 'base_price': 180000, 'cat': 'premium', 'tier': 3, 'view': 9, 'coat': 10, 'tags': ['#눈건강', '#망막보호']},
-            {'id': 8, 'brand': '자이스', 'name': '드라이브세이프', 'base_price': 250000, 'cat': 'drive', 'tier': 3, 'view': 10, 'coat': 9, 'tags': ['#야간운전', '#빛번짐차단']}
+            {'id': 1, 'brand': '케미', 'name': '퍼펙트 UV', 'base_price': 30000, 'cat': 'general', 'tier': 0, 'view': 6, 'coat': 5, 'tags': ['#블루라이트차단', '#가성비', '#국민렌즈']},
+            {'id': 2, 'brand': '니콘', 'name': 'BLUV Plus', 'base_price': 60000, 'cat': 'digital', 'tier': 1, 'view': 7, 'coat': 7, 'tags': ['#양면자외선차단', '#디지털피로완화']},
+            {'id': 3, 'brand': '호야', 'name': '뉴럭스', 'base_price': 70000, 'cat': 'general', 'tier': 1, 'view': 8, 'coat': 9, 'tags': ['#고강도코팅', '#스크래치방지', '#선명함']},
+            {'id': 4, 'brand': '케미', 'name': '양면비구면 D-Free', 'base_price': 80000, 'cat': 'distortions', 'tier': 1, 'view': 8, 'coat': 7, 'tags': ['#왜곡최소화', '#눈이덜작아보임', '#난시추천']},
+            {'id': 5, 'brand': '자이스', 'name': '클리어뷰', 'base_price': 100000, 'cat': 'general', 'tier': 2, 'view': 9, 'coat': 8, 'tags': ['#더넓은시야', '#더얇은두께', '#프리미엄']},
+            {'id': 6, 'brand': '에실로', 'name': '트랜지션스 Gen8', 'base_price': 150000, 'cat': 'outdoor', 'tier': 2, 'view': 8, 'coat': 8, 'tags': ['#변색렌즈', '#선글라스겸용', '#빠른변색']},
+            {'id': 7, 'brand': '토카이', 'name': '루티나', 'base_price': 180000, 'cat': 'premium', 'tier': 3, 'view': 9, 'coat': 10, 'tags': ['#루테인보호', '#망막케어', '#최상급코팅']},
+            {'id': 8, 'brand': '자이스', 'name': '드라이브세이프', 'base_price': 250000, 'cat': 'drive', 'tier': 3, 'view': 10, 'coat': 9, 'tags': ['#야간운전', '#빛번짐차단', '#우천시선명']}
         ]
         df = pd.DataFrame(data)
         df['final_price'] = df['base_price'] + idx_price
@@ -142,12 +240,16 @@ def load_recommendation_data(mode, sph=0, cyl=0):
         df['thin_score'] = [min(10, thin_score + (1 if sph < -4.0 else 0)) for _ in range(len(df))]
         return df
     else:
-        # 콘택트렌즈 추천 로직
+        # [수정됨] handling, oxygen 키 추가하여 KeyError 방지
         data = [
-            {'id': 101, 'brand': '미광', 'name': '클리어 원데이', 'category': 'sphere', 'tier': 0, 'price': 32000, 'dry_score': 4, 'dkt': 25, 'tags': ['#가성비갑']},
-            {'id': 102, 'brand': '쿠퍼비전', 'name': '클래리티 원데이', 'category': 'sphere', 'tier': 1, 'price': 45000, 'dry_score': 7, 'dkt': 86, 'tags': ['#실리콘', '#가성비']},
-            {'id': 106, 'brand': '알콘', 'name': '데일리스 토탈원', 'category': 'sphere', 'tier': 3, 'price': 69000, 'dry_score': 10, 'dkt': 156, 'tags': ['#건조감종결']},
-            {'id': 105, 'brand': '아큐브', 'name': '오아시스 원데이', 'category': 'sphere', 'tier': 2, 'price': 63000, 'dry_score': 8, 'dkt': 121, 'tags': ['#베스트셀러']}
+            {'id': 101, 'brand': '미광', 'name': '클리어 원데이', 'category': 'sphere', 'tier': 0, 'price': 32000, 'dry_score': 4, 'dkt': 25, 'handling': 9, 'tags': ['#가성비갑']},
+            {'id': 102, 'brand': '쿠퍼비전', 'name': '클래리티 원데이', 'category': 'sphere', 'tier': 1, 'price': 45000, 'dry_score': 7, 'dkt': 86, 'handling': 7, 'tags': ['#실리콘', '#가성비']},
+            {'id': 106, 'brand': '알콘', 'name': '데일리스 토탈원', 'category': 'sphere', 'tier': 3, 'price': 69000, 'dry_score': 10, 'dkt': 156, 'handling': 4, 'tags': ['#건조감종결']},
+            {'id': 105, 'brand': '아큐브', 'name': '오아시스 원데이', 'category': 'sphere', 'tier': 2, 'price': 63000, 'dry_score': 8, 'dkt': 121, 'handling': 8, 'tags': ['#베스트셀러']},
+            {'id': 103, 'brand': '인터로조', 'name': '오투오투 원데이', 'category': 'sphere', 'tier': 1, 'price': 45000, 'dry_score': 7, 'dkt': 130, 'handling': 8, 'tags': ['#국산']},
+            {'id': 104, 'brand': '바슈롬', 'name': '울트라 원데이', 'category': 'sphere', 'tier': 2, 'price': 55000, 'dry_score': 8, 'dkt': 134, 'handling': 8, 'tags': ['#촉촉함']},
+            {'id': 107, 'brand': '알콘', 'name': '토탈원 난시', 'category': 'toric', 'tier': 3, 'price': 79000, 'dry_score': 10, 'dkt': 127, 'handling': 4, 'tags': ['#난시교정']},
+            {'id': 108, 'brand': '아큐브', 'name': '오아시스 난시', 'category': 'toric', 'tier': 2, 'price': 74000, 'dry_score': 8, 'dkt': 121, 'handling': 8, 'tags': ['#축안정']}
         ]
         return pd.DataFrame(data)
 
@@ -242,6 +344,7 @@ if st.session_state['page'] == 'optician_view':
     st.markdown("<div style='font-weight:bold; margin-top:20px; margin-bottom:15px; color:#333;'>🏆 AI 추천 제품 (Top 3)</div>", unsafe_allow_html=True)
     
     type_t = "T" if data['val'] >= 6 else "F"
+    type_i = "I" if data['env'] >= 6 else "E"
     
     tab1, tab2 = st.tabs(["👓 안경렌즈", "💧 콘택트렌즈"])
     with tab1:
@@ -282,11 +385,28 @@ if st.session_state['page'] == 'optician_view':
 
     st.markdown("---")
     st.markdown("<div style='font-weight:bold; margin-bottom:10px; color:#2563EB;'>📊 4대 핵심 지표 분석</div>", unsafe_allow_html=True)
-    metrics = [("디지털/실내 환경", data['env']), ("각막 민감도", data['sen']), ("가격/스펙 성향", data['val']), ("렌즈 관리 숙련도", data['pro'])]
-    for label, val in metrics:
-        col1, col2 = st.columns([2, 5])
-        with col1: st.write(f"**{label}** ({val}점)")
-        with col2: st.progress(val / 10)
+    
+    def get_status(val, type):
+        if type == "env": return "디지털 과몰입 (주의)" if val >= 7 else "보통 수준"
+        if type == "sen": return "초예민 (건조감 호소)" if val >= 7 else "건강한 편"
+        if type == "val": return "고스펙 중시 (T형)" if val >= 6 else "가성비 중시 (F형)"
+        if type == "pro": return "숙련자 (관리 능숙)" if val >= 7 else "입문자 (관리 미숙)"
+        return ""
+
+    metrics = [
+        ("디지털/실내 환경", data['env'], "env"),
+        ("각막 민감도", data['sen'], "sen"),
+        ("가격/스펙 성향", data['val'], "val"),
+        ("렌즈 관리 숙련도", data['pro'], "pro")
+    ]
+    for label, val, type in metrics:
+        status = get_status(val, type)
+        st.markdown(f"""
+        <div class="metric-box">
+            <div class="metric-header"><span>{label}</span><span style="color:#2563EB;">{val}점</span></div>
+            <div style="background:#F1F5F9; height:8px; border-radius:4px; overflow:hidden;"><div style="background:#2563EB; height:100%; width:{val*10}%;"></div></div>
+            <div class="metric-meaning">{status}</div>
+        </div>""", unsafe_allow_html=True)
 
     st.markdown("---")
     st.markdown("<div style='font-weight:bold; margin-bottom:15px; color:#333;'>📝 20문항 상세 답변</div>", unsafe_allow_html=True)
@@ -369,49 +489,64 @@ elif st.session_state['page'] == 'dictionary':
     # --- 콘택트렌즈 도감 ---
     with tab2:
         df = get_dictionary_data('contacts')
-        c1, c2 = st.columns([2, 1])
-        search = c1.text_input("렌즈명 검색", placeholder="예: 아큐브", key="c_search")
-        if search: df = df[df.apply(lambda r: search in r['name'] or search in r['brand'], axis=1)]
         
+        c1, c2 = st.columns([2, 1])
+        search = c1.text_input("렌즈명 검색", placeholder="예: 아큐브, 원데이", key="c_search")
+        sort_opt = c2.selectbox("정렬", ["인기순", "낮은가격순", "높은가격순"], key="c_sort")
+        
+        if search: df = df[df.apply(lambda r: search in r['name'] or search in r['brand'] or any(search in t for t in r['tags']), axis=1)]
+        if sort_opt == "낮은가격순": df = df.sort_values('price')
+        elif sort_opt == "높은가격순": df = df.sort_values('price', ascending=False)
+        
+        # 상세 보기
         if st.session_state.get('dict_selected_id') and st.session_state.get('dict_cat') == 'contacts':
             sel = df[df['id'] == st.session_state['dict_selected_id']].iloc[0]
+            
             st.image(sel['img'], use_container_width=True)
+            
             st.markdown(f"""
             <div class="detail-header">
                 <div class="detail-brand">{sel['brand']}</div>
                 <div class="detail-name">{sel['name']}</div>
                 <div class="detail-price-main">{format(sel['price'],',')}원 ({sel['qty']})</div>
+                <div style="margin-top:10px;">{' '.join([f"<span class='feature-tag'>{t}</span>" for t in sel['tags']])}</div>
             </div>
             """, unsafe_allow_html=True)
+            
             st.markdown(f"""
             <table class="spec-table">
-                <tr><th>재질</th><td>{sel['spec_mat']}</td></tr>
-                <tr><th>함수율</th><td>{sel['spec_water']}</td></tr>
-                <tr><th>산소투과율</th><td>{sel['spec_dk']}</td></tr>
-                <tr><th>베이스커브</th><td>{sel['spec_bc']}</td></tr>
+                <tr><th>재질 (Material)</th><td>{sel['spec_mat']}</td></tr>
+                <tr><th>함수율 (Water)</th><td>{sel['spec_water']}</td></tr>
+                <tr><th>산소투과율 (Dk/t)</th><td>{sel['spec_dk']}</td></tr>
+                <tr><th>베이스커브 (BC)</th><td>{sel['spec_bc']}</td></tr>
             </table>
             """, unsafe_allow_html=True)
+            
             st.markdown(f"<div class='detail-desc-box'><b>💡 제품 특징:</b><br>{sel['desc']}</div>", unsafe_allow_html=True)
+            
+            st.markdown("##### 📊 성능 분석")
             st.plotly_chart(make_radar_chart(sel['name'], [sel['dry'], sel['handle'], sel['oxygen'], 9, 9], ['건조감', '핸들링', '산소', '가성비', '착용감']), use_container_width=True)
+            
             if st.button("목록으로 돌아가기", key="back_c", use_container_width=True):
                 st.session_state['dict_selected_id'] = None
                 st.rerun()
         else:
             for i, row in df.iterrows():
-                c1, c2 = st.columns([3, 1])
-                with c1:
-                    st.markdown(f"<div class='dict-list-item'><div style='font-size:12px; color:#666; font-weight:bold;'>{row['brand']}</div><div style='font-size:16px; font-weight:800; color:#333; margin:2px 0;'>{row['name']}</div></div>", unsafe_allow_html=True)
-                with c2:
-                    if st.button("상세보기", key=f"btn_c_{row['id']}", use_container_width=True):
-                        st.session_state['dict_selected_id'] = row['id']
-                        st.session_state['dict_cat'] = 'contacts'
-                        st.rerun()
+                with st.container():
+                    c1, c2 = st.columns([3, 1])
+                    with c1:
+                        st.markdown(f"<div class='dict-list-item'><div style='font-size:12px; color:#666; font-weight:bold;'>{row['brand']}</div><div style='font-size:16px; font-weight:800; color:#333; margin:2px 0;'>{row['name']}</div><div style='font-size:11px; color:#888;'>{' '.join(row['tags'][:2])}</div></div>", unsafe_allow_html=True)
+                    with c2:
+                        if st.button("상세보기", key=f"btn_c_{row['id']}", use_container_width=True):
+                            st.session_state['dict_selected_id'] = row['id']
+                            st.session_state['dict_cat'] = 'contacts'
+                            st.rerun()
 
     st.markdown("<div style='height:20px'></div>", unsafe_allow_html=True)
     if st.button("🏠 홈으로 가기", use_container_width=True): go_to('home'); st.rerun()
 
 # ==============================================================================
-# 6. 일반 사용자 흐름
+# 6. 일반 사용자 흐름 (Home, MBTI, Result) - 기존과 동일
 # ==============================================================================
 elif st.session_state['page'] == 'home':
     st.markdown("""
@@ -421,7 +556,6 @@ elif st.session_state['page'] == 'home':
         </div>
     """, unsafe_allow_html=True)
     
-    # [수정] 홈 화면 3단 메뉴 배치
     if st.button("🧬 Eye-MBTI 정밀 검사", type="primary", use_container_width=True):
         go_to('mbti_test'); st.rerun()
     st.markdown("<div style='height:10px;'></div>", unsafe_allow_html=True)
@@ -478,7 +612,7 @@ elif st.session_state['page'] == 'mbti_test':
         "E/I (환경)": [("Q1. 스마트폰/PC 사용이 8시간 이상인가요?", "env_1"), ("Q2. 건조한 실내 환경에 주로 계신가요?", "env_2"), ("Q3. 야외 활동을 자주 즐기시나요?", "env_3"), ("Q4. 미세먼지나 바람이 많은 환경인가요?", "env_4"), ("Q5. 야간 운전을 자주 하시나요?", "env_5")],
         "S/N (예민도)": [("Q6. 오후가 되면 눈이 뻑뻑하신가요?", "sen_1"), ("Q7. 렌즈 이물감을 잘 느끼시나요?", "sen_2"), ("Q8. 눈이 쉽게 붓거나 피로해지나요?", "sen_3"), ("Q9. 눈 시림/따가움을 자주 느끼나요?", "sen_4"), ("Q10. 난시(글자 번짐)가 심한가요?", "sen_5")],
         "T/F (가치관)": [("Q11. 눈을 위해 고가 제품 투자가 가능한가요?", "val_1"), ("Q12. 최신 기술/신제품을 선호하나요?", "val_2"), ("Q13. 브랜드 명성을 중요하게 생각하나요?", "val_3"), ("Q14. 1+1이나 할인이 제품 선택의 기준인가요?", "val_4"), ("Q15. 한 번 정착하면 잘 안 바꾸시나요?", "val_5")],
-        "P/J (숙련도)": [("Q16. 렌즈 착용/관리에 능숙하신가요?", "exp_1"), ("Q17. 세척/관리가 귀찮지 않으신가요?", "exp_2"), ("Q18. 본인의 도수를 알고 계신가요?", "exp_3"), ("Q19. 렌즈 착용 실패 경험이 없으신가요?", "exp_4"), ("Q20. 전문가 도움 없이도 고를 수 있나요?", "exp_5")]
+        "P/J (숙련도)": [("Q16. 렌즈 착용/관리에 능숙하신가요?", "exp_1"), ("Q17. 세척/관리가 귀찮지 않으신가요?", "exp_2"), ("Q18. 본인의 도수를 알고 계신가요?", "exp_3"), ("Q19.렌즈 착용 실패 경험이 없으신가요?", "exp_4"), ("Q20. 전문가 도움 없이도 고를 수 있나요?", "exp_5")]
     }
     
     answers = {}
@@ -555,7 +689,7 @@ elif st.session_state['page'] == 'result':
         "ENFP": {"title": "🦄 자유로운 영혼 (ENFP)", "desc": "복잡한 관리는 딱 질색! <br>활동적이고 에너지가 넘치는 당신에겐 <b>편하고 막 쓸 수 있는 렌즈</b>가 필요합니다.", "strategy": "끼고 빼기 쉽고, <b>내구성 좋은 원데이</b> 제품이 딱입니다."},
         "ISFJ": {"title": "🛡️ 눈 건강 지킴이 (ISFJ)", "desc": "돌다리도 두드려보고 건너는 신중파! <br>새로운 도전보다는 <b>검증된 브랜드와 안전한 소재</b>를 선호합니다.", "strategy": "안과의사들이 추천하는 <b>글로벌 베스트셀러</b>가 정답입니다."},
         "ENTJ": {"title": "😎 효율 끝판왕 (ENTJ)", "desc": "가격 대비 성능비(ROI)가 확실해야 지갑을 여는 당신! <br><b>성능과 가격의 황금 밸런스</b>를 중요하게 생각합니다.", "strategy": "프리미엄급 성능이지만 <b>가격 거품은 빠진 실속형</b> 제품."},
-        "ESTP": {"title": "⚡ 행동대장 (ESTP)", "desc": "야외 활동을 즐기는 인싸! 자외선 차단이 필수입니다.", "strategy": "내구성 좋고 UV 차단되는 제품."},
+        "ESTP": {"title": "⚡ 행동대장 (ESTP)", "desc": "야외 활동을 즐기는 인싸! 자외선 차단이 필수입니다.", "strategy": "내구성 좋고 UV 차단되는 제품"},
         "INFJ": {"title": "🔮 섬세한 예언자 (INFJ)", "desc": "남들은 모르는 미세한 불편함까지 느끼는 섬세한 눈.", "strategy": "자극이 가장 적은 저자극 소재"},
         "INTP": {"title": "🧪 논리적인 분석가 (INTP)", "desc": "원리를 이해해야 직성이 풀립니다. 기술력이 중요해요.", "strategy": "최신 광학 기술이 적용된 렌즈"},
         "ESFJ": {"title": "🤝 평화주의자 (ESFJ)", "desc": "주변 평판과 추천을 중요하게 생각합니다.", "strategy": "재구매율 1위 베스트셀러"},
@@ -586,8 +720,13 @@ elif st.session_state['page'] == 'result':
             if abs(vision['cyl']) >= 1.0 and r['cat'] == 'distortions': final_spec += 30
             
             price_score = max(1, 10 - (r['final_price'] / 45000))
-            if type_t == "T": total_score = (norm_spec * 0.8) + (price_score * 0.2)
-            else: total_score = (norm_spec * 0.2) + (price_score * 0.8)
+            
+            if type_t == "T": 
+                total_score = (norm_spec * 0.8) + (price_score * 0.2)
+            else: 
+                # [핵심] 가성비(F) 선택 시, 가격 점수의 비중을 80%로 높여서 비싼 렌즈 순위 하락 유도
+                total_score = (norm_spec * 0.2) + (price_score * 0.8)
+                
             cand_g.at[i, 'total_score'] = total_score
             cand_g.at[i, 'visual_price_score'] = price_score
 
@@ -612,8 +751,10 @@ elif st.session_state['page'] == 'result':
             val_reasons = []
             if type_t == "T": val_reasons.append("<b>성능 최우선</b> 성향에 맞춰 최고 스펙 제품을 선정")
             elif type_t == "F": 
-                if row['final_price'] >= 100000: val_reasons.append("가성비를 선호하시지만, <b>고객님의 시력 특성상 교정력을 위해</b> 불가피하게 성능 위주로 선정")
-                else: val_reasons.append("<b>가성비</b>를 최우선으로 고려하여 거품 없는 실속형 제품을 선정")
+                if row['final_price'] >= 100000:
+                    val_reasons.append("가성비를 선호하시지만, <b>고객님의 시력 특성(난시/고도수)상 교정력을 위해</b> 불가피하게 성능 위주로 선정")
+                else:
+                    val_reasons.append("<b>가성비</b>를 최우선으로 고려하여 거품 없는 실속형 제품을 선정")
             else: val_reasons.append("가격과 성능의 <b>최적 밸런스</b>를 고려")
 
             c1, c2 = st.columns([1.6, 1])
@@ -641,7 +782,7 @@ elif st.session_state['page'] == 'result':
             with c2:
                 st.plotly_chart(make_radar_chart(row['name'], [row['thin_score'], row['view'], row['coat'], row['visual_price_score'], 9], ['두께(얇음)', '시야(넓음)', '코팅(강함)', '가격경쟁력', '적합도']), use_container_width=True)
             
-            # [NEW] 결과지에서 바로 도감 이동 버튼
+            # [NEW] 결과지 -> 도감 상세 이동 버튼
             if st.button("📖 상세 스펙 보기 (도감)", key=f"go_dict_g_{rk}", use_container_width=True):
                 st.session_state['page'] = 'dictionary'
                 st.session_state['dict_selected_id'] = row['id']
@@ -656,9 +797,12 @@ elif st.session_state['page'] == 'result':
         for i, r in cand_c.iterrows():
             norm_spec = r['dry_score'] # 0~10
             if ans['sen_1'] >= 4: norm_spec += 2
+            
             price_score = max(2, 10 - (r['price'] / 10000))
+            
             if type_t == "T": total_score = (norm_spec * 0.8) + (price_score * 0.2)
             else: total_score = (norm_spec * 0.2) + (price_score * 0.8)
+            
             cand_c.at[i, 'total_score'] = total_score
             cand_c.at[i, 'visual_price_score'] = price_score
 
@@ -680,8 +824,10 @@ elif st.session_state['page'] == 'result':
             val_reasons = []
             if type_t == "T": val_reasons.append("눈 건강을 위해 <b>최고 스펙</b> 제품을 선정")
             elif type_t == "F":
-                if row['price'] >= 60000: val_reasons.append("가성비를 선호하시지만, <b>장시간 착용과 건조감 해결을 위해</b> 프리미엄 제품을 권장")
-                else: val_reasons.append("매일 착용해도 부담 없는 <b>합리적 가격</b>을 우선")
+                if row['price'] >= 60000:
+                    val_reasons.append("가성비를 선호하시지만, <b>장시간 착용과 건조감 해결을 위해</b> 프리미엄 제품을 권장")
+                else:
+                    val_reasons.append("매일 착용해도 부담 없는 <b>합리적 가격</b>을 우선")
             else: val_reasons.append("가격과 성능의 <b>최적 밸런스</b>를 고려")
 
             c1, c2 = st.columns([1.6, 1])
@@ -709,14 +855,13 @@ elif st.session_state['page'] == 'result':
             with c2: 
                 st.plotly_chart(make_radar_chart(row['name'], [row['dry_score'], row['handling'], min(row['dkt']/16, 10), row['visual_price_score'], 9.5], ['건조감', '핸들링', '산소', '가격경쟁력', '적합도']), use_container_width=True)
             
-            # [NEW] 결과지에서 바로 도감 이동 버튼
+            # [NEW] 결과지 -> 도감 상세 이동 버튼
             if st.button("📖 상세 스펙 보기 (도감)", key=f"go_dict_c_{rk}", use_container_width=True):
                 st.session_state['page'] = 'dictionary'
                 st.session_state['dict_selected_id'] = row['id']
                 st.session_state['dict_cat'] = 'contacts'
                 st.rerun()
 
-    # QR 코드 생성
     ans_str = "".join([str(ans[k]) for k in all_q_keys])
     dk_flag = '1' if vision['dont_know'] else '0'
     params = f"mode=result&mbti={mbti_res}&sph={vision['sph']}&cyl={vision['cyl']}&env={stat_env}&sen={stat_sen}&val={stat_val}&pro={stat_pro}&answers={ans_str}&dk={dk_flag}"
@@ -745,7 +890,7 @@ elif st.session_state['page'] == 'result':
     
     st.markdown("<div style='margin-bottom:30px;'></div>", unsafe_allow_html=True)
     
-    # [NEW] 안경원 찾기 버튼 추가
+    # [NEW] 안경원 찾기 버튼
     if st.button("📍 내 주변 안경원 찾기", use_container_width=True):
         st.session_state['page'] = 'map_view'
         st.rerun()
