@@ -6,7 +6,7 @@ import plotly.graph_objects as go
 import qrcode
 from io import BytesIO
 import base64
-import random # [NEW] 지도 예시 데이터 생성용
+import random
 
 # ==============================================================================
 # 0. 기본 설정 & URL
@@ -20,14 +20,20 @@ BASE_URL = "https://lens-master-fhsfp5b458nqhycwenbvga.streamlit.app/"
 st.markdown("""
 <style>
     @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-    html, body, [class*="css"] { font-family: 'Pretendard', sans-serif; background-color: #F0F2F6; }
+    html, body, [class*="css"] { font-family: 'Pretendard', sans-serif; background-color: #F8F9FA; }
     
     /* 헤더 & 텍스트 */
     h1, .header-title { color: #1E3A8A !important; font-weight: 800 !important; letter-spacing: -1px; word-break: keep-all; }
     
-    /* 버튼 커스텀 (파란색) */
-    div.stButton > button:first-child { background-color: #2563EB !important; color: white !important; border-color: #2563EB !important; font-weight: bold; border-radius: 10px; }
-    div.stButton > button:hover { background-color: #1D4ED8 !important; border-color: #1D4ED8 !important; }
+    /* 버튼 커스텀 */
+    div.stButton > button {
+        border-radius: 12px; height: 50px; font-size: 16px; font-weight: 700; transition: all 0.2s;
+    }
+    div.stButton > button:first-child { 
+        background-color: #2563EB !important; color: white !important; border: none !important; 
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+    }
+    div.stButton > button:hover { transform: translateY(-2px); }
     div.stButton > button:focus { box-shadow: none !important; outline: none !important; }
 
     /* 로딩바 중앙 정렬 */
@@ -80,9 +86,10 @@ st.markdown("""
     .stTabs [aria-selected="true"] { background-color: #EFF6FF; color: #2563EB; border-color: #2563EB; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15); }
     
     /* [홈 화면] 히어로 섹션 */
-    .hero-container { text-align: center; padding: 40px 20px 20px; }
-    .hero-title { font-size: 32px; font-weight: 900; color: #1E3A8A; margin-bottom: 10px; }
-    .hero-sub { font-size: 16px; color: #64748B; font-weight: 500; margin-bottom: 30px; }
+    .hero-container { text-align: center; padding: 50px 20px 30px; }
+    .hero-title { font-size: 36px; font-weight: 900; color: #1E3A8A; margin-bottom: 10px; text-shadow: 0 2px 10px rgba(30, 58, 138, 0.1); }
+    .hero-sub { font-size: 16px; color: #64748B; font-weight: 500; margin-bottom: 40px; }
+    .menu-box { margin-bottom: 15px; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -317,30 +324,23 @@ elif st.session_state['page'] == 'home':
 
     with tab_home2:
         st.markdown("<br>", unsafe_allow_html=True)
-        # [NEW] 지도 시각화 (예시 데이터)
-        st.markdown("##### 📍 내 주변 안경원 (Demo)")
+        # [수정] 지도 탭: 시뮬레이션 지도 + 네비게이션 버튼 연동
+        st.markdown("##### 📍 내 주변 안경원 위치 확인")
         
-        # 지도 예시 데이터 생성
+        # 서울 시청 중심 예시 데이터 (데모용)
         lat_center, lon_center = 37.5665, 126.9780
-        # 현위치(1개) + 주변 안경원(5개) 데이터 생성
         map_data = pd.DataFrame({
             'lat': [lat_center] + [lat_center + random.uniform(-0.005, 0.005) for _ in range(5)],
             'lon': [lon_center] + [lon_center + random.uniform(-0.005, 0.005) for _ in range(5)],
-            'color': ['#2563EB'] + ['#EF4444'] * 5, # 파랑(나), 빨강(안경원)
-            'size': [200] + [100] * 5 # 내 위치는 더 크게
+            'color': ['#2563EB'] + ['#EF4444'] * 5, 
+            'size': [200] + [100] * 5
         })
-        
         st.map(map_data, latitude='lat', longitude='lon', color='color', size='size', zoom=14)
         
-        st.markdown("""
-        <div style="display:flex; gap:10px; justify-content:center; margin-top:10px; font-size:12px; color:#666;">
-            <div><span style="color:#2563EB;">●</span> 현위치</div>
-            <div><span style="color:#EF4444;">●</span> 안경원</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.caption("※ 현재 위치 기반 예시 지도입니다. (파랑: 내 위치 / 빨강: 안경원)")
         
         st.markdown("---")
-        st.markdown("###### 👇 내비게이션 앱으로 실시간 찾기")
+        st.markdown("###### 👇 내비게이션 앱으로 실시간 찾기 (추천)")
         c1, c2 = st.columns(2)
         with c1:
             st.link_button("네이버 지도 실행", "https://map.naver.com/p/search/안경원", use_container_width=True)
@@ -477,13 +477,13 @@ elif st.session_state['page'] == 'result':
             norm_spec = (r['tier'] * 2.5)
             if 'digital' in r['cat'] and ans['env_1'] >= 4: norm_spec += 1.5
             if 'drive' in r['cat'] and ans['env_5'] >= 4: norm_spec += 1.5
+            if abs(vision['cyl']) >= 1.0 and r['cat'] == 'distortions': final_spec += 30
             
             price_score = max(1, 10 - (r['final_price'] / 45000))
             
             if type_t == "T": 
                 total_score = (norm_spec * 0.8) + (price_score * 0.2)
             else: 
-                # [핵심] 가성비(F) 선택 시, 가격 점수의 비중을 80%로 높여서 비싼 렌즈 순위 하락 유도
                 total_score = (norm_spec * 0.2) + (price_score * 0.8)
                 
             cand_g.at[i, 'total_score'] = total_score
