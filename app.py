@@ -11,7 +11,7 @@ import base64
 # 0. 기본 설정 & URL
 # ==============================================================================
 st.set_page_config(page_title="Lens Master Pro", page_icon="👁️", layout="centered")
-# [중요] 배포된 앱의 실제 주소를 입력하세요 (QR코드 연결용)
+# [중요] 배포된 앱의 실제 주소를 입력하세요
 BASE_URL = "https://lens-master-fhsfp5b458nqhycwenbvga.streamlit.app/"
 
 # ==============================================================================
@@ -22,17 +22,24 @@ st.markdown("""
     @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
     html, body, [class*="css"] { font-family: 'Pretendard', sans-serif; background-color: #F0F2F6; }
     
-    /* [수정 1] 헤더 타이틀: 모바일에서 잘리지 않고 자연스럽게 줄바꿈 */
-    .header-title { font-size: 28px; font-weight: 800; color: #1E3A8A; margin-bottom: 5px; letter-spacing: -1px; word-break: keep-all; line-height: 1.2; }
+    /* [수정] 홈 화면 포함 모든 헤더 색상 통일 */
+    h1, .header-title { color: #1E3A8A !important; font-weight: 800 !important; letter-spacing: -1px; }
+    .header-sub { font-size: 16px; color: #64748B; margin-bottom: 30px; font-weight: 500; }
+
+    /* 로딩 컨테이너 중앙 정렬 */
+    .stSpinner > div { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; }
     
+    /* 설명 박스 */
     .desc-box { background-color: #fff; padding: 22px; border-radius: 16px; border: 1px solid #E5E8EB; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
     .desc-title { font-size: 16px; font-weight: 700; color: #333; margin-bottom: 12px; border-bottom: 2px solid #F2F4F6; padding-bottom: 8px; }
     .desc-text { font-size: 14px; color: #555; line-height: 1.7; margin-bottom: 6px; }
     .desc-highlight { color: #2563EB; font-weight: 700; background-color: #EFF6FF; padding: 2px 8px; border-radius: 6px; }
 
-    /* 질문지 & 버튼 */
+    /* 질문지 */
     .q-text { font-size: 17px; font-weight: 700; color: #111; margin-top: 35px; margin-bottom: 12px; word-break: keep-all; }
     .scale-labels { display: flex; justify-content: space-between; font-size: 12px; color: #888; font-weight: 500; padding: 0 10px; margin-bottom: 8px; }
+    
+    /* 라디오 버튼 */
     div[role="radiogroup"] { gap: 0; justify-content: space-between; margin-bottom: 20px; }
     div[role="radiogroup"] label { background-color: white !important; border: 1px solid #E5E8EB !important; border-radius: 50% !important; width: 48px; height: 48px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
     div[role="radiogroup"] label:hover { background-color: #F8FAFC !important; transform: translateY(-3px); }
@@ -41,7 +48,7 @@ st.markdown("""
     div[role="radiogroup"] label:has(input:checked) p { color: white !important; font-weight: bold !important; }
     div[role="radiogroup"] label > div:first-child { display: none; }
 
-    /* [수정 2] 결과 페이지 헤더 색상 통일 (그라데이션 제거 -> 단색 적용) */
+    /* 결과 페이지 */
     .result-header { background: #1E3A8A; color: white; padding: 45px 25px; border-radius: 0 0 30px 30px; margin: -25px -25px 25px -25px; text-align: center; box-shadow: 0 10px 30px rgba(30, 58, 138, 0.3); }
     .mbti-hero { font-size: 60px; font-weight: 900; margin: 15px 0; text-shadow: 0 4px 15px rgba(0,0,0,0.2); letter-spacing: 2px; }
     .persona-desc { background: rgba(255,255,255,0.15); padding: 20px; border-radius: 15px; font-size: 15px; line-height: 1.6; margin-top: 20px; text-align: left; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
@@ -66,9 +73,6 @@ st.markdown("""
     .stTabs [data-baseweb="tab-list"] { gap: 8px; background-color: transparent; }
     .stTabs [data-baseweb="tab"] { height: 55px; background-color: #fff; border-radius: 12px; color: #64748B; font-weight: 600; border: 1px solid #E2E8F0; flex: 1; transition: all 0.2s; }
     .stTabs [aria-selected="true"] { background-color: #EFF6FF; color: #2563EB; border-color: #2563EB; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15); }
-
-    /* [수정 5] 로딩 컨테이너 중앙 정렬 */
-    .loading-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; text-align: center; width: 80%; max-width: 400px; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -131,14 +135,13 @@ def make_radar_chart(product_name, scores, categories):
     )
     return fig
 
-# 20문항 키 리스트
+# 20문항 키 및 라벨
 all_q_keys = [
     'env_1', 'env_2', 'env_3', 'env_4', 'env_5',
     'sen_1', 'sen_2', 'sen_3', 'sen_4', 'sen_5',
     'val_1', 'val_2', 'val_3', 'val_4', 'val_5',
     'exp_1', 'exp_2', 'exp_3', 'exp_4', 'exp_5'
 ]
-# [수정 3] 안경사 리포트용 문항 라벨 상세화 (이해하기 쉽게 풀어서 기술)
 q_labels = {
     'env_1': 'Q1.하루 8시간 이상 디지털 기기 사용', 
     'env_2': 'Q2.건조한 실내 환경(히터/에어컨) 상주', 
@@ -193,8 +196,7 @@ def go_to(page): st.session_state['page'] = page
 # ==============================================================================
 if st.session_state['page'] == 'optician_view':
     data = st.session_state['restored_data']
-    # 헤더 색상 통일
-    st.markdown(f"<div class='header-title' style='font-size:24px; color:#1E3A8A;'>👓 안경사 전용 리포트</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='header-title' style='font-size:24px;'>👓 안경사 전용 리포트</div>", unsafe_allow_html=True)
     
     st.info(f"**처방 도수:** SPH {data['sph']} / CYL {data['cyl']}")
     st.success(f"**고객 성향:** {data['mbti']}")
@@ -206,14 +208,60 @@ if st.session_state['page'] == 'optician_view':
         with col1: st.write(f"**{label}** ({val}점)")
         with col2: st.progress(val / 10)
 
+    # [NEW] 안경사 뷰 - Top 3 추천 제품 표시 (간소화 버전)
     st.markdown("---")
-    st.markdown("<div style='font-weight:bold; margin-bottom:15px; color:#333;'>📝 20문항 상세 답변 내역 (1점:전혀아님 ~ 5점:매우그렇다)</div>", unsafe_allow_html=True)
+    st.markdown("<div style='font-weight:bold; margin-bottom:15px; color:#333;'>🏆 AI 추천 제품 (Top 3)</div>", unsafe_allow_html=True)
+    
+    # 랭킹 재계산 로직 (안경사 뷰용)
+    type_t = "T" if data['val'] >= 6 else "F"
+    type_i = "I" if data['env'] >= 6 else "E"
+    
+    tab1, tab2 = st.tabs(["👓 안경렌즈", "💧 콘택트렌즈"])
+    
+    with tab1:
+        df_g = load_data('glasses', data['sph'], data['cyl'])
+        cand_g = df_g.copy()
+        for i, r in cand_g.iterrows():
+            final_spec = (r['tier'] * 15) # 간소화된 계산
+            price_score = max(2, 10 - (r['final_price'] / 45000))
+            if type_t == "T": total_score = (final_spec * 0.8) + (price_score * 2)
+            else: total_score = (final_spec * 0.4) + (price_score * 6)
+            cand_g.at[i, 'total_score'] = total_score
+        
+        ranks = cand_g.sort_values('total_score', ascending=False).head(3)
+        for rk, (idx, row) in enumerate(ranks.iterrows(), 1):
+            st.markdown(f"""
+            <div style="background:white; padding:15px; border-radius:10px; border:1px solid #eee; margin-bottom:10px;">
+                <div style="font-weight:bold; font-size:16px;">{rk}위. {row['name']}</div>
+                <div style="color:#666; font-size:13px;">{row['brand']} | {format(int(row['final_price']),',')}원</div>
+            </div>""", unsafe_allow_html=True)
+
+    with tab2:
+        df_c = load_data('contacts')
+        is_toric = True if abs(data['cyl']) >= 0.75 else False
+        cand_c = df_c[df_c['category'].str.contains('toric' if is_toric else 'sphere')].copy()
+        for i, r in cand_c.iterrows():
+            final_spec = r['dry_score'] * 5 
+            price_score = max(2, 10 - (r['price'] / 10000))
+            if type_t == "T": total_score = (final_spec * 0.7) + (price_score * 3) + (r['tier'] * 20)
+            else: total_score = (final_spec * 0.3) + (price_score * 7)
+            cand_c.at[i, 'total_score'] = total_score
+        
+        ranks_c = cand_c.sort_values('total_score', ascending=False).head(3)
+        for rk, (idx, row) in enumerate(ranks_c.iterrows(), 1):
+            st.markdown(f"""
+            <div style="background:white; padding:15px; border-radius:10px; border:1px solid #eee; margin-bottom:10px;">
+                <div style="font-weight:bold; font-size:16px;">{rk}위. {row['name']}</div>
+                <div style="color:#666; font-size:13px;">{row['brand']} | {format(row['price'],',')}원</div>
+            </div>""", unsafe_allow_html=True)
+
+    st.markdown("---")
+    st.markdown("<div style='font-weight:bold; margin-bottom:15px; color:#333;'>📝 20문항 상세 답변</div>", unsafe_allow_html=True)
     ans_str = data['answers_str']
     if len(ans_str) == 20:
         with st.container():
             for i, key in enumerate(all_q_keys):
                 score = ans_str[i]
-                # 질문 내용이 길어지므로 한 줄에 하나씩 표시
                 st.markdown(f"<div style='font-size:13px; border-bottom:1px solid #f0f0f0; padding:8px 0; display:flex; justify-content:space-between;'><span style='color:#555; flex:1; word-break:keep-all; padding-right:10px;'>{q_labels[key]}</span> <span style='font-weight:bold; color:#2563EB;'>{score}점</span></div>", unsafe_allow_html=True)
 
     if st.button("메인으로 돌아가기", use_container_width=True):
@@ -276,24 +324,21 @@ elif st.session_state['page'] == 'mbti_test':
         go_to('result'); st.rerun()
 
 elif st.session_state['page'] == 'result':
-    # [수정 4] 가장 강력한 스크롤 강제 이동 (JS Injection 위치 변경)
+    # [강력한 스크롤 보정]
     components.html("""<script>window.parent.document.querySelector('section.main').scrollTo(0, 0);</script>""", height=0)
-
-    # [수정 5] 로딩 애니메이션 중앙 정렬 구현
-    with st.container():
-        st.markdown('<div class="loading-container">', unsafe_allow_html=True)
+    
+    # 로딩 애니메이션
+    with st.spinner(''):
         progress_bar = st.progress(0)
         status_text = st.empty()
-        steps = ["🔎 고객 라이프스타일 정밀 분석 중...", "👁️ 시력 데이터 및 굴절률 계산 중...", "✨ 최적의 렌즈 매칭 중..."]
         for i in range(100):
-            if i < 30: status_text.markdown(f"<div style='text-align:center; font-weight:bold; color:#1E3A8A; margin-bottom:10px;'>{steps[0]}</div>", unsafe_allow_html=True)
-            elif i < 60: status_text.markdown(f"<div style='text-align:center; font-weight:bold; color:#1E3A8A; margin-bottom:10px;'>{steps[1]}</div>", unsafe_allow_html=True)
-            else: status_text.markdown(f"<div style='text-align:center; font-weight:bold; color:#1E3A8A; margin-bottom:10px;'>{steps[2]}</div>", unsafe_allow_html=True)
+            if i < 30: status_text.markdown(f"<div style='text-align:center; font-weight:bold; color:#1E3A8A; margin-bottom:10px;'>🔎 고객 라이프스타일 분석 중... ({i}%)</div>", unsafe_allow_html=True)
+            elif i < 60: status_text.markdown(f"<div style='text-align:center; font-weight:bold; color:#1E3A8A; margin-bottom:10px;'>👁️ 시력 데이터 및 굴절률 계산 중... ({i}%)</div>", unsafe_allow_html=True)
+            else: status_text.markdown(f"<div style='text-align:center; font-weight:bold; color:#1E3A8A; margin-bottom:10px;'>✨ 최적의 렌즈 매칭 중... ({i}%)</div>", unsafe_allow_html=True)
             progress_bar.progress(i + 1)
             time.sleep(0.015)
         progress_bar.empty()
         status_text.empty()
-        st.markdown('</div>', unsafe_allow_html=True)
     
     ans = st.session_state['answers']
     vision = st.session_state['vision']
@@ -356,12 +401,12 @@ elif st.session_state['page'] == 'result':
         for rk, (idx, row) in enumerate(ranks.iterrows(), 1):
             match_percent = int((row['total_score'] / top_score) * 98)
             reasons = []
-            if ans['env_1'] >= 4 and row['cat'] == 'digital': reasons.append("<li>하루 8시간 이상 모니터를 보는 <b>고객님의 눈 피로를 덜어주는 '디지털 전용 설계'</b>입니다.</li>")
-            if ans['env_5'] >= 4 and row['cat'] == 'drive': reasons.append("<li>야간 운전 시 <b>빛 번짐을 잡아주는 특수 코팅</b>이 적용되어 훨씬 선명합니다.</li>")
-            if abs(vision['cyl']) >= 1.0 and row['cat'] == 'distortions': reasons.append("<li>난시 도수로 인한 <b>울렁임과 주변부 왜곡을 최소화</b>한 설계입니다.</li>")
-            if type_t == "T" and row['tier'] >= 2: reasons.append("<li>성능을 중시하는 고객님을 위해, <b>브랜드 내에서도 최상급 코팅과 기술</b>이 들어간 제품을 골랐습니다.</li>")
-            if type_t == "F" and row['tier'] <= 1: reasons.append("<li>가성비를 중요하게 생각하셔서, <b>불필요한 가격 거품은 빼고 기본기에 충실한</b> 실속형입니다.</li>")
-            if not reasons: reasons.append("<li>고객님의 도수와 라이프스타일 밸런스가 가장 훌륭한 <b>올라운드 제품</b>입니다.</li>")
+            if ans['env_1'] >= 4 and row['cat'] == 'digital': reasons.append("<li>고객님은 <b>하루 8시간 이상 모니터를 보는 환경(Q1)</b>에 계십니다. 눈의 조절 피로를 덜어주는 <b>'디지털 어시스트 설계'</b>가 필수적입니다.</li>")
+            if ans['env_5'] >= 4 and row['cat'] == 'drive': reasons.append("<li><b>야간 운전 빈도(Q5)가 매우 높습니다.</b> 마주 오는 차량의 헤드라이트 눈부심을 억제하는 <b>드라이브 전용 코팅</b>이 안전한 시야를 확보해줍니다.</li>")
+            if abs(vision['cyl']) >= 1.0 and row['cat'] == 'distortions': reasons.append("<li>난시 도수로 인해 주변부 시야가 울렁거릴 수 있습니다. 이를 보정해주는 <b>양면비구면 설계</b>가 적용되어 훨씬 편안합니다.</li>")
+            if type_t == "T" and row['tier'] >= 2: reasons.append("<li>고객님은 <b>최고의 성능(T)</b>을 원하셨습니다. 브랜드 내에서도 가장 투과율이 높고 내구성이 뛰어난 <b>하이엔드 렌즈</b>를 선정했습니다.</li>")
+            if type_t == "F" and row['tier'] <= 1: reasons.append("<li>가성비를 중요하게 생각하셔서(F), 불필요한 기능은 제외하고 <b>합리적인 가격에 기본기가 탄탄한 제품</b>을 골랐습니다.</li>")
+            if not reasons: reasons.append("<li>고객님의 도수 정보와 라이프스타일 밸런스가 가장 우수한 <b>올라운드 베스트셀러</b>입니다.</li>")
             
             c1, c2 = st.columns([1.6, 1])
             with c1:
@@ -404,9 +449,9 @@ elif st.session_state['page'] == 'result':
         for rk, (idx, row) in enumerate(ranks_c.iterrows(), 1):
             match_percent = int((row['total_score'] / top_score_c) * 98)
             reasons = []
-            if ans['sen_1'] >= 4 and row['dry_score'] >= 9: reasons.append(f"<li>오후 건조감이 심하다고 하셔서(Q6), <b>건조감 방어력 최상위({row['dry_score']}점)</b> 제품을 선정했습니다.</li>")
-            if type_i == "I" and row['dkt'] >= 120: reasons.append(f"<li>디지털 환경(I형)에서 눈이 숨 쉴 수 있게 <b>산소투과율({row['dkt']})이 압도적</b>입니다.</li>")
-            if type_t == "F" and row['price'] < 40000: reasons.append("<li>가성비(F형)를 1순위로 꼽으셔서, <b>성능 대비 가격이 훌륭한 실속형</b>입니다.</li>")
+            if ans['sen_1'] >= 4 and row['dry_score'] >= 9: reasons.append(f"<li><b>오후 건조감(Q6)이 심하다</b>고 답변하셨습니다. 이를 해결하기 위해 <b>수분 유지력이 최상위 등급({row['dry_score']}점)</b>인 제품을 선정했습니다.</li>")
+            if type_i == "I" and row['dkt'] >= 120: reasons.append(f"<li>건조한 실내 환경(I형)에서도 눈이 숨 쉴 수 있도록, <b>산소투과율({row['dkt']})이 압도적으로 높은 재질</b>입니다.</li>")
+            if type_t == "F" and row['price'] < 40000: reasons.append("<li>매일 착용해도 부담 없도록, <b>가성비(F)가 가장 뛰어난 실속형 제품</b>입니다.</li>")
             if not reasons: reasons.append("<li>고객님의 눈물량과 라이프스타일 데이터를 분석했을 때 가장 적합한 렌즈입니다.</li>")
             c1, c2 = st.columns([1.6, 1])
             with c1:
