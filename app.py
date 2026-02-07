@@ -6,6 +6,7 @@ import plotly.graph_objects as go
 import qrcode
 from io import BytesIO
 import base64
+import random # [NEW] 지도 예시 데이터 생성용
 
 # ==============================================================================
 # 0. 기본 설정 & URL
@@ -306,7 +307,6 @@ elif st.session_state['page'] == 'home':
         </div>
     """, unsafe_allow_html=True)
     
-    # [수정] 탭 구조로 홈 화면 개편 (깔끔한 UI)
     tab_home1, tab_home2 = st.tabs(["🔥 추천/검사", "📍 안경원/도감"])
     
     with tab_home1:
@@ -317,13 +317,36 @@ elif st.session_state['page'] == 'home':
 
     with tab_home2:
         st.markdown("<br>", unsafe_allow_html=True)
-        # [신규 기능] 인-앱 지도 (Streamlit Built-in Map)
-        st.markdown("##### 📍 내 주변 안경원 위치 확인")
-        # 서울 시청 중심 좌표 (예시)
-        df_map = pd.DataFrame({'lat': [37.5665], 'lon': [126.9780]})
-        st.map(df_map, zoom=14)
+        # [NEW] 지도 시각화 (예시 데이터)
+        st.markdown("##### 📍 내 주변 안경원 (Demo)")
         
-        st.link_button("👉 네이버 지도로 상세 보기", "https://map.naver.com/p/search/안경원", use_container_width=True)
+        # 지도 예시 데이터 생성
+        lat_center, lon_center = 37.5665, 126.9780
+        # 현위치(1개) + 주변 안경원(5개) 데이터 생성
+        map_data = pd.DataFrame({
+            'lat': [lat_center] + [lat_center + random.uniform(-0.005, 0.005) for _ in range(5)],
+            'lon': [lon_center] + [lon_center + random.uniform(-0.005, 0.005) for _ in range(5)],
+            'color': ['#2563EB'] + ['#EF4444'] * 5, # 파랑(나), 빨강(안경원)
+            'size': [200] + [100] * 5 # 내 위치는 더 크게
+        })
+        
+        st.map(map_data, latitude='lat', longitude='lon', color='color', size='size', zoom=14)
+        
+        st.markdown("""
+        <div style="display:flex; gap:10px; justify-content:center; margin-top:10px; font-size:12px; color:#666;">
+            <div><span style="color:#2563EB;">●</span> 현위치</div>
+            <div><span style="color:#EF4444;">●</span> 안경원</div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("---")
+        st.markdown("###### 👇 내비게이션 앱으로 실시간 찾기")
+        c1, c2 = st.columns(2)
+        with c1:
+            st.link_button("네이버 지도 실행", "https://map.naver.com/p/search/안경원", use_container_width=True)
+        with c2:
+            st.link_button("카카오맵 실행", "https://map.kakao.com/link/search/안경원", use_container_width=True)
+            
         st.divider()
         st.button("👓 모든 렌즈 도감 (준비중)", disabled=True, use_container_width=True)
 
@@ -454,7 +477,6 @@ elif st.session_state['page'] == 'result':
             norm_spec = (r['tier'] * 2.5)
             if 'digital' in r['cat'] and ans['env_1'] >= 4: norm_spec += 1.5
             if 'drive' in r['cat'] and ans['env_5'] >= 4: norm_spec += 1.5
-            if abs(vision['cyl']) >= 1.0 and r['cat'] == 'distortions': final_spec += 30
             
             price_score = max(1, 10 - (r['final_price'] / 45000))
             
@@ -613,3 +635,19 @@ elif st.session_state['page'] == 'result':
     
     st.markdown("<div style='margin-bottom:30px;'></div>", unsafe_allow_html=True)
     if st.button("처음으로 돌아가기", use_container_width=True): go_to('home'); st.rerun()
+    
+    # [핵심] 렌더링 끝난 후 스크롤 최상단 이동 (가장 강력한 위치)
+    js_scroll = """
+        <script>
+            function scrollToTop() {
+                var body = window.parent.document.querySelector(".main");
+                var html = window.parent.document.querySelector("html");
+                if (body) body.scrollTop = 0;
+                if (html) html.scrollTop = 0;
+            }
+            scrollToTop();
+            setTimeout(scrollToTop, 100);
+            setTimeout(scrollToTop, 300);
+        </script>
+    """
+    components.html(js_scroll, height=0)
